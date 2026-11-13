@@ -1,0 +1,1504 @@
+<title>Bungy System</title>
+<meta name="description" content="Bungy System · Film and TV rigging, wire work and stunt structures. A Madrid crew working with international productions in Spain and abroad.">
+<meta name="theme-color" content="#0b0a0a">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: backstage at night. Full-bleed dark bands, a rigging canvas hero, specs set in mono like truss load tables. Single dark look by choice. */
+:root {
+  color-scheme: dark;
+  --night: #0b0a0a;      /* fondo, negro de plató */
+  --steel: #161313;      /* bandas y tarjetas */
+  --line: #332a29;       /* hilos de estructura */
+  --text: #f2eeed;
+  --muted: #a89e9c;
+  --amber: #ec2a1f;      /* rojo Bungy */
+  --amber-ink: #ffffff;
+  --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --body: "Barlow", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --gut-l: max(16px, env(safe-area-inset-left, 0px));
+  --gut-r: max(16px, env(safe-area-inset-right, 0px));
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--night); color: var(--text); font: 400 17px/1.6 var(--body); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 60; background: var(--night); }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: .95; letter-spacing: .005em; }
+p { margin: 0; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: var(--gut-l); padding-right: var(--gut-r); }
+.eyebrow { font: 500 12px/1.2 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--amber); }
+.btn { display: inline-flex; align-items: center; gap: 10px; font: 600 15px/1 var(--body); letter-spacing: .06em; text-transform: uppercase; text-decoration: none; padding: 16px 22px; border: 1px solid var(--amber); background: var(--amber); color: var(--amber-ink); cursor: pointer; transition: transform .2s, background .2s, color .2s; }
+.btn:hover { transform: translateY(-2px); }
+.btn.ghost { background: transparent; color: var(--text); border-color: var(--line); }
+.btn.ghost:hover { border-color: var(--amber); color: var(--amber); }
+.btn svg { width: 16px; height: 16px; transition: transform .2s; }
+.btn:hover svg { transform: translateX(4px); }
+
+/* Aviso de demo */
+.demo-note { background: var(--amber); color: var(--amber-ink); font: 500 12px/1.4 var(--mono); text-align: center; padding-block: 8px; padding-left: var(--gut-l); padding-right: var(--gut-r); }
+
+/* Cabecera */
+header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50; transition: background .3s, border-color .3s; border-bottom: 1px solid transparent; }
+header.top.scrolled { background: rgb(11 10 10 / .92); backdrop-filter: blur(10px); border-color: var(--line); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-block: 18px; transition: padding .3s; }
+header.top.scrolled .wrap { padding-block: 10px; }
+.logo { display: flex; align-items: center; gap: 10px; min-width: 0; text-decoration: none; font: 900 26px/1 var(--display); letter-spacing: .04em; text-transform: uppercase; }
+.logo svg { width: 30px; height: 30px; color: var(--amber); flex: none; }
+.logo > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.logo small { display: block; font: 500 10px/1 var(--mono); letter-spacing: .2em; color: var(--muted); margin-top: 3px; }
+nav.main { display: flex; gap: 28px; align-items: center; }
+nav.main a { text-decoration: none; font: 500 15px/1 var(--body); letter-spacing: .04em; color: var(--muted); position: relative; padding-block: 6px; transition: color .2s; }
+nav.main a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--amber); transform: scaleX(0); transform-origin: left; transition: transform .25s; }
+nav.main a:hover { color: var(--text); }
+nav.main a:hover::after { transform: scaleX(1); }
+nav.main .btn { padding: 12px 16px; font-size: 13px; color: var(--amber-ink); }
+nav.main .btn::after { display: none; }
+.burger { display: none; flex: none; background: none; border: 1px solid var(--line); color: var(--text); width: 44px; height: 44px; cursor: pointer; }
+.burger span { display: block; width: 20px; height: 2px; background: currentColor; margin: 4px auto; }
+
+/* Menú lateral móvil */
+.drawer { position: fixed; inset: 0; z-index: 70; pointer-events: none; }
+.drawer .shade { position: absolute; inset: 0; background: rgb(0 0 0 / .6); opacity: 0; transition: opacity .3s; }
+.drawer .panel { position: absolute; top: 0; right: 0; bottom: 0; width: min(340px, 86vw); background: var(--steel); border-left: 1px solid var(--line); transform: translateX(100%); transition: transform .35s cubic-bezier(.2,.8,.2,1); padding: calc(24px + env(safe-area-inset-top, 0px)) calc(24px + env(safe-area-inset-right, 0px)) 24px 24px; display: flex; flex-direction: column; gap: 6px; }
+.drawer.open { pointer-events: auto; }
+.drawer.open .shade { opacity: 1; }
+.drawer.open .panel { transform: none; }
+.drawer .close { align-self: flex-end; background: none; border: 1px solid var(--line); color: var(--text); width: 44px; height: 44px; font-size: 22px; cursor: pointer; margin-bottom: 18px; }
+.drawer a { font: 800 34px/1.25 var(--display); text-transform: uppercase; text-decoration: none; }
+.drawer a:hover { color: var(--amber); }
+.drawer a.go { margin-top: auto; color: var(--amber); font-size: 26px; }
+.drawer .lang { display: none; }
+
+/* Hero */
+.hero { position: relative; overflow: hidden; padding-block: 0; border-bottom: 1px solid var(--line); margin-top: -81px; }
+.hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, var(--night) 0%, rgb(11 10 10 / .75) 38%, rgb(11 10 10 / 0) 70%), linear-gradient(0deg, var(--night) 0%, rgb(11 10 10 / 0) 30%); pointer-events: none; }
+.hero .wrap { position: relative; z-index: 2; padding-block: 190px 110px; }
+.hero h1 { font-weight: 900; font-size: clamp(54px, 6.4vw, 96px); text-transform: uppercase; }
+.hero h1 .ln { display: block; overflow: hidden; white-space: nowrap; }
+.hero h1 .ln span { display: inline-block; animation: rise 1s cubic-bezier(.2,.8,.2,1) both; }
+.hero h1 .ln:nth-child(2) span { animation-delay: .12s; color: var(--amber); }
+.hero h1 .ln:nth-child(3) span { animation-delay: .24s; }
+.hero .lede { max-width: 46ch; color: var(--muted); font-size: 19px; margin-top: 26px; animation: fade .9s .45s both; }
+.hero .ctas { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; animation: fade .9s .6s both; }
+.hero .eyebrow { margin-bottom: 22px; animation: fade .8s both; }
+.hero .specs { position: absolute; z-index: 2; right: var(--gut-r); bottom: 28px; font: 400 11px/1.7 var(--mono); color: var(--muted); text-align: right; letter-spacing: .06em; }
+.hero .specs b { color: var(--amber); font-weight: 500; }
+@keyframes rise { from { transform: translateY(105%); } to { transform: none; } }
+@keyframes fade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+/* Cinta de sectores */
+.ticker { background: var(--amber); color: var(--amber-ink); overflow: hidden; padding-block: 14px; }
+.ticker .track { display: flex; width: max-content; animation: slide 28s linear infinite; }
+.ticker span { font: 800 26px/1 var(--display); text-transform: uppercase; letter-spacing: .03em; padding: 0 22px; display: flex; align-items: center; gap: 44px; white-space: nowrap; }
+.ticker span::after { content: ""; width: 10px; height: 10px; background: currentColor; transform: rotate(45deg); }
+@keyframes slide { to { transform: translateX(-50%); } }
+
+section { padding-block: 110px; }
+section, .gear-head { scroll-margin-top: 78px; }
+.sec-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: end; margin-bottom: 56px; }
+.sec-head h2 { font-weight: 800; font-size: clamp(42px, 6vw, 76px); text-transform: uppercase; margin-top: 14px; }
+.sec-head p { color: var(--muted); max-width: 48ch; }
+.sec-head.single { grid-template-columns: minmax(0, 1fr); }
+
+/* Servicios */
+.services { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.svc { position: relative; padding: 36px 30px 30px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); text-decoration: none; display: flex; flex-direction: column; gap: 14px; min-height: 280px; overflow: hidden; isolation: isolate; }
+.svc::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(236 42 31 / .14), transparent 60%); opacity: 0; transition: opacity .3s; }
+.svc:hover::before { opacity: 1; }
+.svc .ico { width: 54px; height: 54px; color: var(--amber); transition: transform .4s cubic-bezier(.2,.8,.2,1); }
+.svc:hover .ico { transform: translateY(-4px) rotate(-4deg); }
+.svc h3 { font-weight: 800; font-size: 34px; text-transform: uppercase; margin-top: 8px; }
+.svc p { color: var(--muted); font-size: 16px; }
+.svc .spec { margin-top: auto; padding-top: 18px; border-top: 1px dashed var(--line); font: 400 12px/1.5 var(--mono); color: var(--muted); display: flex; justify-content: space-between; gap: 12px; }
+.svc .spec b { color: var(--text); font-weight: 500; }
+.svc .more { position: absolute; top: 30px; right: 26px; font: 500 12px/1 var(--mono); color: var(--amber); opacity: 0; transform: translateX(-8px); transition: .25s; }
+.svc:hover .more { opacity: 1; transform: none; }
+
+/* Proyectos */
+.projects-band { background: var(--steel); border-block: 1px solid var(--line); }
+.projects { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
+.proj { position: relative; overflow: hidden; aspect-ratio: 4 / 3; max-width: 100%; grid-column: span 4; background: var(--night); }
+.proj.wide { grid-column: span 8; aspect-ratio: auto; }
+.proj .ph { position: absolute; inset: 0; transition: transform .8s cubic-bezier(.2,.8,.2,1); }
+.proj:hover .ph { transform: scale(1.06); }
+.proj .cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px; background: linear-gradient(0deg, rgb(11 10 10 / .95), rgb(11 10 10 / 0)); display: flex; flex-direction: column; gap: 6px; }
+.proj .cap h3 { font-weight: 800; font-size: 28px; text-transform: uppercase; }
+.proj .cap .tag { font: 500 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--amber); }
+.proj .ph-note { position: absolute; top: 14px; left: 14px; font: 400 10px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); padding: 6px 8px; background: rgb(11 10 10 / .7); }
+
+/* Proceso */
+.steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; counter-reset: s; }
+.step { padding: 26px 22px 0 0; border-top: 2px solid var(--line); position: relative; }
+.step::before { content: ""; position: absolute; top: -2px; left: 0; height: 2px; width: 0; background: var(--amber); transition: width 1s cubic-bezier(.2,.8,.2,1); }
+.step.lit::before { width: 100%; }
+.step .n { font: 500 12px/1 var(--mono); color: var(--amber); letter-spacing: .1em; }
+.step h3 { font-weight: 800; font-size: 28px; text-transform: uppercase; margin: 14px 0 10px; }
+.step p { color: var(--muted); font-size: 15px; }
+
+/* Nave */
+.base { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 60px; align-items: center; }
+.base h2 { font-weight: 800; font-size: clamp(40px, 5.5vw, 68px); text-transform: uppercase; margin: 14px 0 22px; }
+.base p { color: var(--muted); max-width: 52ch; }
+.facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.fact { background: var(--night); padding: 26px 22px; }
+.fact .v { font: 900 54px/1 var(--display); color: var(--text); font-variant-numeric: tabular-nums; }
+.fact .v em { font-style: normal; color: var(--amber); }
+.fact .k { font: 400 12px/1.5 var(--mono); color: var(--muted); margin-top: 8px; letter-spacing: .04em; }
+
+/* CTA */
+.cta-band { position: relative; overflow: hidden; background: var(--amber); color: var(--amber-ink); }
+.cta-band::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(-45deg, transparent 0 28px, rgb(0 0 0 / .12) 28px 56px); animation: hazard 6s linear infinite; }
+@keyframes hazard { to { background-position: 79px 0; } }
+.cta-band .wrap { position: relative; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 30px; padding-block: 80px; }
+.cta-band h2 { font-weight: 900; font-size: clamp(46px, 7vw, 96px); text-transform: uppercase; }
+.cta-band .btn { background: var(--night); color: #ffffff; border-color: var(--night); }
+
+/* Contacto */
+.contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 60px; }
+.contact h2 { font-weight: 800; font-size: clamp(40px, 5.5vw, 68px); text-transform: uppercase; margin: 14px 0 22px; }
+.contact .info { color: var(--muted); display: flex; flex-direction: column; gap: 22px; }
+.contact .info dt { font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--amber); margin-bottom: 6px; }
+.contact .info dd { margin: 0; color: var(--text); font-size: 18px; }
+form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+form .full { grid-column: 1 / -1; }
+label { display: flex; flex-direction: column; gap: 8px; font: 500 12px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+input, select, textarea { font: 400 16px/1.4 var(--body); color: var(--text); background: var(--steel); border: 1px solid var(--line); padding: 14px; border-radius: 0; width: 100%; transition: border-color .2s; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--amber); }
+textarea { min-height: 130px; resize: vertical; }
+.sent { grid-column: 1 / -1; font: 400 14px/1.5 var(--mono); color: var(--amber); }
+
+/* FAQ */
+.faq { max-width: 860px; }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary { list-style: none; cursor: pointer; padding: 24px 0; display: flex; justify-content: space-between; gap: 20px; font: 800 26px/1.15 var(--display); text-transform: uppercase; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font: 400 28px/1 var(--mono); color: var(--amber); transition: transform .3s; }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq details p { color: var(--muted); padding-bottom: 24px; max-width: 64ch; }
+
+footer { border-top: 1px solid var(--line); padding-block: 40px; color: var(--muted); font-size: 14px; }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px; }
+footer nav { display: flex; flex-wrap: wrap; gap: 20px; }
+footer a { text-decoration: none; }
+footer a:hover { color: var(--amber); }
+
+/* Entrada al hacer scroll: solo movimiento, el texto siempre se ve */
+.rv { transition: transform .9s cubic-bezier(.2,.8,.2,1); }
+.rv.pre { transform: translateY(40px); }
+
+
+nav.main a, .logo small { white-space: nowrap; }
+.top .wrap { max-width: 1340px; }
+@media (max-width: 1300px) { nav.main { display: none; } .burger { display: block; } }
+@media (max-width: 760px) { .top .area-link span { display: none; } .top .area-link { padding: 0 11px; } .logo small { display: none; } }
+/* Técnico colgado que baja con el scroll */
+.rope { position: fixed; top: 0; bottom: 0; right: 0; width: 170px; z-index: 45; pointer-events: none; }
+.rope svg { width: 100%; height: 100%; overflow: visible; display: block; }
+.rope .cable { stroke: var(--amber); stroke-width: 2.2; fill: none; stroke-linecap: round; }
+.rope .man { pointer-events: auto; cursor: grab; touch-action: pan-y; }
+.rope .man.dragging { cursor: grabbing; }
+.rope .hit { fill: transparent; }
+.rope .depth { font: 500 10px/1 var(--mono); fill: var(--muted); letter-spacing: .08em; }
+@media (max-width: 700px) { .rope { width: 120px; } .rope .depth { display: none; } }
+/* Entrada: dos puertas, la web o la tienda; el área privada siempre arriba */
+.gate { position: fixed; inset: 0; z-index: 80; background: var(--night); display: flex; flex-direction: column; transition: opacity .5s, visibility .5s; }
+.gate.off { opacity: 0; visibility: hidden; pointer-events: none; }
+.gate-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: calc(16px + env(safe-area-inset-top, 0px)) var(--gut-r) 16px var(--gut-l); border-bottom: 1px solid var(--line); }
+.area-link, .swap { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid var(--line); color: var(--text); text-decoration: none; font: 500 13px/1 var(--body); letter-spacing: .04em; white-space: nowrap; }
+.area-link:hover { border-color: var(--amber); color: var(--amber); }
+.area-link svg, .swap svg { width: 15px; height: 15px; flex: none; }
+/* Dos páginas al mismo nivel: "Qué es Bungy" y "Tienda". Cada bloque lleva data-only con la página a la que pertenece */
+body[data-view="web"] [data-only="shop"], body[data-view="shop"] [data-only="web"] { display: none !important; }
+.swap { border-color: var(--amber); color: var(--amber); }
+.swap:hover { background: var(--amber); color: var(--amber-ink); }
+.shop-hero { padding-block: 72px 60px; border-bottom: 1px solid var(--line); background: radial-gradient(60% 80% at 100% 0, rgb(236 42 31 / .14), transparent 70%); }
+.shop-hero h1 { font-weight: 900; font-size: clamp(44px, 6vw, 88px); text-transform: uppercase; max-width: 14ch; }
+.shop-hero h1 em { font-style: normal; color: var(--amber); }
+.shop-hero .lede { max-width: 50ch; color: var(--muted); font-size: 19px; margin-top: 22px; }
+.shop-hero .ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.shop-hero .eyebrow { margin-bottom: 18px; }
+@media (max-width: 560px) { .shop-hero { padding-block: 40px 36px; } .shop-hero .lede { font-size: 16px; } .swap { padding: 0 10px; font-size: 12px; gap: 6px; } .logo .wm { display: none; } .top .lang { display: none; } .drawer .lang { display: flex; align-self: flex-start; margin-bottom: 14px; } }
+.gate-grid { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: 0; }
+.gate-opt { position: relative; background: none; border: 0; color: var(--text); text-align: left; padding: 48px var(--gut-r) 56px var(--gut-l); display: flex; flex-direction: column; justify-content: flex-end; gap: 14px; cursor: pointer; overflow: hidden; }
+.gate-opt + .gate-opt { border-left: 1px solid var(--line); }
+.gate-opt::before { content: ""; position: absolute; inset: 0; background: radial-gradient(70% 60% at 50% 100%, rgb(236 42 31 / .22), transparent 70%); opacity: 0; transition: opacity .4s; }
+.gate-opt:hover::before, .gate-opt:focus-visible::before { opacity: 1; }
+.gate-opt .num { position: absolute; top: 28px; left: var(--gut-l); font: 500 12px/1 var(--mono); letter-spacing: .14em; color: var(--muted); }
+.gate-opt .pic { width: 100%; max-width: 260px; height: 120px; color: var(--line); margin-bottom: 10px; transition: color .4s, transform .5s cubic-bezier(.2,.8,.2,1); }
+.gate-opt:hover .pic { color: var(--amber); transform: translateY(-6px); }
+.gate-opt .gt { font: 900 clamp(40px, 5.6vw, 92px)/.92 var(--display); text-transform: uppercase; max-width: 12ch; }
+.gate-opt.shop .gt { color: var(--amber); }
+.gate-opt .gd { color: var(--muted); font-size: 18px; max-width: 42ch; }
+.gate-opt .ga { display: inline-flex; align-items: center; gap: 10px; margin-top: 8px; font: 600 14px/1 var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--amber); }
+.gate-opt .ga svg { width: 16px; height: 16px; transition: transform .2s; }
+.gate-opt:hover .ga svg { transform: translateX(4px); }
+@media (max-width: 900px) {
+  .gate-grid { grid-template-columns: minmax(0, 1fr); }
+  .gate-opt { padding: 26px var(--gut-r) 26px var(--gut-l); gap: 8px; }
+  .gate-opt + .gate-opt { border-left: 0; border-top: 1px solid var(--line); }
+  .gate-opt .num { top: 16px; }
+  .gate-opt .pic { height: 64px; max-width: 150px; margin-bottom: 0; }
+  .gate-opt .gd { font-size: 15px; }
+  .gate-top .logo .wm { display: none; }
+}
+@media (max-height: 640px) and (max-width: 900px) { .gate-opt .pic { display: none; } }
+/* Selector de idioma */
+.tools { display: flex; align-items: center; gap: 12px; flex: none; }
+.lang { display: flex; border: 1px solid var(--line); }
+.lang button { background: none; border: 0; color: var(--muted); font: 500 12px/1 var(--mono); letter-spacing: .1em; padding: 10px 10px; cursor: pointer; min-height: 40px; }
+.lang button[aria-pressed="true"] { background: var(--amber); color: var(--amber-ink); }
+.lang button:hover { color: var(--text); }
+.other { margin-top: 28px; color: var(--muted); font: 400 14px/1.5 var(--mono); }
+
+/* Selector de animación de la portada */
+.pick { position: absolute; z-index: 3; right: var(--gut-r); bottom: 104px; display: flex; border: 1px solid var(--line); background: rgb(11 10 10 / .7); backdrop-filter: blur(6px); }
+.pick button { display: inline-flex; align-items: center; gap: 8px; background: none; border: 0; color: var(--muted); font: 500 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; padding: 9px 12px; cursor: pointer; }
+.pick button svg { width: 16px; height: 16px; }
+.pick button:hover { color: var(--text); }
+.pick button[aria-pressed="true"] { background: var(--amber); color: var(--amber-ink); }
+/* Material: motores en alquiler y plataformas a la venta */
+.gear-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 10px 24px; margin: 56px 0 18px; }
+.gear-head:first-of-type { margin-top: 0; }
+.gear-head h3 { font-weight: 800; font-size: 30px; text-transform: uppercase; }
+.gear-head p { color: var(--muted); font-size: 15px; max-width: 60ch; }
+.gear { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.gear.plat { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.gcard { position: relative; padding: 26px 24px 24px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 14px; background: var(--night); }
+.gcard .fig { height: 110px; display: flex; align-items: center; justify-content: center; border: 1px dashed var(--line); background: var(--steel); }
+.gcard .fig svg { width: 100%; height: 100%; max-width: 180px; color: var(--amber); }
+.gcard .fig { position: relative; overflow: hidden; height: 150px; }
+.gcard .fig img.media { opacity: .92; filter: saturate(.8); transition: transform .8s cubic-bezier(.2,.8,.2,1); }
+.gcard:hover .fig img.media { transform: scale(1.06); }
+.gcard .fig:has(img.media) svg { position: absolute; right: 8px; bottom: 6px; width: 34px; height: 34px; max-width: none; opacity: .9; filter: drop-shadow(0 1px 4px rgb(0 0 0 / .8)); }
+.plat .gcard .fig { height: 150px; }
+.gcard h4 { margin: 4px 0 0; font: 800 24px/1.05 var(--display); text-transform: uppercase; }
+.gcard .tag { font: 500 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--amber); }
+.gcard p { color: var(--muted); font-size: 15px; }
+.gspec { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 14px; font: 400 12px/1.5 var(--mono); border-top: 1px dashed var(--line); padding-top: 14px; }
+.gspec dt { color: var(--muted); }
+.gspec dd { margin: 0; color: var(--text); text-align: right; }
+.gcard .foot { margin-top: auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding-top: 6px; }
+.gcard .price { font: 500 12px/1.4 var(--mono); color: var(--muted); }
+.gcard .btn { padding: 11px 14px; font-size: 13px; }
+.gcard.custom { background: var(--steel); }
+.gear-note { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: center; color: var(--muted); font: 400 14px/1.5 var(--mono); }
+@media (max-width: 1120px) { .gear { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 900px) { .gear.plat { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 560px) { .gear { grid-template-columns: minmax(0, 1fr); } .gear-head h3 { font-size: 26px; } }
+/* Seguridad y seguros */
+.safety { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.sf { padding: 30px 26px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 12px; }
+.sf .ico { width: 44px; height: 44px; color: var(--amber); }
+.sf h3 { font-weight: 800; font-size: 26px; text-transform: uppercase; line-height: 1.05; }
+.sf p { color: var(--muted); font-size: 15px; }
+.tbc { align-self: flex-start; margin-top: auto; font: 500 11px/1.4 var(--mono); letter-spacing: .06em; color: var(--amber); border: 1px dashed var(--amber); padding: 3px 7px; }
+.docs { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: center; color: var(--muted); font: 400 14px/1.5 var(--mono); }
+.docs b { color: var(--text); font-weight: 500; }
+/* Adjuntos del formulario */
+.file { position: relative; display: flex; flex-direction: column; gap: 8px; }
+.file input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.file .lbl { font: 500 12px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.file .drop { flex-direction: row; align-items: center; gap: 12px; border: 1px dashed var(--line); padding: 16px; color: var(--muted); cursor: pointer; font: 400 15px/1.4 var(--body); letter-spacing: 0; text-transform: none; transition: border-color .2s, color .2s; }
+.file .drop:hover, .file input:focus-visible + .drop { border-color: var(--amber); color: var(--text); }
+.file .drop svg { width: 22px; height: 22px; color: var(--amber); flex: none; }
+.file .list { font: 400 12px/1.5 var(--mono); color: var(--text); white-space: pre-line; }
+/* Contacto rápido flotante */
+.quick { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px)); z-index: 44; display: flex; gap: 8px; transform: translateY(140%); visibility: hidden; transition: transform .35s cubic-bezier(.2,.8,.2,1), visibility 0s .35s; }
+.quick.on { transform: none; visibility: visible; transition-delay: 0s; }
+.quick a { display: inline-flex; align-items: center; gap: 8px; padding: 12px 16px; font: 600 14px/1 var(--body); text-decoration: none; color: #fff; background: #1a1515; border: 1px solid var(--line); box-shadow: 0 8px 24px rgb(0 0 0 / .45); }
+.quick a.wa { background: var(--amber); border-color: var(--amber); }
+.quick svg { width: 18px; height: 18px; flex: none; }
+@media (max-width: 900px) { .safety { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 380px) {
+  .logo { font-size: 19px; gap: 8px; }
+  .logo svg { width: 24px; height: 24px; }
+  .logo .wm { display: none; }   /* en pantallas muy estrechas, solo la marca */
+  .lang button { padding: 10px 6px; font-size: 11px; }
+  .swap { padding: 0 7px; font-size: 11px; gap: 5px; }
+  .top .area-link { padding: 0 9px; }
+  .top .wrap { gap: 6px; } .tools { gap: 6px; }
+}
+@media (max-width: 560px) {
+  .safety { grid-template-columns: minmax(0, 1fr); }
+  .ticker { padding-block: 9px; }
+  .ticker span { font-size: 18px; padding: 0 14px; gap: 28px; }
+  .ticker span::after { width: 7px; height: 7px; }
+  .quick a { padding: 11px 14px; }
+}
+
+@media (max-width: 900px) {
+  .services { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .proj, .proj.wide { grid-column: span 6; aspect-ratio: 4 / 3; }
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 34px; }
+  .sec-head, .base, .contact { grid-template-columns: minmax(0, 1fr); }
+  .hero .specs { display: none; }
+  .hero h1 .ln { white-space: normal; }
+}
+@media (max-width: 560px) {
+  .logo { font-size: 20px; white-space: nowrap; }
+  .logo small { display: none; }
+  .logo svg { width: 26px; height: 26px; }
+  .top .wrap { gap: 8px; }
+  .tools { gap: 8px; }
+  .lang button { padding: 10px 8px; }
+  .burger { width: 40px; height: 40px; }
+  section { padding-block: 76px; }
+  .services { grid-template-columns: minmax(0, 1fr); }
+  .svc { min-height: 0; }
+  .proj, .proj.wide { grid-column: span 12; }
+  .steps { grid-template-columns: minmax(0, 1fr); }
+  form { grid-template-columns: minmax(0, 1fr); }
+  .hero .wrap { padding-bottom: 70px; }
+  .hero .lede { font-size: 17px; }
+}
+/* Móvil: la animación va arriba, en su propio escenario, y el texto debajo */
+@media (max-width: 900px) {
+  .hero .wrap { padding-top: 400px; }
+  .hero::after { background: linear-gradient(180deg, rgb(11 10 10 / 0) 0, rgb(11 10 10 / 0) 330px, rgb(11 10 10 / .82) 410px, var(--night) 100%); }
+  .pick { top: 338px; bottom: auto; left: var(--gut-l); right: auto; }
+}
+
+/* ---------- Capa visual: grano de película, viñeta, cursor, cortina, títulos, 3D ---------- */
+.grain { position: fixed; inset: -50%; z-index: 85; pointer-events: none; opacity: .09; mix-blend-mode: overlay; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .7 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); animation: grain .9s steps(5) infinite; }
+@keyframes grain { 0% { transform: translate(0, 0); } 20% { transform: translate(-2%, 1.5%); } 40% { transform: translate(1.5%, -2.5%); } 60% { transform: translate(-2.5%, -1%); } 80% { transform: translate(2%, 2%); } 100% { transform: translate(0, 0); } }
+.vignette { position: fixed; inset: 0; z-index: 84; pointer-events: none; background: radial-gradient(120% 95% at 50% 40%, transparent 58%, rgb(0 0 0 / .5) 100%); }
+@media (max-width: 900px) { .grain { opacity: .07; animation-duration: 1.4s; } }
+/* Cortina roja entre páginas */
+.curtain { position: fixed; inset: 0; z-index: 86; pointer-events: none; display: grid; grid-template-columns: repeat(5, 1fr); }
+.curtain.in, .curtain.out { pointer-events: auto; }
+.curtain i { display: block; background: var(--amber); transform: scaleY(0); transform-origin: bottom; }
+.curtain i:nth-child(1) { --i: 0; } .curtain i:nth-child(2) { --i: 1; } .curtain i:nth-child(3) { --i: 2; } .curtain i:nth-child(4) { --i: 3; } .curtain i:nth-child(5) { --i: 4; }
+.curtain.in i { animation: wipeIn .45s cubic-bezier(.76, 0, .24, 1) calc(var(--i) * 45ms) forwards; }
+.curtain.out i { transform: scaleY(1); transform-origin: top; animation: wipeOut .45s cubic-bezier(.76, 0, .24, 1) calc(var(--i) * 45ms) forwards; }
+@keyframes wipeIn { to { transform: scaleY(1); } }
+@keyframes wipeOut { to { transform: scaleY(0); } }
+.curtain .mark { position: absolute; inset: 0; display: grid; place-items: center; font: 900 clamp(40px, 8vw, 120px)/1 var(--display); letter-spacing: .06em; text-transform: uppercase; color: var(--night); opacity: 0; }
+.curtain.in .mark { animation: markIn .4s .38s cubic-bezier(.2, .8, .2, 1) forwards; }
+@keyframes markIn { to { opacity: 1; } }
+/* Foco que sigue al ratón en la entrada */
+.gate::before { content: ""; position: absolute; inset: 0; background: radial-gradient(640px circle at var(--mx, 50%) var(--my, 35%), rgb(236 42 31 / .2), transparent 62%); pointer-events: none; transition: opacity .6s; }
+.gate-top, .gate-grid { position: relative; }
+.gate-opt .pic, .gate-opt .gt { transition: transform .5s cubic-bezier(.2, .8, .2, 1), color .4s; }
+/* Títulos que suben palabra a palabra */
+.w { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: .06em; margin-bottom: -.06em; }
+.w > span { display: inline-block; transition: transform .9s cubic-bezier(.2, .8, .2, 1) calc(var(--i, 0) * 55ms); }
+.rv.pre .w > span { transform: translateY(112%); }
+/* Números fantasma detrás de cada sección */
+.sec-head { position: relative; isolation: isolate; }
+.sec-head > div[data-n]::before { content: attr(data-n); position: absolute; left: -.08em; top: -.62em; z-index: -1; font: 900 clamp(130px, 17vw, 230px)/1 var(--display); color: transparent; -webkit-text-stroke: 1px rgb(242 238 237 / .09); pointer-events: none; letter-spacing: -.02em; }
+/* Tarjetas con inclinación 3D y brillo */
+.proj, .gcard { transform-style: preserve-3d; }
+.proj.tilt-on, .gcard.tilt-on { transition: transform .12s linear; }
+.proj::after, .gcard::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0; transition: opacity .35s; background: radial-gradient(520px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / .13), transparent 55%); }
+.proj:hover::after, .gcard:hover::after { opacity: 1; }
+.gcard { position: relative; overflow: hidden; }
+/* REC en la portada */
+.rec { position: absolute; z-index: 3; left: var(--gut-l); top: 118px; display: inline-flex; align-items: center; gap: 8px; font: 500 11px/1 var(--mono); letter-spacing: .14em; color: var(--muted); pointer-events: none; }
+.rec::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 10px var(--amber); animation: blink 1.1s steps(2) infinite; }
+.rec b { color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
+@keyframes blink { 50% { opacity: .15; } }
+@media (max-width: 900px) { .rec { top: 86px; } }
+@media (max-width: 560px) { .rec { top: 80px; } }
+/* Cinta de texto gigante */
+.strip { overflow: hidden; border-top: 1px solid var(--line); padding-block: 26px; white-space: nowrap; }
+.strip .track { display: inline-flex; animation: strip 38s linear infinite; }
+.strip span { font: 900 clamp(56px, 9vw, 140px)/1 var(--display); text-transform: uppercase; letter-spacing: .02em; color: transparent; -webkit-text-stroke: 1px rgb(242 238 237 / .35); padding-right: .5em; }
+.strip span i { font-style: normal; color: var(--amber); -webkit-text-stroke: 0; }
+@keyframes strip { to { transform: translateX(-50%); } }
+.strip:hover .track { animation-play-state: paused; }
+/* Cursor propio (solo ratón) */
+@media (hover: hover) and (pointer: fine) {
+  .cur, .cur-ring { position: fixed; left: 0; top: 0; z-index: 99; pointer-events: none; border-radius: 50%; opacity: 0; transition: opacity .3s; will-change: transform; }
+  .cur { width: 8px; height: 8px; margin: -4px; background: var(--amber); }
+  .cur-ring { width: 36px; height: 36px; margin: -18px; border: 1px solid rgb(236 42 31 / .75); display: grid; place-items: center; font: 600 10px/1 var(--mono); letter-spacing: .12em; color: #fff; transition: opacity .3s, width .3s, height .3s, margin .3s, background .3s, border-color .3s; }
+  .cur-ring::after { content: attr(data-label); opacity: 0; transition: opacity .2s; }
+  body.cur-on .cur, body.cur-on .cur-ring { opacity: 1; }
+  body.cur-on, body.cur-on a, body.cur-on button, body.cur-on [role="button"], body.cur-on summary, body.cur-on label { cursor: none; }
+  body.cur-on input, body.cur-on textarea, body.cur-on select { cursor: auto; }
+  body.cur-link .cur-ring { width: 56px; height: 56px; margin: -28px; background: rgb(236 42 31 / .16); }
+  body.cur-view .cur-ring { width: 86px; height: 86px; margin: -43px; background: var(--amber); border-color: var(--amber); }
+  body.cur-view .cur-ring::after { opacity: 1; }
+  body.cur-view .cur { opacity: 0; }
+  body.cur-hide .cur, body.cur-hide .cur-ring { opacity: 0; }
+}
+
+/* ---------- Pedir disponibilidad: el formulario baja colgado de dos motores ---------- */
+.rig { position: fixed; inset: 0; z-index: 88; --p: 0; --top: 128px; --sw: 0; }
+.rig-shade { position: absolute; inset: 0; background: rgb(5 4 4 / .78); opacity: var(--p); }
+.rig-drop { position: absolute; left: 50%; top: 0; width: min(780px, 100% - 32px); transform: translateX(-50%); height: 100%; pointer-events: none; }
+.hoist { position: absolute; top: 0; width: 46px; transform: translateY(calc(min(1, var(--p) * 5) * 100% - 100%)); }
+.hoist.l { left: 10%; } .hoist.r { right: 10%; }
+.hoist .motor { display: block; width: 46px; height: 58px; background: linear-gradient(180deg, #2a2423, #161313); border: 1px solid var(--line); border-top: 0; position: relative; box-shadow: 0 10px 30px rgb(0 0 0 / .6); }
+.hoist .motor::before { content: ""; position: absolute; left: 10px; right: 10px; top: 14px; height: 14px; background: #0b0a0a; border: 1px solid var(--line); }
+.hoist .motor::after { content: ""; position: absolute; left: 14px; right: 14px; bottom: 8px; height: 4px; background: var(--amber); box-shadow: 0 0 10px var(--amber); opacity: .35; }
+.rig.moving .hoist .motor::after { opacity: 1; animation: blink .25s steps(2) infinite; }
+.hoist .cable { display: block; position: absolute; left: 50%; top: 58px; width: 3px; margin-left: -1.5px; height: max(0px, calc(var(--p) * var(--top) - 58px)); background: var(--amber); box-shadow: 0 0 6px rgb(236 42 31 / .5); }
+.hoist .cable::after { content: ""; position: absolute; left: -5px; bottom: -8px; width: 13px; height: 13px; border: 3px solid #8a7f7d; border-radius: 50%; background: var(--night); }
+.rig-panel { position: absolute; left: 50%; top: var(--top); width: min(780px, 100% - 32px); max-height: calc(100% - var(--top) - 20px); overflow: auto; overscroll-behavior: contain; background: var(--steel); border: 1px solid var(--line); box-shadow: 0 40px 80px rgb(0 0 0 / .7); padding: 26px 30px 30px; pointer-events: auto;
+  transform: translateX(-50%) translateY(calc((var(--p) - 1) * 100% + (var(--p) - 1) * var(--top))) rotate(calc(var(--sw) * 1deg)); transform-origin: 50% -200px; }
+.rig-panel::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: repeating-linear-gradient(90deg, var(--amber) 0 18px, #0b0a0a 18px 28px); }
+.rig-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; }
+.rig-bar .close { background: none; border: 1px solid var(--line); color: var(--text); width: 40px; height: 40px; font-size: 22px; cursor: pointer; flex: none; }
+.rig-bar .close:hover { border-color: var(--amber); color: var(--amber); }
+.rig-panel h2 { font-weight: 800; font-size: clamp(30px, 4.6vw, 48px); text-transform: uppercase; line-height: .95; }
+.rig-spec { font: 400 12px/1.6 var(--mono); color: var(--muted); margin: 10px 0 22px; letter-spacing: .03em; }
+.rig-panel form { gap: 14px; }
+.rig-panel .chk { flex-direction: row; align-items: center; gap: 12px; text-transform: none; letter-spacing: 0; font: 400 15px/1.3 var(--body); color: var(--text); cursor: pointer; }
+.rig-panel .chk input { width: 20px; height: 20px; accent-color: var(--amber); padding: 0; }
+.rig-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
+.rig[data-mode="buy"] .hire-only { display: none; }
+body.rig-open { overflow: hidden; }
+body.rig-open main, body.rig-open .strip, body.rig-open footer { filter: brightness(.55) saturate(.7); transition: filter .6s; }
+@media (max-width: 700px) { .rig { --top: 86px; } .rig-panel { padding: 20px 18px 24px; } .rig-panel form { grid-template-columns: minmax(0, 1fr); } .hoist.l { left: 6%; } .hoist.r { right: 6%; } }
+
+/* ---------- Fotos y vídeos provisionales (Pexels, licencia libre) ---------- */
+.media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.hero .media { z-index: 0; opacity: .5; filter: saturate(.75) contrast(1.05); }
+.hero canvas { z-index: 1; }
+.hero .wrap, .hero .specs { z-index: 2; }
+.hero .rec, .hero .pick { z-index: 3; }
+.hero::after { z-index: 1; }
+.gate-opt .media { opacity: .32; filter: saturate(.6) brightness(.8); transition: opacity .5s, transform 1.2s cubic-bezier(.2,.8,.2,1); }
+.gate-opt:hover .media, .gate-opt:focus-visible .media { opacity: .55; transform: scale(1.04); }
+.gate-opt::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgb(11 10 10 / .96) 0%, rgb(11 10 10 / .55) 45%, rgb(11 10 10 / .2) 100%); pointer-events: none; }
+.gate-opt > * { position: relative; z-index: 1; }
+.gate-opt .media, .gate-opt::after { z-index: 0; }
+.gate-opt::before { z-index: 1; }
+.shop-hero { position: relative; overflow: hidden; }
+.shop-hero .media { opacity: .38; filter: saturate(.7); }
+.shop-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, var(--night) 0%, rgb(11 10 10 / .8) 45%, rgb(11 10 10 / .25) 100%); pointer-events: none; }
+.shop-hero .wrap { position: relative; z-index: 1; }
+.proj .media { z-index: 1; transition: transform .8s cubic-bezier(.2,.8,.2,1); }
+.proj:hover .media { transform: scale(1.05); }
+.proj .ph-note { z-index: 3; }
+.proj .cap { z-index: 2; }
+.svc .media { z-index: -2; opacity: .16; filter: saturate(.5); transition: opacity .5s, transform .8s cubic-bezier(.2,.8,.2,1); }
+.svc:hover .media { opacity: .32; transform: scale(1.05); }
+.svc > :not(.media) { position: relative; }
+.band-photo { position: relative; }
+.band-photo .media { opacity: .14; filter: saturate(.5) brightness(.9); }
+.band-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, var(--steel) 0%, rgb(22 19 19 / .85) 50%, rgb(22 19 19 / .5) 100%); pointer-events: none; }
+.band-photo > .wrap { position: relative; z-index: 1; }
+.credit { position: absolute; right: var(--gut-r); bottom: 10px; z-index: 2; font: 400 10px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: rgb(168 158 156 / .6); pointer-events: none; }
+img.poster { z-index: 0; }
+.proj img.poster, .proj video.media { z-index: 1; }
+@media (max-width: 900px) { video.media.lazy { display: none; } }  /* en móvil solo se mueve la portada; lo demás, foto fija */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .rv.pre { transform: none; }
+  .rv.pre .w > span { transform: none; }
+  .grain, .cur, .cur-ring { display: none; }
+  video.media { display: none; } .proj img.poster { display: block; }
+  html { scroll-behavior: auto; }
+}
+</style>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+<div class="curtain" id="curtain" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span class="mark">Bungy</span></div>
+<div class="cur" aria-hidden="true"></div><div class="cur-ring" aria-hidden="true" data-label="VIEW"></div>
+<div class="demo-note" data-i="demo">Homepage draft · copy is provisional; photos and footage are free stock (Pexels) until we have Bungy System's own material</div>
+
+<div class="gate" id="gate" role="dialog" aria-label="Choose where to go">
+  <div class="gate-top">
+    <a class="logo" href="#inicio" aria-label="Bungy System" data-go="web">
+      <svg aria-hidden="true" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 4h24"/><path d="M16 4v4l-5 3 10 4-10 4 10 4-5 2v3"/><circle cx="16" cy="29" r="1.6" fill="currentColor" stroke="none"/></svg>
+      <span>Bungy<span class="wm"> System</span></span>
+    </a>
+    <div class="tools">
+      <div class="lang" role="group" aria-label="Language / Idioma">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="es" aria-pressed="false">ES</button>
+      </div>
+      <a class="area-link" href="https://claude.ai/artifact/4dvfqY8vMDJbzuKwzkLtMt" target="_blank" rel="noopener" data-area><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><span data-i="gateArea">Private area</span></a>
+    </div>
+  </div>
+  <div class="gate-grid">
+    <button type="button" class="gate-opt" data-go="web">
+      <img class="media poster" src="https://images.pexels.com/videos/8089126/administration-audience-auditorium-camera-8089126.jpeg?auto=compress&w=1260&h=750&dpr=1" alt="" loading="lazy"><video class="media lazy" muted loop playsinline preload="none" poster="https://images.pexels.com/videos/8089126/administration-audience-auditorium-camera-8089126.jpeg?auto=compress&w=1260&h=750&dpr=1" aria-hidden="true" ><source src="https://videos.pexels.com/video-files/8089126/8089126-uhd_2732_1440_25fps.mp4" type="video/mp4"></video>
+      <span class="num">01 · <span data-i="gateWebK">Who we are</span></span>
+      <svg class="pic" aria-hidden="true" viewBox="0 0 260 120" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 20h240M10 20l12 12 12-12 12 12 12-12 12 12 12-12 12 12 12-12 12 12 12-12 12 12 12-12 12 12 12-12 12 12 12-12 12 12 12-12 12 12 12-12"/><path d="M10 32h240"/><path d="M130 32v30" stroke="#ec2a1f"/><circle cx="130" cy="70" r="6" fill="currentColor" stroke="none"/><path d="M130 76v22M118 86l12-6 12 6M124 116l6-18 6 18"/></svg>
+      <span class="gt" data-i="gateWebT">This is Bungy</span>
+      <span class="gd" data-i="gateWebD">Twenty years rigging for film and television: who we are, what we have rigged and how we work.</span>
+      <span class="ga"><span data-i="gateWebA">Meet Bungy</span><svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8h11M9 4l4 4-4 4"/></svg></span>
+    </button>
+    <button type="button" class="gate-opt shop" data-go="shop">
+      <img class="media poster" src="https://images.pexels.com/videos/6160043/pexels-photo-6160043.jpeg?auto=compress&w=1260&h=750&dpr=1" alt="" loading="lazy"><video class="media lazy" muted loop playsinline preload="none" poster="https://images.pexels.com/videos/6160043/pexels-photo-6160043.jpeg?auto=compress&w=1260&h=750&dpr=1" aria-hidden="true" ><source src="https://videos.pexels.com/video-files/6160043/6160043-uhd_2560_1440_24fps.mp4" type="video/mp4"></video>
+      <span class="num">02 · <span data-i="gateShopK">Gear &amp; services</span></span>
+      <svg class="pic" aria-hidden="true" viewBox="0 0 260 120" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 14h70" /><path d="M55 14v10"/><rect x="39" y="24" width="32" height="24" rx="2"/><circle cx="55" cy="36" r="5"/><path d="M55 48v6M52 54h6M53.5 57v4M52 61h6M53.5 64v4M52 68h6"/><path d="M55 72c-5 0-7 4-4 7 3 3 8 1 8-3"/><path d="M120 70l60-20 60 20-60 20z"/><path d="M120 70v8l60 20 60-20v-8"/><path d="M126 76v30M234 76v30M180 98v16" stroke-dasharray="3 3"/></svg>
+      <span class="gt" data-i="gateShopT">Need gear or services?</span>
+      <span class="gd" data-i="gateShopD">Hire chain hoists, buy one of our platforms or ask us to rig your shot.</span>
+      <span class="ga"><span data-i="gateShopA">See what we offer</span><svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8h11M9 4l4 4-4 4"/></svg></span>
+    </button>
+  </div>
+</div>
+<header class="top" id="top">
+  <div class="wrap">
+    <a class="logo" href="#inicio" aria-label="Bungy System">
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M4 4h24"/><path d="M16 4v4l-5 3 10 4-10 4 10 4-5 2v3"/><circle cx="16" cy="29" r="1.6" fill="currentColor" stroke="none"/></svg>
+      <span>Bungy<span class="wm"> System</span><small data-i="logoSub">Film &amp; TV rigging · Madrid</small></span>
+    </a>
+    <nav class="main" aria-label="Main">
+      <a href="#servicios" data-only="web" data-i="navSvc">Services</a>
+      <a href="#espana" data-only="web" data-i="navSpain">International</a>
+      <a href="#proyectos" data-only="web" data-i="navWork">Credits</a>
+      <a href="#seguridad" data-only="web" data-i="navSafety">Safety</a>
+      <a href="#faq" data-only="web" data-i="navFaq">FAQ</a>
+      <a href="#alquiler" data-only="shop" data-i="navHire">Hoists for hire</a>
+      <a href="#plataformas" data-only="shop" data-i="navBuy">Platforms for sale</a>
+      <a class="btn" href="#contacto" data-i="navCta">Request a quote</a>
+    </nav>
+    <div class="tools">
+      <a class="swap" href="#tienda" data-only="web"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg><span data-i="swapShop">Shop</span></a>
+      <a class="swap" href="#web" data-only="shop"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><span data-i="swapWeb">About Bungy</span></a>
+      <a class="area-link" href="https://claude.ai/artifact/4dvfqY8vMDJbzuKwzkLtMt" target="_blank" rel="noopener" data-area aria-label="Private area / Área privada"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><span data-i="gateArea">Private area</span></a>
+      <div class="lang" role="group" aria-label="Language / Idioma">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="es" aria-pressed="false">ES</button>
+      </div>
+      <button class="burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="drawer" id="drawer" aria-hidden="true">
+  <div class="shade" data-close></div>
+  <div class="panel" role="dialog" aria-label="Menu">
+    <button class="close" data-close aria-label="Close">×</button>
+    <div class="lang" role="group" aria-label="Language / Idioma">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="es" aria-pressed="false">ES</button>
+    </div>
+    <a href="#servicios" data-only="web" data-close data-i="navSvc">Services</a>
+    <a href="#espana" data-only="web" data-close data-i="navSpain">International productions</a>
+    <a href="#proyectos" data-only="web" data-close data-i="navWork">Credits</a>
+    <a href="#seguridad" data-only="web" data-close data-i="navSafety">Safety</a>
+    <a href="#faq" data-only="web" data-close data-i="navFaq">FAQ</a>
+    <a href="#alquiler" data-only="shop" data-close data-i="navHire">Hoists for hire</a>
+    <a href="#plataformas" data-only="shop" data-close data-i="navBuy">Platforms for sale</a>
+    <a href="#contacto" data-close data-i="navContact">Contact</a>
+    <a class="go" href="#tienda" data-only="web" data-close data-i="drawerShop">→ Shop</a>
+    <a class="go" href="#web" data-only="shop" data-close data-i="drawerWeb">→ About Bungy</a>
+  </div>
+</div>
+
+<div class="rope" aria-hidden="true">
+  <svg aria-hidden="true" id="rope-svg" viewBox="0 0 170 800" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="g-hoodie" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#050404"/><stop offset=".55" stop-color="#1d1919"/><stop offset="1" stop-color="#0a0808"/></linearGradient>
+      <linearGradient id="g-sleeve" x1="0" x2="1"><stop offset="0" stop-color="#0a0808"/><stop offset="1" stop-color="#221d1d"/></linearGradient>
+      <linearGradient id="g-pants" x1="0" x2="1"><stop offset="0" stop-color="#2a2727"/><stop offset=".5" stop-color="#3b3736"/><stop offset="1" stop-color="#232020"/></linearGradient>
+      <radialGradient id="g-skin" cx=".38" cy=".38" r=".75"><stop offset="0" stop-color="#f0d2bd"/><stop offset=".7" stop-color="#d8a989"/><stop offset="1" stop-color="#b98466"/></radialGradient>
+      <radialGradient id="g-helmet" cx=".32" cy=".28" r=".85"><stop offset="0" stop-color="#ff7a6e"/><stop offset=".35" stop-color="#ec2a1f"/><stop offset="1" stop-color="#8f140e"/></radialGradient>
+      <linearGradient id="g-steel" x1="0" x2="1"><stop offset="0" stop-color="#7d8287"/><stop offset=".5" stop-color="#e6e9ec"/><stop offset="1" stop-color="#8a8f94"/></linearGradient>
+    </defs>
+    <path class="cable" id="rope-cable" d="M140 0 L140 120"></path>
+    <g class="man" id="rope-man" transform="translate(140 120)">
+      <title data-i="ropeTip">Drag me to swing · tap me to go back up</title>
+      <g id="rope-swing"><g id="rope-scale">
+        <rect class="hit" x="-16" y="-44" width="26" height="76"></rect>
+        <!-- cuerda: sube desde el mosquetón por delante del pecho, al lado de la cara, hasta las manos -->
+        <path id="rope-up" d="M0 -48 V-1" stroke="var(--amber)" stroke-width="1.55"></path>
+        <!-- pierna trasera -->
+        <path id="leg-b" d="" stroke="url(#g-pants)" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+        <path id="boot-b" d="" fill="#141010" stroke="#4a4241" stroke-width=".5"></path>
+        <g transform="translate(-3.2 0)">
+        <!-- capucha y cabeza -->
+        <path d="M-6.6 -19.5 C-8.6 -23 -8 -28.5 -3.4 -30 C-1 -30.4 1.2 -29 1.6 -26.6 L0.6 -21 Z" fill="#0d0b0b" stroke="#4a4241" stroke-width=".5"></path>
+        <g id="head-g">
+          <rect x="-3.6" y="-22.4" width="2.6" height="3" fill="#c4917a"></rect>
+          <ellipse cx="-2.3" cy="-25.6" rx="3.3" ry="3.9" fill="url(#g-skin)"></ellipse>
+          <path d="M-0.1 -25.4 l1 1.4 -1 .5" fill="none" stroke="#a8735a" stroke-width=".45"></path>
+          <circle cx="-0.9" cy="-26.4" r=".42" fill="#2a1c16"></circle>
+          <path d="M-5.6 -21.6 Q-5.4 -25 -5.8 -26.4" stroke="#1a1414" stroke-width=".4" fill="none"></path>
+          <path d="M-6.4 -26.6 C-6.6 -30.8 -3.6 -32.6 -1 -32 C1.4 -31.4 2.4 -29.4 2.2 -26.8 Z" fill="url(#g-helmet)"></path>
+          <path d="M-6.6 -26.6 H2.9" stroke="#7a110c" stroke-width=".9" stroke-linecap="round"></path>
+          <path d="M-5.9 -26.4 Q-5 -22.6 -2.2 -21.7" stroke="#1a1414" stroke-width=".5" fill="none"></path>
+          <path d="M-4.6 -30.6 Q-3 -31.6 -1.4 -31.4" stroke="#ffb3ab" stroke-width=".6" fill="none" stroke-linecap="round" opacity=".8"></path>
+        </g>
+        <!-- sudadera -->
+        <path d="M-7.6 2.6 C-8.6 -5 -8.8 -13.5 -7 -19.4 C-4.6 -21.6 -0.4 -21.8 2.6 -19.6 C4.4 -14.5 4.6 -6 4 2.6 C0.4 3.8 -4.2 3.8 -7.6 2.6 Z" fill="url(#g-hoodie)" stroke="#4a4241" stroke-width=".55"></path>
+        <path d="M-6.4 -3.2 Q-1.6 -4.6 3 -3.2 L2.5 1.2 Q-1.7 2.2 -6 1.2 Z" fill="none" stroke="#3a3333" stroke-width=".5"></path>
+        <path d="M-1.6 -19.4 L-1.9 -15.6 M-0.4 -19.4 L-0.6 -16" stroke="#8d8483" stroke-width=".35"></path>
+        <!-- logo Bungy en el pecho -->
+        <g transform="translate(-5.6 -14.8) scale(.32)" fill="none" stroke="#ec2a1f" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M4 4h24"/><path d="M16 4v4l-5 3 10 4-10 4 10 4-5 2v3"/></g>
+        <!-- arnés -->
+        <path d="M-7.9 0.8 Q-1.8 2.4 4.2 0.8" stroke="#ec2a1f" stroke-width="1.6" fill="none"></path>
+        <path d="M-7 1.6 Q-6.8 5.4 -3.6 6.2 M3.4 1.6 Q3.4 5.2 0.6 6.2" stroke="#ec2a1f" stroke-width="1.2" fill="none"></path>
+        <rect x="-2.4" y="0.2" width="2.2" height="1.6" rx=".3" fill="url(#g-steel)"></rect>
+        </g>
+        <!-- pierna delantera -->
+        <path id="leg-f" d="" stroke="url(#g-pants)" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+        <path id="boot-f" d="" fill="#1a1414" stroke="#4a4241" stroke-width=".5"></path>
+        <!-- tramo de cuerda delante del pecho y mosquetón -->
+        <path id="rope-chest" d="M0 -20 V-1" stroke="var(--amber)" stroke-width="1.55"></path>
+        <path d="M-1.4 -2.6 a1.8 2.6 0 1 0 2.8 0 l-.2 -1.6 h-2.4 z" fill="none" stroke="url(#g-steel)" stroke-width=".9"></path>
+        <!-- brazo trasero (por detrás del pecho, mano arriba en la cuerda) -->
+        <path id="arm-b" d="" stroke="url(#g-sleeve)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".92"></path>
+        <ellipse id="hand-b" rx="2.3" ry="1.7" fill="#3b3534" stroke="#6a6160" stroke-width=".5"></ellipse>
+        <!-- brazo delantero -->
+        <path id="arm-f" d="" stroke="url(#g-sleeve)" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+        <ellipse id="hand-f" rx="2.3" ry="1.7" fill="#3b3534" stroke="#6a6160" stroke-width=".5"></ellipse>
+      </g></g>
+    </g>
+    <text class="depth" id="rope-depth" x="100" y="0" text-anchor="end">0 m</text>
+  </svg>
+</div>
+<div class="quick" id="quick">
+  <a class="wa" id="q-wa" href="#contacto"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm0 18.2a8.2 8.2 0 01-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1112 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 01-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 00-.7.3 3 3 0 00-.9 2.2 5.2 5.2 0 001.1 2.7 11.8 11.8 0 004.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 001.8-1.2 2.2 2.2 0 00.1-1.2c0-.1-.2-.2-.5-.3z"/></svg><span>WhatsApp</span></a>
+  <a id="q-call" href="#contacto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 006 6L16 13l5 2v4a2 2 0 01-2 2A16 16 0 013 5a2 2 0 012-2z"/></svg><span data-i="qCall">Call</span></a>
+</div>
+<main>
+<section class="hero" id="inicio" data-only="web">
+  <video class="media" autoplay muted loop playsinline preload="metadata" poster="https://images.pexels.com/videos/8089223/band-camera-cameraman-concert-8089223.jpeg?auto=compress&w=1260&h=750&dpr=1" aria-hidden="true" ><source src="https://videos.pexels.com/video-files/8089223/8089223-uhd_2732_1440_25fps.mp4" type="video/mp4"></video>
+  <canvas id="rig" aria-hidden="true"></canvas>
+  <span class="credit">Footage: Pexels · provisional</span>
+  <span class="rec" aria-hidden="true">REC <b id="tc">00:00:00:00</b></span>
+  <div class="pick" role="group" aria-label="Hero animation">
+    <button type="button" data-hero="jump" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 2v7"/><path d="M8 9l4 4 4-4M12 13v5M8 21l4-3 4 3"/></svg><span data-i="pickJump">Bungee jump</span></button>
+    <button type="button" data-hero="cam" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 3l10 6 10-6"/><rect x="5" y="11" width="11" height="8"/><path d="M16 13l4-2v8l-4-2"/></svg><span data-i="pickCam">Cablecam</span></button>
+  </div>
+  <div class="wrap">
+    <p class="eyebrow" data-i="heroEyebrow">Rigging · Wire work · Stunt &amp; SFX rigs · TV challenges</p>
+    <h1><span class="ln"><span data-i="h1a">We rig it.</span></span><span class="ln"><span data-i="h1b">We fly it.</span></span><span class="ln"><span data-i="h1c">You roll camera.</span></span></h1>
+    <p class="lede" data-i="lede">Rigging, wire work and custom structures for feature films, series and television. A Madrid crew with its own warehouse, used to working with international productions.</p>
+    <div class="ctas">
+      <a class="btn" href="#contacto"><span data-i="ctaQuote">Tell us about your shoot</span> <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8h11M9 4l4 4-4 4"/></svg></a>
+      <a class="btn ghost" href="#proyectos" data-i="ctaWork">See our work</a>
+    </div>
+  </div>
+  <div class="specs" aria-hidden="true">SQUARE TRUSS 290 mm · <b>WLL 500 kg</b><br>WIRE Ø 3 mm · 7×19 STEEL<br>HOOK HEIGHT 12.0 m</div>
+</section>
+
+<div class="ticker" data-only="web" role="region" aria-label="Sectors">
+  <div class="track">
+    <span data-i="t1">Feature films</span><span data-i="t2">Series</span><span data-i="t3">Television</span><span data-i="t4">Commercials</span><span data-i="t5">Studio</span><span data-i="t6">Location</span>
+    <span aria-hidden="true" data-i="t1">Feature films</span><span aria-hidden="true" data-i="t2">Series</span><span aria-hidden="true" data-i="t3">Television</span><span aria-hidden="true" data-i="t4">Commercials</span><span aria-hidden="true" data-i="t5">Studio</span><span aria-hidden="true" data-i="t6">Location</span>
+  </div>
+</div>
+
+<section id="servicios" data-only="web">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div><p class="eyebrow" data-i="svcEyebrow">What we do</p><h2 data-i="svcTitle">Built for the shot</h2></div>
+      <p data-i="svcLede">Every department gets what it needs: camera rigs for the DP, safe wire work for the stunt coordinator, and solid structures for art and SFX. Engineered, rigged and operated by our own technicians.</p>
+    </div>
+    <div class="services">
+      <a class="svc rv" href="#contacto">
+        <img class="media" src="https://images.pexels.com/photos/10809859/pexels-photo-10809859.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="" loading="lazy" decoding="async" >
+        <svg aria-hidden="true" class="ico" viewBox="0 0 54 54" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="18" width="30" height="22"/><path d="M36 25l12-6v20l-12-6"/><circle cx="14" cy="11" r="5"/><circle cx="28" cy="11" r="5"/></svg>
+        <span class="more" data-i="more">Enquire →</span>
+        <h3 data-i="s1t">Camera &amp; set rigging</h3>
+        <p data-i="s1p">Truss, towers, overhead grids and camera mounts for studio and location. Fast to rig, fast to strike.</p>
+        <div class="spec"><span data-i="s1a">Load calcs included</span><b data-i="s1b">Studio · Location</b></div>
+      </a>
+      <a class="svc rv" href="#contacto">
+        <img class="media" src="https://images.pexels.com/photos/37070573/pexels-photo-37070573.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="" loading="lazy" decoding="async" >
+        <svg aria-hidden="true" class="ico" viewBox="0 0 54 54" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h42"/><path d="M27 6v6l-6 3 12 5-12 5 12 5-6 3v3"/><circle cx="27" cy="42" r="4"/><path d="M27 46v4M21 49h12"/></svg>
+        <span class="more" data-i="more">Enquire →</span>
+        <h3 data-i="s2t">Wire work &amp; flying</h3>
+        <p data-i="s2p">Harnesses, wire rigs and descender systems for stunts and actors, planned with the stunt coordinator.</p>
+        <div class="spec"><span data-i="s2a">Rated harnesses &amp; lines</span><b data-i="s2b">Rehearsed on set</b></div>
+      </a>
+      <a class="svc rv" href="#contacto">
+        <img class="media" src="https://images.pexels.com/photos/28287626/pexels-photo-28287626.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="" loading="lazy" decoding="async" >
+        <svg aria-hidden="true" class="ico" viewBox="0 0 54 54" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 10h42M6 18h42M6 10v38M48 10v38M14 18v30M40 18v30"/><path d="M6 10l8 8 8-8 8 8 8-8 8 8 2-2"/></svg>
+        <span class="more" data-i="more">Enquire →</span>
+        <h3 data-i="s3t">Stunt &amp; SFX structures</h3>
+        <p data-i="s3p">Ramps, drop rigs, bungee and custom builds that let the effect happen safely, take after take.</p>
+        <div class="spec"><span data-i="s3a">Built to the storyboard</span><b data-i="s3b">Tested before the take</b></div>
+      </a>
+      <a class="svc rv" href="#contacto">
+        <img class="media" src="https://images.pexels.com/photos/31755293/pexels-photo-31755293.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="" loading="lazy" decoding="async" >
+        <svg aria-hidden="true" class="ico" viewBox="0 0 54 54" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="12" width="42" height="28"/><path d="M18 48h18M27 40v8"/><path d="M16 32l7-9 6 6 8-11"/></svg>
+        <span class="more" data-i="more">Enquire →</span>
+        <h3 data-i="s4t">TV challenges</h3>
+        <p data-i="s4p">We design, build and run the physical challenges for game shows and reality formats, live or recorded.</p>
+        <div class="spec"><span data-i="s4a">From format to set</span><b data-i="s4b">Operated live</b></div>
+      </a>
+    </div>
+    <p class="other rv" data-i="other">We also hire out chain hoists and build platforms for sale (see <a href="#material">the shop</a>), and take on selected live events, theatre and brand activations.</p>
+  </div>
+</section>
+
+<section class="projects-band band-photo" id="espana" data-only="web">
+  <img class="media" src="https://images.pexels.com/photos/13812380/pexels-photo-13812380.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="" loading="lazy" decoding="async" >
+  <div class="wrap base">
+    <div class="rv">
+      <p class="eyebrow" data-i="spEyebrow">International productions</p>
+      <h2 data-i="spTitle">Your rigging crew, wherever you shoot</h2>
+      <p data-i="spP">In Spain or abroad, we work alongside your production service company and heads of department from the first recce to wrap. Gear ships from our Madrid warehouse, every rig comes with its calculations and safety plan, and our team speaks English on set.</p>
+    </div>
+    <div class="facts rv">
+      <div class="fact"><div class="v"><em>+</em>20</div><div class="k" data-i="f1">years in the business, since 2006</div></div>
+      <div class="fact"><div class="v">EN · ES</div><div class="k" data-i="f2">English-speaking crew on set</div></div>
+      <div class="fact"><div class="v">MAD</div><div class="k" data-i="f3">Madrid base, shooting in Spain and abroad</div></div>
+      <div class="fact"><div class="v">100<em>%</em></div><div class="k" data-i="f4">of rigs delivered with load calculations and a safety plan</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="proyectos" data-only="web">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div><p class="eyebrow" data-i="wkEyebrow">Credits</p><h2 data-i="wkTitle">Selected work</h2></div>
+      <p data-i="wkLede">Film and television productions we have rigged. Real stills and titles from Bungy System will go here.</p>
+    </div>
+    <div class="projects">
+      <article class="proj wide rv"><div class="ph" data-ph="2"></div><img class="media poster" src="https://images.pexels.com/videos/5092987/adrenaline-bungy-dangerous-fun-5092987.jpeg?auto=compress&w=1260&h=750&dpr=1" alt="" loading="lazy"><video class="media lazy" muted loop playsinline preload="none" poster="https://images.pexels.com/videos/5092987/adrenaline-bungy-dangerous-fun-5092987.jpeg?auto=compress&w=1260&h=750&dpr=1" aria-hidden="true" ><source src="https://videos.pexels.com/video-files/5092987/5092987-uhd_2560_1440_30fps.mp4" type="video/mp4"></video><span class="ph-note" data-i="ph">Placeholder image</span><div class="cap"><span class="tag" data-i="p1g">Feature film · Stunts</span><h3 data-i="p1t">Bungee drop from a bridge</h3></div></article>
+      <article class="proj rv"><div class="ph" data-ph="1"></div><img class="media poster" src="https://images.pexels.com/videos/34123889/aerial-stunt-australia-australian-stuntman-cloudy-sky-drama-34123889.jpeg?auto=compress&w=1260&h=750&dpr=1" alt="" loading="lazy"><video class="media lazy" muted loop playsinline preload="none" poster="https://images.pexels.com/videos/34123889/aerial-stunt-australia-australian-stuntman-cloudy-sky-drama-34123889.jpeg?auto=compress&w=1260&h=750&dpr=1" aria-hidden="true" ><source src="https://videos.pexels.com/video-files/34123889/14469457_1440_2560_30fps.mp4" type="video/mp4"></video><span class="ph-note" data-i="ph">Placeholder image</span><div class="cap"><span class="tag" data-i="p2g">Series · Wire work</span><h3 data-i="p2t">Actor flying sequence</h3></div></article>
+      <article class="proj rv"><div class="ph" data-ph="4"></div><img class="media" src="https://images.pexels.com/photos/29043654/pexels-photo-29043654.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="" loading="lazy" decoding="async" ><span class="ph-note" data-i="ph">Placeholder image</span><div class="cap"><span class="tag" data-i="p3g">Feature film · Camera</span><h3 data-i="p3t">Overhead camera rig</h3></div></article>
+      <article class="proj rv"><div class="ph" data-ph="0"></div><img class="media" src="https://images.pexels.com/photos/13972232/pexels-photo-13972232.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="" loading="lazy" decoding="async" ><span class="ph-note" data-i="ph">Placeholder image</span><div class="cap"><span class="tag" data-i="p4g">Television · Game show</span><h3 data-i="p4t">Balance challenge at 6 m</h3></div></article>
+      <article class="proj rv"><div class="ph" data-ph="3"></div><img class="media" src="https://images.pexels.com/photos/7513419/pexels-photo-7513419.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="" loading="lazy" decoding="async" ><span class="ph-note" data-i="ph">Placeholder image</span><div class="cap"><span class="tag" data-i="p5g">Commercial · Studio</span><h3 data-i="p5t">Set structure for a car spot</h3></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="projects-band" id="proceso" data-only="web">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div><p class="eyebrow" data-i="prEyebrow">How we work</p><h2 data-i="prTitle">From recce to wrap</h2></div>
+      <p data-i="prLede">One team from start to finish, so nobody has to explain the shot twice.</p>
+    </div>
+    <div class="steps" id="steps">
+      <div class="step"><span class="n" data-i="stepN1">STEP 1</span><h3 data-i="st1">Recce</h3><p data-i="sp1">We read the script pages, see the location or stage and agree on what the shot needs.</p></div>
+      <div class="step"><span class="n" data-i="stepN2">STEP 2</span><h3 data-i="st2">Engineering</h3><p data-i="sp2">Drawings, load calculations and a safety plan, signed off before a single piece moves.</p></div>
+      <div class="step"><span class="n" data-i="stepN3">STEP 3</span><h3 data-i="st3">Prep &amp; rig</h3><p data-i="sp3">Gear from our warehouse, rigged and tested before the unit arrives.</p></div>
+      <div class="step"><span class="n" data-i="stepN4">STEP 4</span><h3 data-i="st4">On set</h3><p data-i="sp4">Our riggers stay with the unit and run every take until the last setup.</p></div>
+      <div class="step"><span class="n" data-i="stepN5">STEP 5</span><h3 data-i="st5">Strike</h3><p data-i="sp5">We strike, inspect the gear and hand the location back as we found it.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="seguridad" class="band-photo" data-only="web">
+  <img class="media" src="https://images.pexels.com/photos/36181973/pexels-photo-36181973.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="" loading="lazy" decoding="async" >
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div><p class="eyebrow" data-i="sfEyebrow">Safety &amp; insurance</p><h2 data-i="sfTitle">Safe on take one, and on take forty</h2></div>
+      <p data-i="sfLede">What your stunt coordinator, production manager and insurer will ask for, ready before the recce. Items marked TBC are being confirmed.</p>
+    </div>
+    <div class="safety rv">
+      <div class="sf"><svg class="ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 40h32M12 40V18l12-8 12 8v22"/><path d="M18 26h12M18 32h12"/></svg><h3 data-i="sf1t">Signed engineering</h3><p data-i="sf1p">Drawings and load calculations for every rig, signed by a qualified engineer.</p><span class="tbc" data-i="sf1c">TBC · engineer and registration</span></div>
+      <div class="sf"><svg class="ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M24 6l15 6v11c0 9-6 16-15 19-9-3-15-10-15-19V12z"/><path d="M17 24l5 5 9-10"/></svg><h3 data-i="sf2t">Liability insurance</h3><p data-i="sf2p">Civil liability cover for our work on set, in Spain and abroad. Certificate sent with the quote.</p><span class="tbc" data-i="sf2c">TBC · insurer and cover amount</span></div>
+      <div class="sf"><svg class="ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="24" cy="24" r="16"/><path d="M24 14v10l7 4"/></svg><h3 data-i="sf3t">Certified, inspected gear</h3><p data-i="sf3p">CE-marked rigging and fall-arrest equipment, logged and inspected on a fixed schedule.</p><span class="tbc" data-i="sf3c">TBC · standards and inspection interval</span></div>
+      <div class="sf"><svg class="ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="24" cy="14" r="6"/><path d="M12 42c0-8 5-13 12-13s12 5 12 13"/><path d="M8 24h6M34 24h6"/></svg><h3 data-i="sf4t">Trained crew</h3><p data-i="sf4p">Riggers trained for work at height and rope access, with a safety lead on set for every take.</p><span class="tbc" data-i="sf4c">TBC · certifications held</span></div>
+    </div>
+    <div class="docs rv"><span data-i="sfDocs">On request:</span><b data-i="sfD1">Insurance certificate</b><b data-i="sfD2">Risk assessment &amp; method statement</b><b data-i="sfD3">Load calculations</b><b data-i="sfD4">Gear inspection records</b></div>
+  </div>
+</section>
+
+<section class="shop-hero" id="tienda" data-only="shop">
+  <img class="media poster" src="https://images.pexels.com/videos/39472140/pexels-photo-39472140.jpeg?auto=compress&w=1260&h=750&dpr=1" alt="" loading="lazy"><video class="media lazy" muted loop playsinline preload="none" poster="https://images.pexels.com/videos/39472140/pexels-photo-39472140.jpeg?auto=compress&w=1260&h=750&dpr=1" aria-hidden="true" ><source src="https://videos.pexels.com/video-files/39472140/16813001_2560_1440_30fps.mp4" type="video/mp4"></video>
+  <div class="wrap">
+    <p class="eyebrow" data-i="shEyebrow">Shop · Hire &amp; sale</p>
+    <h1 data-i="shTitle">Gear for <em>your shoot</em></h1>
+    <p class="lede" data-i="shLede">Electric chain hoists for hire and platforms built in our Madrid workshop, for sale. Everything ships with its certificate and inspection log, and with a Bungy technician if you want one.</p>
+    <div class="ctas"><a class="btn" href="#alquiler" data-i="shBtn1">Hoists for hire</a><a class="btn ghost" href="#plataformas" data-i="shBtn2">Platforms for sale</a></div>
+  </div>
+</section>
+
+<section class="projects-band" id="material" data-only="shop">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div><p class="eyebrow" data-i="gEyebrow">Gear</p><h2 data-i="gTitle">Hoists for hire, platforms for sale</h2></div>
+      <p data-i="gLede">Bring your own crew and hire the chain hoists, or buy one of the platforms we build. Need us to rig it as well? Ask for a quote and we come with the gear.</p>
+    </div>
+
+    <div class="gear-head rv" id="alquiler"><h3 data-i="ghTitle">Hire · Chain hoists</h3><p data-i="ghLede">Electric chain hoists for flying truss, lights and set pieces, with controllers and rigging accessories. Daily and weekly rates.</p></div>
+    <div class="gear rv">
+      <div class="gcard"><div class="fig"><img class="media" src="https://images.pexels.com/photos/37636327/pexels-photo-37636327.jpeg?auto=compress&cs=tinysrgb&w=900" alt="" loading="lazy" decoding="async" onerror="this.remove()"><svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 8h80" stroke="#8a7f7d"/><path d="M60 8v10"/><rect x="42" y="18" width="36" height="26" rx="2"/><circle cx="60" cy="31" r="6"/><path d="M60 44v6M57 50h6M58.5 53v4M57 57h6M58.5 60v4M57 64h6"/><path d="M60 68c-5 0-7 4-4 7 3 3 8 1 8-3" /></svg></div><span class="tag" data-i="gh1g">Hire</span><h4 data-i="gh1t">Electric chain hoist 250 kg</h4><p data-i="gh1p">For lights, small truss and soft goods. D8 rated.</p>
+        <dl class="gspec"><dt data-i="gLoad">Load</dt><dd>250 kg</dd><dt data-i="gSpeed">Speed</dt><dd>4 m/min</dd><dt data-i="gChain">Chain</dt><dd>20 m</dd><dt data-i="gStock">In stock</dt><dd>10</dd></dl>
+        <div class="foot"><span class="price" data-i="gPriceReq">Price on request</span><a class="btn ghost" href="#contacto" data-need="hire" data-i="gAvail">Check availability</a></div></div>
+      <div class="gcard"><div class="fig"><img class="media" src="https://images.pexels.com/photos/8014692/pexels-photo-8014692.jpeg?auto=compress&cs=tinysrgb&w=900" alt="" loading="lazy" decoding="async" onerror="this.remove()"><svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 8h80" stroke="#8a7f7d"/><path d="M60 8v10"/><rect x="42" y="18" width="36" height="26" rx="2"/><circle cx="60" cy="31" r="6"/><path d="M60 44v6M57 50h6M58.5 53v4M57 57h6M58.5 60v4M57 64h6"/><path d="M60 68c-5 0-7 4-4 7 3 3 8 1 8-3" /></svg></div><span class="tag" data-i="gh1g">Hire</span><h4 data-i="gh2t">Electric chain hoist 1 t</h4><p data-i="gh2p">The workhorse for truss grids and camera rigs over the set. D8+ rated.</p>
+        <dl class="gspec"><dt data-i="gLoad">Load</dt><dd>1000 kg</dd><dt data-i="gSpeed">Speed</dt><dd>4 m/min</dd><dt data-i="gChain">Chain</dt><dd>24 m</dd><dt data-i="gStock">In stock</dt><dd>12</dd></dl>
+        <div class="foot"><span class="price" data-i="gPriceReq">Price on request</span><a class="btn ghost" href="#contacto" data-need="hire" data-i="gAvail">Check availability</a></div></div>
+      <div class="gcard"><div class="fig"><img class="media" src="https://images.pexels.com/photos/29224596/pexels-photo-29224596.jpeg?auto=compress&cs=tinysrgb&w=900" alt="" loading="lazy" decoding="async" onerror="this.remove()"><svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 8h80" stroke="#8a7f7d"/><path d="M60 8v10"/><rect x="42" y="18" width="36" height="26" rx="2"/><circle cx="60" cy="31" r="6"/><path d="M60 44v6M57 50h6M58.5 53v4M57 57h6M58.5 60v4M57 64h6"/><path d="M60 68c-5 0-7 4-4 7 3 3 8 1 8-3" /></svg></div><span class="tag" data-i="gh1g">Hire</span><h4 data-i="gh3t">Electric chain hoist 2 t</h4><p data-i="gh3p">For heavy set pieces, vehicles and large structures. D8+ rated.</p>
+        <dl class="gspec"><dt data-i="gLoad">Load</dt><dd>2000 kg</dd><dt data-i="gSpeed">Speed</dt><dd>2 m/min</dd><dt data-i="gChain">Chain</dt><dd>24 m</dd><dt data-i="gStock">In stock</dt><dd>6</dd></dl>
+        <div class="foot"><span class="price" data-i="gPriceReq">Price on request</span><a class="btn ghost" href="#contacto" data-need="hire" data-i="gAvail">Check availability</a></div></div>
+      <div class="gcard"><div class="fig"><img class="media" src="https://images.pexels.com/photos/34585137/pexels-photo-34585137.jpeg?auto=compress&cs=tinysrgb&w=900" alt="" loading="lazy" decoding="async" onerror="this.remove()"><svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="22" y="14" width="76" height="52" rx="3"/><path d="M30 24h60M30 34h60" stroke="#8a7f7d"/><circle cx="34" cy="50" r="4"/><circle cx="48" cy="50" r="4"/><circle cx="62" cy="50" r="4"/><circle cx="76" cy="50" r="4"/><rect x="86" y="44" width="8" height="12"/></svg></div><span class="tag" data-i="gh1g">Hire</span><h4 data-i="gh4t">Hoist controller, 8 channels</h4><p data-i="gh4p">Run up to eight hoists together or one by one, with cabling and distro.</p>
+        <dl class="gspec"><dt data-i="gChannels">Channels</dt><dd>8</dd><dt data-i="gPower">Power</dt><dd>400 V · 32 A</dd><dt data-i="gCable">Cabling</dt><dd data-i="gIncl">Included</dd><dt data-i="gStock">In stock</dt><dd>3</dd></dl>
+        <div class="foot"><span class="price" data-i="gPriceReq">Price on request</span><a class="btn ghost" href="#contacto" data-need="hire" data-i="gAvail">Check availability</a></div></div>
+    </div>
+
+    <div class="gear-head rv" id="plataformas"><h3 data-i="gpTitle">For sale · Platforms we build</h3><p data-i="gpLede">Aluminium platforms designed for film and television: camera positions, raised sets and audience risers. Built in Madrid, delivered anywhere.</p></div>
+    <div class="gear plat rv">
+      <div class="gcard"><div class="fig"><img class="media" src="https://images.pexels.com/photos/38399020/pexels-photo-38399020.jpeg?auto=compress&cs=tinysrgb&w=900" alt="" loading="lazy" decoding="async" onerror="this.remove()"><svg viewBox="0 0 160 100" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 40l60-20 60 20-60 20z"/><path d="M20 40v8l60 20 60-20v-8" /><path d="M80 60v8" stroke="#8a7f7d"/><path d="M26 46v40M134 46v40M80 66v26" stroke="#8a7f7d"/><path d="M26 86h8M130 86h8M76 92h8" stroke="#8a7f7d"/><path d="M26 66l54 20M134 66L80 86" stroke="#8a7f7d" stroke-dasharray="3 3"/></svg></div><span class="tag" data-i="gpg">For sale</span><h4 data-i="gp1t">Camera platform 2 × 2 m</h4><p data-i="gp1p">Adjustable-height platform for camera and operator, with guard rails and a wedge-levelled base for uneven ground.</p>
+        <dl class="gspec"><dt data-i="gSize">Size</dt><dd>2 × 2 m</dd><dt data-i="gHeight">Height</dt><dd>0,5 – 3 m</dd><dt data-i="gLoad">Load</dt><dd>500 kg/m²</dd><dt data-i="gMaterial">Material</dt><dd data-i="gAlu">Aluminium</dd></dl>
+        <div class="foot"><span class="price" data-i="gPriceReq">Price on request</span><a class="btn" href="#contacto" data-need="buy" data-i="gQuote">Request a quote</a></div></div>
+      <div class="gcard"><div class="fig"><img class="media" src="https://images.pexels.com/photos/32145288/pexels-photo-32145288.jpeg?auto=compress&cs=tinysrgb&w=900" alt="" loading="lazy" decoding="async" onerror="this.remove()"><svg viewBox="0 0 160 100" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 44l40-14 40 14-40 14z"/><path d="M54 44l40-14 40 14-40 14z"/><path d="M94 44l40-14" stroke="#8a7f7d"/><path d="M14 44v6l40 14 40-14M54 58l40 14 40-14v-6" /><path d="M20 52v30M54 66v30M94 66v30M134 52v30" stroke="#8a7f7d"/></svg></div><span class="tag" data-i="gpg">For sale</span><h4 data-i="gp2t">Modular stage deck 1 × 2 m</h4><p data-i="gp2p">Interlocking decks for raised sets and risers. Legs from 20 cm to 1 m, non-slip top, stacks flat for transport.</p>
+        <dl class="gspec"><dt data-i="gSize">Size</dt><dd>1 × 2 m</dd><dt data-i="gHeight">Height</dt><dd>0,2 – 1 m</dd><dt data-i="gLoad">Load</dt><dd>750 kg/m²</dd><dt data-i="gMaterial">Material</dt><dd data-i="gAluPly">Aluminium · plywood</dd></dl>
+        <div class="foot"><span class="price" data-i="gPriceReq">Price on request</span><a class="btn" href="#contacto" data-need="buy" data-i="gQuote">Request a quote</a></div></div>
+      <div class="gcard custom"><div class="fig"><img class="media" src="https://images.pexels.com/photos/12787862/pexels-photo-12787862.jpeg?auto=compress&cs=tinysrgb&w=900" alt="" loading="lazy" decoding="async" onerror="this.remove()"><svg viewBox="0 0 160 100" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 90h120" stroke="#8a7f7d"/><path d="M30 90V40h40v50M70 60h40v30M110 75h24v15" /><path d="M30 40l10 10 10-10 10 10 10-10" stroke="#8a7f7d"/><path d="M50 20v20M44 26l6-6 6 6" /></svg></div><span class="tag" data-i="gcg">Made to measure</span><h4 data-i="gc1t">Built to your drawings</h4><p data-i="gc1p">Towers, ramps, raised sets and camera positions that do not exist in a catalogue. Send us the drawing or the shot, and we engineer and build it.</p>
+        <dl class="gspec"><dt data-i="gLead">Lead time</dt><dd data-i="gLeadV">From 2 weeks</dd><dt data-i="gDocs">Documents</dt><dd data-i="gDocsV">Calcs · CE</dd></dl>
+        <div class="foot"><span class="price" data-i="gByQuote">By quote</span><a class="btn" href="#contacto" data-need="buy" data-i="gQuote">Request a quote</a></div></div>
+    </div>
+    <div class="gear-note rv"><span data-i="gNote">Hire the gear alone or with a Bungy technician. Rates, stock and models are being confirmed with the owners.</span><span class="tbc" data-i="gTbc">TBC · prices and stock</span></div>
+  </div>
+</section>
+
+<div class="cta-band">
+  <div class="wrap">
+    <h2 data-i="ctaBand">Got a shot<br>that needs rigging?</h2>
+    <a class="btn" href="#contacto"><span data-i="ctaBandBtn">Send us the scene</span> <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8h11M9 4l4 4-4 4"/></svg></a>
+  </div>
+</div>
+
+<section id="contacto">
+  <div class="wrap contact">
+    <div class="rv">
+      <p class="eyebrow" data-i="ctEyebrow">Contact</p>
+      <h2 data-i="ctTitle">Request a quote</h2>
+      <dl class="info">
+        <div><dt data-i="ctAddr">Address</dt><dd>C/ Belice 17, Madrid, Spain</dd></div>
+        <div><dt data-i="ctPhone">Phone</dt><dd data-i="tbc">To be confirmed</dd></div>
+        <div><dt data-i="ctMail">Email</dt><dd data-i="tbc">To be confirmed</dd></div>
+      </dl>
+    </div>
+    <form id="form" class="rv" novalidate>
+      <label><span data-i="fName">Name</span><input id="f-name" name="name" autocomplete="name" data-ip="fNameP" placeholder="Your name"></label>
+      <label><span data-i="fCompany">Production company</span><input id="f-company" name="company" autocomplete="organization" data-ip="fCompanyP" placeholder="Production or service company"></label>
+      <label><span data-i="fEmail">Email</span><input id="f-email" name="email" type="email" autocomplete="email" placeholder="name@company.com"></label>
+      <label><span data-i="fType">Production type</span>
+        <select id="f-type" name="type">
+          <option value="feature" data-i="o1">Feature film</option><option value="series" data-i="o2">Series</option><option value="tv" data-i="o3">Television</option><option value="commercial" data-i="o4">Commercial</option><option value="other" data-i="o5">Other</option>
+        </select>
+      </label>
+      <label><span data-i="fDates">Shoot dates</span><input id="f-dates" name="dates" data-ip="fDatesP" placeholder="e.g. March 2027, 3 weeks"></label>
+      <label><span data-i="fLoc">Location</span><input id="f-loc" name="loc" data-ip="fLocP" placeholder="Studio, city or region"></label>
+      <label class="full"><span data-i="fNeed">What do you need from us</span>
+        <select id="f-need" name="need">
+          <option value="rig" data-i="n1">Rig and operate it for us</option><option value="hire" data-i="n2">Hire chain hoists</option><option value="buy" data-i="n3">Buy a platform</option><option value="mixed" data-i="n4">A bit of everything</option>
+        </select>
+      </label>
+      <label class="full"><span data-i="fMsg">The scene</span><textarea id="f-msg" name="msg" data-ip="fMsgP" placeholder="What happens in the shot and what you need us to rig"></textarea></label>
+      <div class="full file"><span class="lbl" data-i="fFiles">Script pages, storyboard or references</span>
+        <input id="f-files" name="files" type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.mp4,.mov,.doc,.docx">
+        <label class="drop" for="f-files"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 12.5l-8.5 8.5a5 5 0 01-7-7L14 5.5a3.3 3.3 0 014.7 4.7L10.2 18.7a1.7 1.7 0 01-2.4-2.4L15.5 8.6"/></svg><span data-i="fFilesP">Attach files (PDF, images or video)</span></label>
+        <div class="list" id="f-list" aria-live="polite"></div>
+      </div>
+      <div class="full"><button class="btn" type="submit" data-i="fSend">Send request</button></div>
+      <p class="sent" id="sent" hidden data-i="sent">This is a draft homepage: the form doesn't send anything yet. On the live site it will go straight to your inbox.</p>
+    </form>
+  </div>
+</section>
+
+<section id="faq" data-only="web" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head single rv"><div><p class="eyebrow" data-i="fqEyebrow">FAQ</p><h2 data-i="fqTitle">Before you call</h2></div></div>
+    <div class="faq">
+      <details><summary data-i="q1">Do you work with foreign productions?</summary><p data-i="a1">Yes. We work alongside the production service company and your heads of department, and our crew handles set communication in English.</p></details>
+      <details><summary data-i="q2">Do you work outside Spain?</summary><p data-i="a2">Yes. Our warehouse is in Madrid, and we travel with our gear and crew to locations across Spain and abroad.</p></details>
+      <details><summary data-i="q3">How much notice do you need?</summary><p data-i="a3">It depends on the rig. Standard camera and set rigging can be ready in days; a custom stunt or flying rig needs time for engineering and rehearsals with the stunt team.</p></details>
+      <details><summary data-i="q4">Who is responsible for rigging safety?</summary><p data-i="a4">We are. Every rig comes with load calculations, inspected gear and a safety plan, and our riggers stay on set while it is in use. Insurance details are shared on request.</p></details>
+    </div>
+  </div>
+</section>
+</main>
+
+<div class="rig" id="askrig" hidden data-mode="hire">
+  <div class="rig-shade" data-rig-close></div>
+  <div class="rig-drop" aria-hidden="true">
+    <span class="hoist l"><i class="motor"></i><i class="cable"></i></span>
+    <span class="hoist r"><i class="motor"></i><i class="cable"></i></span>
+    <div class="rig-panel" role="dialog" aria-modal="true" aria-labelledby="rig-title">
+      <div class="rig-bar"><span class="eyebrow"><span class="k-hire" data-i="rigHire">Hire · check availability</span><span class="k-buy" data-i="rigBuy" hidden>For sale · request a quote</span></span><button type="button" class="close" data-rig-close aria-label="Close">×</button></div>
+      <h2 id="rig-title">—</h2>
+      <p class="rig-spec" id="rig-spec"></p>
+      <form id="rig-form" novalidate>
+        <label class="hire-only"><span data-i="rFrom">From</span><input id="r-from" type="date"></label>
+        <label class="hire-only"><span data-i="rTo">To</span><input id="r-to" type="date"></label>
+        <label><span data-i="rQty">Units</span><input id="r-qty" type="number" min="1" value="1" inputmode="numeric"></label>
+        <label><span data-i="rLoc">Delivery location</span><input id="r-loc" data-ip="rLocP" placeholder="Studio, city or country"></label>
+        <label><span data-i="rName">Name</span><input id="r-name" autocomplete="name" data-ip="rNameP" placeholder="Your name"></label>
+        <label><span data-i="rCompany">Production company</span><input id="r-company" autocomplete="organization" data-ip="rCompanyP" placeholder="Production or service company"></label>
+        <label><span data-i="rEmail">Email</span><input id="r-email" type="email" autocomplete="email" placeholder="name@company.com"></label>
+        <label><span data-i="rPhone">Phone / WhatsApp</span><input id="r-phone" type="tel" autocomplete="tel" placeholder="+34 …"></label>
+        <label class="full"><span data-i="rNotes">Notes</span><textarea id="r-notes" rows="3" data-ip="rNotesP" placeholder="Controller, cabling, power on site, anything else we should know"></textarea></label>
+        <label class="full chk"><input id="r-tech" type="checkbox"><span data-i="rTech">I'd like a Bungy technician with the gear</span></label>
+        <div class="full rig-actions"><button class="btn" type="submit" data-i="rSend">Send request</button><button type="button" class="btn ghost" data-rig-close data-i="rBack">Back to the shop</button></div>
+        <p class="sent" id="rig-sent" hidden data-i="rigSent">Demo: nothing is sent yet. On the live site this goes straight to Bungy's inbox and you get a copy by email.</p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="strip" aria-hidden="true"><div class="track"><span data-i="strip">Rigging · Wire work · <i>Stunts</i> · Camera rigs · Hoists · <i>Platforms</i> · Madrid · Worldwide · </span><span data-i="strip">Rigging · Wire work · <i>Stunts</i> · Camera rigs · Hoists · <i>Platforms</i> · Madrid · Worldwide · </span></div></div>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Bungy System SL · Madrid</span>
+    <nav aria-label="Legal"><a href="#top" data-i="l1">Legal notice</a><a href="#top" data-i="l2">Privacy</a><a href="#top" data-i="l3">Cookies</a><a href="#top" data-i="l4">Careers</a></nav>
+  </div>
+</footer>
+
+<script>
+(function () {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Idioma: inglés por defecto (lo que está en el HTML), español desde el diccionario
+  const ES = {
+    demo: 'Portada de prueba · textos provisionales; fotos y vídeos de banco libre (Pexels) hasta tener el material de Bungy System',
+    logoSub: 'Rigging para cine y TV · Madrid',
+    navSvc: 'Servicios', navSpain: 'Internacional', navWork: 'Trabajos', navFaq: 'Preguntas', navCta: 'Pedir presupuesto', navContact: 'Contacto',
+    heroEyebrow: 'Rigging · Vuelos · Estructuras para especialistas y SFX · Pruebas de TV',
+    h1a: 'Lo colgamos.', h1b: 'Lo hacemos volar.', h1c: 'Tú ruedas.',
+    lede: 'Rigging, vuelos y estructuras a medida para largometrajes, series y televisión. Un equipo de Madrid con nave propia y acostumbrado a trabajar con producciones internacionales.',
+    ctaQuote: 'Cuéntanos tu rodaje', ctaWork: 'Ver trabajos',
+    t1: 'Largometrajes', t2: 'Series', t3: 'Televisión', t4: 'Publicidad', t5: 'Plató', t6: 'Exteriores',
+    svcEyebrow: 'Qué hacemos', svcTitle: 'Pensado para la toma',
+    svcLede: 'Cada departamento tiene lo que necesita: soportes de cámara para fotografía, vuelos seguros para el coordinador de especialistas y estructuras firmes para arte y efectos. Calculado, montado y operado por nuestros propios técnicos.',
+    more: 'Consultar →',
+    s1t: 'Rigging de cámara y plató', s1p: 'Truss, torres, parrillas y soportes de cámara para plató y exteriores. Rápido de montar y de recoger.', s1a: 'Cálculo de cargas incluido', s1b: 'Plató · Exteriores',
+    s2t: 'Vuelos y arneses', s2p: 'Arneses, sistemas de cable y descensores para especialistas y actores, planificados con el coordinador de especialistas.', s2a: 'Arneses y líneas certificados', s2b: 'Ensayado en set',
+    s3t: 'Estructuras para especialistas y SFX', s3p: 'Rampas, sistemas de caída, elástico y construcciones a medida para que el efecto salga seguro, toma tras toma.', s3a: 'Según el storyboard', s3b: 'Probado antes de rodar',
+    s4t: 'Pruebas para televisión', s4p: 'Diseñamos, construimos y operamos las pruebas físicas de concursos y realities, en directo o grabados.', s4a: 'Del formato al plató', s4b: 'Operación en directo',
+    other: 'También alquilamos motores y fabricamos plataformas a la venta (ver <a href="#material">la tienda</a>), y hacemos algunos eventos, teatro y activaciones de marca.',
+    spEyebrow: 'Producciones internacionales', spTitle: 'Tu equipo de rigging, ruedes donde ruedes',
+    spP: 'En España o en el extranjero, trabajamos junto a tu productora de servicios y tus jefes de departamento desde la primera localización hasta el final del rodaje. El material sale de nuestra nave en Madrid, cada montaje lleva su cálculo y su plan de seguridad, y nuestro equipo habla inglés en el set.',
+    f1: 'años en el oficio, desde 2006', f2: 'equipo que habla inglés en el set', f3: 'base en Madrid, rodajes en España y en el extranjero', f4: 'de los montajes con cálculo de cargas y plan de seguridad',
+    wkEyebrow: 'Trabajos', wkTitle: 'Trabajos seleccionados', wkLede: 'Producciones de cine y televisión en las que hemos trabajado. Aquí irán las fotos y títulos reales de Bungy System.',
+    ph: 'Foto provisional',
+    p1g: 'Largometraje · Especialistas', p1t: 'Salto con elástico desde un puente', p2g: 'Serie · Vuelos', p2t: 'Secuencia de vuelo de actor',
+    p3g: 'Largometraje · Cámara', p3t: 'Soporte de cámara cenital', p4g: 'Televisión · Concurso', p4t: 'Prueba de equilibrio a 6 m',
+    p5g: 'Publicidad · Plató', p5t: 'Estructura para un spot de coches',
+    prEyebrow: 'Cómo trabajamos', prTitle: 'De la localización al desmontaje', prLede: 'Un solo equipo de principio a fin, para que nadie tenga que explicar la toma dos veces.',
+    stepN1: 'PASO 1', stepN2: 'PASO 2', stepN3: 'PASO 3', stepN4: 'PASO 4', stepN5: 'PASO 5',
+    st1: 'Localización', sp1: 'Leemos las secuencias, vemos la localización o el plató y acordamos qué necesita la toma.',
+    st2: 'Cálculo', sp2: 'Planos, cálculo de cargas y plan de seguridad, aprobados antes de mover una sola pieza.',
+    st3: 'Montaje', sp3: 'Material de nuestra nave, montado y probado antes de que llegue el equipo de rodaje.',
+    st4: 'En el set', sp4: 'Nuestros técnicos se quedan con el equipo y operan cada toma hasta el último plano.',
+    st5: 'Desmontaje', sp5: 'Recogemos, revisamos el material y dejamos la localización como estaba.',
+    ctaBand: '¿Tienes una toma<br>que colgar?', ctaBandBtn: 'Mándanos la secuencia',
+    ctEyebrow: 'Contacto', ctTitle: 'Pide presupuesto', ctAddr: 'Dirección', ctPhone: 'Teléfono', ctMail: 'Correo', tbc: 'Pendiente de confirmar',
+    fName: 'Nombre', fNameP: 'Tu nombre', fCompany: 'Productora', fCompanyP: 'Productora o empresa de servicios', fEmail: 'Correo',
+    fType: 'Tipo de producción', o1: 'Largometraje', o2: 'Serie', o3: 'Televisión', o4: 'Publicidad', o5: 'Otro',
+    fDates: 'Fechas de rodaje', fDatesP: 'p. ej. marzo de 2027, 3 semanas', fLoc: 'Localización', fLocP: 'Plató, ciudad o zona',
+    fMsg: 'La secuencia', fMsgP: 'Qué pasa en la toma y qué necesitas que montemos', fSend: 'Enviar solicitud',
+    sent: 'Esta es una portada de prueba: el formulario todavía no envía nada. En la web final llegará directamente a vuestro correo.',
+    fqEyebrow: 'Preguntas frecuentes', fqTitle: 'Antes de llamarnos',
+    q1: '¿Trabajáis con producciones extranjeras?', a1: 'Sí. Trabajamos junto a la productora de servicios y tus jefes de departamento, y nuestro equipo se comunica en inglés en el set.',
+    q2: '¿Trabajáis fuera de España?', a2: 'Sí. La nave está en Madrid y viajamos con el material y el equipo a localizaciones de toda España y del extranjero.',
+    q3: '¿Con cuánta antelación hay que avisar?', a3: 'Depende del montaje. Un rigging estándar de cámara o plató puede estar en días; un sistema de vuelo o de especialistas a medida necesita tiempo de cálculo y ensayos con el equipo de especialistas.',
+    q4: '¿Quién se encarga de la seguridad del rigging?', a4: 'Nosotros. Cada montaje lleva cálculo de cargas, material revisado y plan de seguridad, y nuestros técnicos se quedan en el set mientras se usa. Los datos del seguro se facilitan a petición.',
+    navGear: 'Tienda', navHire: 'Motores en alquiler', navBuy: 'Plataformas en venta', swapShop: 'Tienda', swapWeb: 'Qué es Bungy', drawerShop: '→ Tienda', drawerWeb: '→ Qué es Bungy',
+    shEyebrow: 'Tienda · Alquiler y venta', shTitle: 'Material para <em>tu rodaje</em>', shLede: 'Motores eléctricos de cadena en alquiler y plataformas fabricadas en nuestro taller de Madrid, a la venta. Todo sale con su certificado y su registro de revisiones, y con un técnico de Bungy si lo quieres.', shBtn1: 'Motores en alquiler', shBtn2: 'Plataformas en venta',
+    gateArea: 'Área privada', gateWebK: 'Quiénes somos', gateWebT: 'Esto es Bungy', gateWebD: 'Veinte años de rigging para cine y televisión: quiénes somos, qué hemos colgado y cómo trabajamos.', gateWebA: 'Conocer Bungy',
+    gateShopK: 'Material y servicios', gateShopT: '¿Necesitas material o servicios?', gateShopD: 'Alquila motores, compra una de nuestras plataformas o pídenos que montemos tu toma.', gateShopA: 'Ver qué ofrecemos',
+    gEyebrow: 'Material', gTitle: 'Motores en alquiler, plataformas a la venta',
+    gLede: 'Ven con tu propio equipo y alquila los motores, o compra una de las plataformas que fabricamos. ¿Necesitas que además lo montemos? Pide presupuesto y vamos con el material.',
+    ghTitle: 'Alquiler · Motores', ghLede: 'Motores eléctricos de cadena para colgar truss, iluminación y decorados, con controladores y accesorios de rigging. Tarifas por día y por semana.',
+    gh1g: 'Alquiler', gh1t: 'Motor eléctrico 250 kg', gh1p: 'Para iluminación, truss ligero y telas. Norma D8.',
+    gh2t: 'Motor eléctrico 1 t', gh2p: 'El habitual para parrillas de truss y soportes de cámara sobre el decorado. Norma D8+.',
+    gh3t: 'Motor eléctrico 2 t', gh3p: 'Para decorados pesados, vehículos y grandes estructuras. Norma D8+.',
+    gh4t: 'Controlador de motores, 8 canales', gh4p: 'Mueve hasta ocho motores a la vez o uno a uno, con cableado y distribución.',
+    gLoad: 'Carga', gSpeed: 'Velocidad', gChain: 'Cadena', gStock: 'En stock', gChannels: 'Canales', gPower: 'Alimentación', gCable: 'Cableado', gIncl: 'Incluido',
+    gPriceReq: 'Precio a consultar', gAvail: 'Pedir disponibilidad', gQuote: 'Pedir presupuesto', gByQuote: 'Según proyecto',
+    gpTitle: 'Venta · Plataformas que fabricamos', gpLede: 'Plataformas de aluminio pensadas para cine y televisión: posiciones de cámara, decorados elevados y gradas. Fabricadas en Madrid, entregadas donde haga falta.',
+    gpg: 'Venta', gp1t: 'Plataforma de cámara 2 × 2 m', gp1p: 'Plataforma de altura regulable para cámara y operador, con barandillas y base nivelable con cuñas para suelos irregulares.',
+    gp2t: 'Tarima modular 1 × 2 m', gp2p: 'Tarimas encajables para decorados elevados y gradas. Patas de 20 cm a 1 m, superficie antideslizante, se apilan planas para el transporte.',
+    gSize: 'Medidas', gHeight: 'Altura', gMaterial: 'Material', gAlu: 'Aluminio', gAluPly: 'Aluminio · contrachapado',
+    gcg: 'A medida', gc1t: 'Según tus planos', gc1p: 'Torres, rampas, decorados elevados y posiciones de cámara que no existen en catálogo. Mándanos el plano o la toma, y lo calculamos y fabricamos.',
+    gLead: 'Plazo', gLeadV: 'Desde 2 semanas', gDocs: 'Documentación', gDocsV: 'Cálculo · CE',
+    gNote: 'Alquila el material solo o con un técnico de Bungy. Tarifas, stock y modelos están pendientes de confirmar con los dueños.', gTbc: 'Por confirmar · precios y stock',
+    fNeed: 'Qué necesitas de nosotros', n1: 'Que lo montemos y operemos', n2: 'Alquilar motores', n3: 'Comprar una plataforma', n4: 'Un poco de todo',
+    navSafety: 'Seguridad', ropeTip: 'Arrástrame para balancearme · tócame para volver arriba', qCall: 'Llamar', pickJump: 'Salto', pickCam: 'Cámara',
+    sfEyebrow: 'Seguridad y seguros', sfTitle: 'Seguro en la toma uno, y en la cuarenta',
+    sfLede: 'Lo que te van a pedir el coordinador de especialistas, la jefa de producción y la aseguradora, listo antes de la localización. Lo marcado como «por confirmar» está pendiente de datos.',
+    sf1t: 'Ingeniería firmada', sf1p: 'Planos y cálculo de cargas de cada montaje, firmados por un ingeniero colegiado.', sf1c: 'Por confirmar · ingeniero y colegiación',
+    sf2t: 'Seguro de responsabilidad civil', sf2p: 'Cobertura de RC para nuestro trabajo en el set, en España y fuera. El certificado va con el presupuesto.', sf2c: 'Por confirmar · aseguradora e importe',
+    sf3t: 'Material certificado y revisado', sf3p: 'Material de rigging y anticaídas con marcado CE, registrado y revisado con un calendario fijo.', sf3c: 'Por confirmar · normas e intervalo de revisión',
+    sf4t: 'Equipo formado', sf4p: 'Riggers formados en trabajos en altura y acceso por cuerdas, con un responsable de seguridad en el set en cada toma.', sf4c: 'Por confirmar · certificaciones',
+    sfDocs: 'A petición:', sfD1: 'Certificado del seguro', sfD2: 'Evaluación de riesgos y procedimiento de trabajo', sfD3: 'Cálculo de cargas', sfD4: 'Registros de revisión del material',
+    fFiles: 'Páginas de guion, storyboard o referencias', fFilesP: 'Adjuntar archivos (PDF, imágenes o vídeo)',
+    strip: 'Rigging · Trabajo con cables · <i>Especialistas</i> · Rigs de cámara · Motores · <i>Plataformas</i> · Madrid · Todo el mundo · ',
+    rigHire: 'Alquiler · consultar disponibilidad', rigBuy: 'Venta · pedir presupuesto', rFrom: 'Desde', rTo: 'Hasta', rQty: 'Unidades', rLoc: 'Lugar de entrega', rLocP: 'Plató, ciudad o país', rName: 'Nombre', rNameP: 'Tu nombre', rCompany: 'Productora', rCompanyP: 'Productora o service', rEmail: 'Correo', rPhone: 'Teléfono / WhatsApp', rNotes: 'Notas', rNotesP: 'Controlador, cableado, corriente en el sitio, lo que debamos saber', rTech: 'Quiero un técnico de Bungy con el material', rSend: 'Enviar solicitud', rBack: 'Volver a la tienda', rigSent: 'Demo: todavía no se envía nada. En la web real llegará al correo de Bungy y recibirás una copia.',
+    l1: 'Aviso legal', l2: 'Privacidad', l3: 'Cookies', l4: 'Trabaja con nosotros'
+  };
+  const EN = {}, ENP = {};
+  document.querySelectorAll('[data-i]').forEach(el => { EN[el.dataset.i] ??= el.innerHTML; });
+  document.querySelectorAll('[data-ip]').forEach(el => { ENP[el.dataset.ip] = el.placeholder; });
+  const setLang = lang => {
+    const d = lang === 'es' ? ES : EN;
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i]').forEach(el => { const v = d[el.dataset.i]; if (v != null) el.innerHTML = v; });
+    document.querySelectorAll('[data-ip]').forEach(el => { const v = lang === 'es' ? ES[el.dataset.ip] : ENP[el.dataset.ip]; if (v != null) el.placeholder = v; });
+    document.querySelectorAll('.lang button').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === lang));
+    try { localStorage.setItem('bungy-lang', lang); } catch (e) {}
+  };
+  document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
+  let saved = null;
+  try { saved = localStorage.getItem('bungy-lang'); } catch (e) {}
+  if (saved === 'es' || location.hash === '#es') setLang('es');
+
+  // Técnico colgado: péndulo real colgado del cable; baja con el scroll, se puede arrastrar
+  (function () {
+    const $r = id => document.getElementById(id);
+    const svg = $r('rope-svg'), cable = $r('rope-cable'), man = $r('rope-man'), swing = $r('rope-swing'), sc = $r('rope-scale'), depth = $r('rope-depth'), headG = $r('head-g');
+    let W = 170, H = innerHeight, TOP = 150, maxScroll = 1, frames = 0, CX = 140, SC = 1.35, lastY = scrollY, L = null, lv = 0, th = 0, om = 0, sv = 0, climb = 0, last = performance.now(), drag = null;
+    const size = () => { H = innerHeight; W = svg.clientWidth || 170; const m = W < 150; SC = m ? 0.85 : 1.4; CX = W - 17.5 * SC; let top0 = 0; for (let e = $r('top'); e; e = e.previousElementSibling) { const cs = getComputedStyle(e); if (cs.position !== 'fixed' && cs.position !== 'absolute' && cs.display !== 'none') top0 += e.offsetHeight; }   // cabecera y lo que hay encima en el flujo (la entrada es fija y no cuenta), sin depender del scroll
+      TOP = top0 + 48 * SC + 14; maxScroll = Math.max(1, document.documentElement.scrollHeight - H); svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H); };
+    addEventListener('resize', size); size();
+    const P = (x, y) => x.toFixed(2) + ' ' + y.toFixed(2);
+    const set = (id, k, v) => $r(id).setAttribute(k, v);
+    // Cuerpo articulado (coordenadas locales: mosquetón en 0,0; la cabeza hacia arriba)
+    const limb = (id, a, b, c) => set(id, 'd', 'M' + P(a[0], a[1]) + ' L' + P(b[0], b[1]) + ' L' + P(c[0], c[1]));
+    const boot = (id, k, f, a) => { const dx = Math.cos(a), dy = -Math.sin(a); set(id, 'd', 'M' + P(f[0] - 1.6 * dx, f[1] - 1.4) + ' l' + P(4.4 * dx, 4.4 * dy) + ' q' + P(1.2 * dx + .6, 1.2 * dy + 1.2) + ' ' + P(-.2, 2.6) + ' l' + P(-4.6 * dx - .2, -4.6 * dy) + ' z'); };
+    const legAt = (hip, a, bend) => { const k = [hip[0] + 11 * Math.sin(a), hip[1] + 11 * Math.cos(a)], f = [k[0] + 11 * Math.sin(a - bend), k[1] + 11 * Math.cos(a - bend)]; return [hip, k, f]; };
+    const armTo = (sh, hand, out) => { const mx = (sh[0] + hand[0]) / 2 + out, my = (sh[1] + hand[1]) / 2 + 1.5; return [sh, [mx, my], hand]; };
+    // Cuelga de un punto fijo arriba del todo: se arrastra a cualquier sitio y al soltar oscila como un péndulo
+    const pivot = () => { const r = svg.getBoundingClientRect(); return [r.left + CX, r.top]; };
+    const maxTh = () => Math.asin(Math.min(1, Math.max(0, W - CX - 2) / Math.max(1, L)));      // no puede pasar al otro lado de la pared
+    // la pared es el borde derecho de la pantalla; las piernas llegan a 21,5 (unidades del muñeco)
+    const REACH = 21.5, HIPS = [[-7.8, 2.4], [-2.8, 2.6]];
+    let w = 0, rot = 0;                               // w: 0 colgando libre, 1 con los pies en la pared
+    const toWorld = (lx, ly, mx, my) => { const c = Math.cos(rot), s = Math.sin(rot); return [mx + SC * (lx * c - ly * s), my + SC * (lx * s + ly * c)]; };
+    const toLocal = (x, y, mx, my) => { const c = Math.cos(rot), s = Math.sin(rot), dx = (x - mx) / SC, dy = (y - my) / SC; return [dx * c + dy * s, -dx * s + dy * c]; };
+    const ik = (hip, tgt) => { const vx = tgt[0] - hip[0], vy = tgt[1] - hip[1], D = Math.min(REACH, Math.hypot(vx, vy)), a = Math.atan2(vy, vx), b = Math.acos(Math.min(1, D / 2 / 10.75));
+      const k1 = [hip[0] + 10.75 * Math.cos(a - b), hip[1] + 10.75 * Math.sin(a - b)], k2 = [hip[0] + 10.75 * Math.cos(a + b), hip[1] + 10.75 * Math.sin(a + b)];
+      return [hip, k1[1] < k2[1] ? k1 : k2, [hip[0] + D * Math.cos(a), hip[1] + D * Math.sin(a)]]; };   // la rodilla dobla hacia arriba
+    const wallBoot = (id, f) => { const u = [-Math.sin(rot), -Math.cos(rot)], n = [-Math.cos(rot), Math.sin(rot)];   // suela plana contra la pared
+      const q = (a, b) => P(f[0] + a * u[0] + b * n[0], f[1] + a * u[1] + b * n[1]);
+      set(id, 'd', 'M' + q(-1.4, -1.2) + ' L' + q(3.8, -1.2) + ' Q' + q(4.6, 0.6) + ' ' + q(3, 1.8) + ' L' + q(-1.4, 2) + ' z'); };
+    man.addEventListener('pointerdown', e => { e.preventDefault();
+      drag = { x: e.clientX, y: e.clientY, moved: false, hist: [] }; man.setPointerCapture(e.pointerId); man.classList.add('dragging'); });
+    man.addEventListener('pointermove', e => { if (!drag) return; if (Math.hypot(e.clientX - drag.x, e.clientY - drag.y) > 5) drag.moved = true; if (!drag.moved) return;
+      const [px, py] = pivot(), dx = e.clientX - px, dy = Math.max(30, e.clientY - py + 10 * SC);    // el mosquetón queda un poco por debajo del dedo
+      L = Math.min(H - 30 * SC, Math.hypot(dx, dy)); th = Math.max(-maxTh(), Math.min(1.45, Math.atan2(-dx, dy)));
+      drag.hist.push([performance.now(), th, L]); if (drag.hist.length > 6) drag.hist.shift(); });
+    const release = e => { if (!drag) return; const click = !drag.moved && e.type !== 'pointercancel', h = drag.hist; drag = null; man.classList.remove('dragging');
+      if (h.length > 1) { const a = h[0], z = h[h.length - 1], d = Math.max(0.016, (z[0] - a[0]) / 1000); om = Math.max(-4, Math.min(4, (z[1] - a[1]) / d)); lv = Math.max(-900, Math.min(900, (z[2] - a[2]) / d)); } else { om = 0; lv = 0; }
+      if (click) scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); };
+    man.addEventListener('pointerup', release); man.addEventListener('pointercancel', release);
+    function tick(now) {
+      const dt = Math.min(0.033, (now - last) / 1000); last = now; const t = now / 1000;
+      if (++frames % 30 === 0) maxScroll = Math.max(1, document.documentElement.scrollHeight - H);   // la altura de la página cambia poco: no medirla cada frame
+      const prog = Math.min(1, Math.max(0, scrollY / maxScroll));
+      const target = TOP + prog * (H - 50 * SC - TOP), dv = scrollY - lastY; lastY = scrollY;
+      sv += (Math.abs(dv) - sv) * 0.12;
+      const L0 = L === null ? target : L, hipW = toWorld(-5.3, 2.5, CX - Math.sin(th) * L0, Math.cos(th) * L0), wallGap = (W - hipW[0]) / SC, wallGap0 = REACH * 0.92;
+      if (L === null || (reduce && !drag)) { L = target; lv = 0; th = 0; om = 0; }
+      else if (!drag) {
+        lv += ((target - L) * 450 - lv * 38) * dt; L += lv * dt;                              // cuerda elástica: estira y rebota
+        const g = 2600;                                                                    // péndulo: θ'' = -(g/L)·sen θ, con algo de rozamiento
+        om += (-(g / Math.max(60, L)) * Math.sin(th) - om * 0.35) * dt + (1 - w) * Math.max(-0.06, Math.min(0.06, dv * 0.0012));
+        th += om * dt;
+        if (w > 0.05) {                                                                   // piernas contra la pared: muelle + amortiguación
+          const c = Math.max(0, wallGap0 - wallGap);
+          om += (c * SC * 60 / Math.max(60, L) - om * 3 * w) * dt;                            // las piernas frenan el golpe
+          if (c > REACH * 0.55 && om < 0) om *= 0.5;
+        }
+        const lim = maxTh(); if (th < -lim) { th = -lim; if (om < 0) om = 0; }
+      }
+      const moving = sv > 0.6 || !!drag;
+      const mx = CX - Math.sin(th) * L, my = Math.cos(th) * L;
+      // ¿llegan los pies a la pared? entonces se inclina hacia atrás como rapelando
+      const onWall = !drag && wallGap < REACH * (w > 0.5 ? 1.35 : 1.2), coming = !drag && om < -0.04 && wallGap < REACH * 4;   // si vuelve hacia la pared, adelanta los pies
+      w += ((onWall ? 1 : coming ? 0.8 : 0) - w) * Math.min(1, dt * 7);
+      const lean = -0.42 * w; rot = th + lean;
+      const rd = [-Math.sin(lean), -Math.cos(lean)];                                   // dirección de la cuerda vista desde el cuerpo
+      set('rope-up', 'd', 'M0 -1 L' + P(rd[0] * 48, rd[1] * 48)); set('rope-chest', 'd', 'M0 -1 L' + P(rd[0] * 20, rd[1] * 20));
+      climb += dt * (moving ? 7 : 0);
+      const wave = !reduce && !moving && Math.abs(om) < 0.05 && (t % 9) < 1.6;
+      // brazos: la mano de arriba agarra la cuerda, la de abajo controla; al moverse se alternan
+      const up = moving ? Math.sin(climb) * 3 : 0;
+      const on = k => [rd[0] * k, rd[1] * k], ab = armTo([-8.4, -18.2], on(43 - up), -5), af = armTo([-1.4, -18], wave ? [-12 - 1.6 * Math.sin(t * 13), -34 + Math.cos(t * 13)] : on(35.5 + up), wave ? -3 : 3.4);
+      limb('arm-b', ...ab); set('hand-b', 'cx', ab[2][0]); set('hand-b', 'cy', ab[2][1] + 1);
+      limb('arm-f', ...af); set('hand-f', 'cx', af[2][0]); set('hand-f', 'cy', af[2][1] + 1);
+      // piernas: cuelgan relajadas, se retrasan con la inercia y se recogen un poco al moverse
+      const lag = reduce ? 0 : Math.max(-0.9, Math.min(0.9, -om * 0.35 - lv * 0.0006));
+      const sway = reduce ? 0 : 0.07 * Math.sin(t * 1.7);
+      const lb0 = legAt(HIPS[0], 0.1 + lag + sway, 0.35 + (moving ? 0.35 + 0.25 * Math.sin(climb) : 0.1)), lf0 = legAt(HIPS[1], -0.08 + lag * 0.9 - sway, 0.25 + (moving ? 0.3 - 0.25 * Math.sin(climb) : 0.05));
+      if (w > 0.02) {
+        const step = moving ? 3.2 * Math.sin(climb * 0.8) : 0;                          // al bajar va dando pasos por la pared
+        const legs = [[lb0, 'leg-b', 'boot-b', 3 + step], [lf0, 'leg-f', 'boot-f', -1 - step]].map(([hang, id, bid, drop], i) => {
+          const hw = toWorld(HIPS[i][0], HIPS[i][1], mx, my), tgt = toLocal(W - 2.2 * SC, hw[1] + drop * SC, mx, my);
+          const wall = ik(HIPS[i], tgt), mix = (A, B) => [A[0] + (B[0] - A[0]) * w, A[1] + (B[1] - A[1]) * w];
+          const pts = [HIPS[i], mix(hang[1], wall[1]), mix(hang[2], wall[2])]; limb(id, ...pts);
+          if (w > 0.5) wallBoot(bid, pts[2]); else boot(bid, pts[1], pts[2], 0);
+        });
+      } else { limb('leg-b', ...lb0); boot('boot-b', lb0[1], lb0[2], 0.1 + lag + sway - 0.35); limb('leg-f', ...lf0); boot('boot-f', lf0[1], lf0[2], -0.08 + lag - sway - 0.25); }
+      headG.setAttribute('transform', 'rotate(' + (reduce ? 0 : (th * 18 + 4 * Math.sin(t * 0.6) + (wave ? 7 : 0))).toFixed(2) + ' -5.5 -21)');
+      const slack = Math.max(0, Math.min(14, -lv * 0.02));
+      cable.setAttribute('d', 'M' + P(CX, 0) + ' Q' + P((CX + mx) / 2 + Math.cos(th) * slack, my / 2 + Math.sin(th) * slack) + ' ' + P(mx, my));
+      man.setAttribute('transform', 'translate(' + P(mx, my) + ')');
+      swing.setAttribute('transform', 'rotate(' + (rot * 180 / Math.PI).toFixed(2) + ')');
+      sc.setAttribute('transform', 'scale(' + SC + ')');
+      depth.setAttribute('x', mx - 44); depth.setAttribute('y', my + 4);
+      depth.textContent = (prog * 12).toFixed(1).replace('.', document.documentElement.lang === 'es' ? ',' : '.') + ' m';
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  })();
+
+
+  // Tres páginas en un archivo: la entrada (sin #), "Qué es Bungy" (#web y sus secciones) y la Tienda (#tienda y sus secciones).
+  // Cada bloque lleva data-only="web|shop"; body[data-view] decide cuál se ve. Entrar por un enlace directo abre la página que toque.
+  const gate = document.getElementById('gate');
+  const SHOP = /^#(tienda|material|alquiler|plataformas)$/, WEB = /^#(web|inicio|servicios|espana|proyectos|proceso|seguridad|faq|area)$/;
+  const logoTop = document.querySelector('.top .logo');
+  let view = '';
+  const setView = v => { if (v === view) return false; view = v; document.body.dataset.view = v; logoTop.setAttribute('href', v === 'shop' ? '#tienda' : '#inicio'); dispatchEvent(new Event('resize')); return true; };
+  let first = true, lastRouted = null;
+  const route = (h = location.hash) => {
+    lastRouted = h;
+    if (!h || h === '#') { // la entrada
+      if (!view) setView('web');
+      gate.hidden = false; gate.classList.remove('off'); gate.inert = false; document.body.style.overflow = 'hidden';
+      return;
+    }
+    const target = SHOP.test(h) ? 'shop' : (WEB.test(h) || !view) ? 'web' : view;
+    const gateOpen = !gate.hidden && !gate.classList.contains('off');
+    const apply = () => {
+      const changed = setView(target);
+      gate.classList.add('off'); gate.inert = true; document.body.style.overflow = '';
+      const behavior = changed || first ? 'instant' : 'smooth'; // cambiar de página no se anima; moverse dentro de ella, sí
+      first = false;
+      if (h === '#web' || h === '#tienda' || h === '#inicio') scrollTo({ top: 0, behavior });
+      else { const t = document.getElementById(h.slice(1)); if (t) t.scrollIntoView({ behavior }); }
+    };
+    // Entre páginas (o al salir de la entrada) baja una cortina roja; dentro de la misma página, no
+    if (!first && !reduce && (target !== view || gateOpen)) wipe(apply); else apply();
+  };
+  const curtain = document.getElementById('curtain');
+  let wiping = false;
+  const wipe = fn => {
+    if (wiping) { fn(); return; }
+    wiping = true; curtain.classList.remove('out'); curtain.classList.add('in');
+    setTimeout(() => { fn(); curtain.classList.remove('in'); curtain.classList.add('out'); setTimeout(() => { curtain.classList.remove('out'); wiping = false; }, 700); }, 640);
+  };
+  // La navegación no depende de que el navegador siga el enlace: cambiamos la página nosotros y, si se puede, también la URL
+  // (en visores de archivos y en algunas apps los enlaces #ancla no navegan).
+  const nav = h => { try { if (location.hash !== h) location.hash = h; } catch (e) {} route(h); };
+  gate.querySelectorAll('[data-go]').forEach(el => el.addEventListener('click', e => { e.preventDefault(); nav(el.dataset.go === 'shop' ? '#tienda' : '#web'); }));
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="#"]'); if (!a || a.hasAttribute('data-area') || a.hasAttribute('data-need')) return;
+    const h = a.getAttribute('href'); if (h.length < 2) return;
+    e.preventDefault(); nav(h);
+  });
+  addEventListener('hashchange', () => { if (location.hash !== lastRouted) route(); }); route(); first = false;
+
+  // Cabecera que se compacta al hacer scroll
+  const header = document.getElementById('top');
+  const onScroll = () => header.classList.toggle('scrolled', scrollY > 40);
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  // Menú lateral móvil
+  const drawer = document.getElementById('drawer'), burger = document.getElementById('burger');
+  const setDrawer = open => { drawer.classList.toggle('open', open); drawer.setAttribute('aria-hidden', !open); drawer.inert = !open; burger.setAttribute('aria-expanded', open);
+    if (open) drawer.querySelector('.close').focus(); else if (drawer.contains(document.activeElement)) burger.focus({ preventScroll: true }); };
+  drawer.inert = true;
+  burger.addEventListener('click', () => setDrawer(true));
+  drawer.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', () => setDrawer(false)));
+  addEventListener('keydown', e => { if (e.key === 'Escape') setDrawer(false); });
+
+  // Luz que sigue al ratón en las tarjetas de servicio
+  document.querySelectorAll('.svc').forEach(card => card.addEventListener('pointermove', e => {
+    const r = card.getBoundingClientRect();
+    card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  }));
+
+  // Entrada de bloques al hacer scroll (solo desplazamiento, el contenido ya es visible)
+  if (!reduce && 'IntersectionObserver' in window) {
+    const els = [...document.querySelectorAll('.rv')].filter(el => el.getBoundingClientRect().top > innerHeight);
+    els.forEach((el, i) => { el.classList.add('pre'); el.style.transitionDelay = (i % 3) * 80 + 'ms'; });
+    const io = new IntersectionObserver(entries => entries.forEach(en => {
+      if (en.isIntersecting) { en.target.classList.remove('pre'); io.unobserve(en.target); }
+    }), { rootMargin: '0px 0px -10% 0px' });
+    els.forEach(el => io.observe(el));
+  }
+
+  // Línea de proceso que se ilumina paso a paso
+  const steps = [...document.querySelectorAll('.step')];
+  const lightSteps = () => steps.forEach((s, i) => setTimeout(() => s.classList.add('lit'), reduce ? 0 : i * 220));
+  if ('IntersectionObserver' in window) {
+    const so = new IntersectionObserver(en => { if (en[0].isIntersecting) { lightSteps(); so.disconnect(); } }, { threshold: .3 });
+    so.observe(document.getElementById('steps'));
+  } else lightSteps();
+
+  // Formulario de demostración
+  document.getElementById('form').addEventListener('submit', e => { e.preventDefault(); document.getElementById('sent').hidden = false; });
+  // Desde Material: el formulario llega con la opción marcada y el equipo escrito
+  document.querySelectorAll('[data-need]').forEach(a => a.addEventListener('click', e => {
+    e.preventDefault(); openRig(a);
+    document.getElementById('f-need').value = a.dataset.need;
+    const msg = document.getElementById('f-msg'), es = document.documentElement.lang === 'es';
+    const item = a.closest('.gcard').querySelector('h4').textContent.trim();   // en el idioma que se esté viendo
+    const line = (a.dataset.need === 'hire' ? (es ? 'Disponibilidad de: ' : 'Availability for: ') : (es ? 'Presupuesto de: ' : 'Quote for: ')) + item;
+    if (!msg.value.includes(item)) msg.value = (msg.value ? msg.value + '\n' : '') + line;
+  }));
+  // Adjuntos: muestra lo que se ha elegido
+  const files = document.getElementById('f-files'), fList = document.getElementById('f-list');
+  files.addEventListener('change', () => { fList.textContent = [...files.files].map(f => f.name + ' · ' + Math.max(1, Math.round(f.size / 1024)) + ' KB').join('\n'); });
+
+  // Contacto rápido: aparece al pasar la portada y se esconde en el formulario.
+  // Cuando haya teléfono, basta con rellenar CONTACT y los botones abren WhatsApp y la llamada directamente.
+  const CONTACT = { phone: '' };   // formato internacional sin espacios, p. ej. '34600000000'
+  const quick = document.getElementById('quick'), heroEl = document.getElementById('inicio'), contactEl = document.getElementById('contacto');
+  if (CONTACT.phone) { document.getElementById('q-wa').href = 'https://wa.me/' + CONTACT.phone; document.getElementById('q-call').href = 'tel:+' + CONTACT.phone; }
+  const quickVis = () => { const pastHero = heroEl.getBoundingClientRect().bottom < innerHeight * .4, c = contactEl.getBoundingClientRect(), inContact = c.top < innerHeight * .8 && c.bottom > 0; quick.classList.toggle('on', pastHero && !inContact); };
+  addEventListener('scroll', quickVis, { passive: true }); addEventListener('resize', quickVis); quickVis();
+
+  // Fotos provisionales: escenas dibujadas
+  const scenes = [
+    ['#2a1514', '#0b0a0a', 'beam'], ['#1d1515', '#0b0a0a', 'fly'], ['#261211', '#0b0a0a', 'jump'],
+    ['#1f1a19', '#0b0a0a', 'arch'], ['#2b1817', '#0b0a0a', 'cam']
+  ];
+  document.querySelectorAll('[data-ph]').forEach(el => {
+    const [a, b, kind] = scenes[+el.dataset.ph];
+    const amber = '#ec2a1f', steel = '#463b3a';
+    const shapes = {
+      beam: `<path d="M40 70h320M40 70v170M360 70v170" stroke="${steel}" stroke-width="6"/><path d="M40 70l20 20 20-20 20 20 20-20 20 20 20-20 20 20 20-20 20 20 20-20 20 20 20-20 20 20 20-20 20 20" stroke="${steel}" stroke-width="2" fill="none"/><rect x="120" y="150" width="160" height="8" fill="${amber}"/><circle cx="200" cy="128" r="9" fill="#f2eeed"/><path d="M200 137v14M188 146h24" stroke="#f2eeed" stroke-width="4"/>`,
+      fly: `<path d="M0 30h400" stroke="${steel}" stroke-width="6"/><path d="M200 30v110" stroke="${amber}" stroke-width="2"/><circle cx="200" cy="150" r="10" fill="#f2eeed"/><path d="M200 160v30M178 170l22-8 22 8M190 220l10-30 10 30" stroke="#f2eeed" stroke-width="4" fill="none"/><ellipse cx="200" cy="270" rx="150" ry="14" fill="${amber}" opacity=".18"/>`,
+      jump: `<path d="M120 40h160" stroke="${steel}" stroke-width="8"/><path d="M200 40c-14 30 14 60 0 90s14 50 0 70" stroke="${amber}" stroke-width="3" fill="none"/><circle cx="200" cy="218" r="10" fill="#f2eeed"/><path d="M200 208v-24M186 196l14 6 14-6" stroke="#f2eeed" stroke-width="4" fill="none"/>`,
+      arch: `<path d="M60 260V90h280v170" stroke="${steel}" stroke-width="10" fill="none"/><path d="M60 90l20 20 20-20 20 20 20-20 20 20 20-20 20 20 20-20 20 20 20-20 20 20 20-20 20 20 20-20" stroke="${steel}" stroke-width="2" fill="none"/><path d="M110 260l40-120h100l40 120" fill="${amber}" opacity=".16"/>`,
+      cam: `<path d="M60 250l80-160 80 160M100 170h80" stroke="${steel}" stroke-width="6" fill="none"/><path d="M140 90h170" stroke="${steel}" stroke-width="6"/><rect x="290" y="96" width="60" height="38" fill="#f2eeed"/><path d="M350 106l26-12v42l-26-12" fill="#f2eeed"/><circle cx="140" cy="90" r="8" fill="${amber}"/>`
+    };
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="g" cx=".5" cy=".2" r=".9"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></radialGradient></defs><rect width="400" height="300" fill="url(#g)"/><path d="M200 0L110 300h180z" fill="#fff" opacity=".04"/>${shapes[kind]}</svg>`;
+    el.style.background = `center/cover no-repeat url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+  });
+
+  // Hero: estructura de truss con focos y un salto con elástico
+  const cv = document.getElementById('rig'), ctx = cv.getContext('2d');
+  let W, H, dpr, t0 = performance.now();
+  const resize = () => { dpr = Math.min(devicePixelRatio || 1, 2); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+  addEventListener('resize', () => { resize(); kick(); }); resize();
+  const dust = Array.from({ length: 70 }, () => ({ x: Math.random(), y: Math.random(), r: Math.random() * 1.6 + .3, s: Math.random() * .02 + .005 }));
+  const jumper = { y: 0, v: 0, phase: 'drop', timer: 0 };
+  // Animación de la portada: salto con elástico o cámara en cable, a elegir con el selector
+  let heroMode = 'jump';
+  try { if (localStorage.getItem('bungy-hero') === 'cam') heroMode = 'cam'; } catch (e) {}
+  const pickBtns = document.querySelectorAll('.pick button');
+  const setHero = m => { heroMode = m; jumper.y = 0; jumper.v = 0; jumper.phase = 'drop'; pickBtns.forEach(b => b.setAttribute('aria-pressed', b.dataset.hero === m)); try { localStorage.setItem('bungy-hero', m); } catch (e) {} kick(); };
+  pickBtns.forEach(b => b.addEventListener('click', () => setHero(b.dataset.hero)));
+  pickBtns.forEach(b => b.setAttribute('aria-pressed', b.dataset.hero === heroMode));
+  let px = 0, py = 0;
+  addEventListener('pointermove', e => { px = e.clientX / innerWidth - .5; py = e.clientY / innerHeight - .5; }, { passive: true });
+
+  function truss(x1, y1, x2, y2, depth) {
+    const len = Math.hypot(x2 - x1, y2 - y1), n = Math.max(2, Math.round(len / depth));
+    const ux = (x2 - x1) / len, uy = (y2 - y1) / len, nx = -uy * depth, ny = ux * depth;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+    ctx.moveTo(x1 + nx, y1 + ny); ctx.lineTo(x2 + nx, y2 + ny);
+    for (let i = 0; i <= n; i++) {
+      const ax = x1 + ux * len * i / n, ay = y1 + uy * len * i / n;
+      ctx.moveTo(ax, ay); ctx.lineTo(ax + nx, ay + ny);
+      if (i < n) { const bx = x1 + ux * len * (i + 1) / n, by = y1 + uy * len * (i + 1) / n; ctx.moveTo(i % 2 ? ax : ax + nx, i % 2 ? ay : ay + ny); ctx.lineTo(i % 2 ? bx + nx : bx, i % 2 ? by + ny : by); }
+    }
+    ctx.stroke();
+  }
+
+  function frame(now) {
+    const t = (now - t0) / 1000, dt = 1 / 60;
+    ctx.clearRect(0, 0, W, H);
+    const ox = px * -18, oy = py * -10;
+    const mob = W <= 900;
+    const left = (mob ? W * .06 : W * .52) + ox, right = (mob ? W * .94 : W * .96) + ox, top = (mob ? 104 : H * .2) + oy, floor = mob ? 312 : H * .96;
+    const d = Math.max(14, W * .016);
+
+    // Focos
+    ctx.globalCompositeOperation = 'lighter';
+    [[.62, 0], [.78, 1.7], [.92, 3.1]].forEach(([fx, ph], i) => {
+      const sx = left + (right - left) * (fx - .52) / .44, sy = top + d;
+      const ang = Math.sin(t * .5 + ph) * .35 + (i - 1) * .12;
+      const tx = sx + Math.sin(ang) * H, ty = sy + Math.cos(ang) * H;
+      const g = ctx.createLinearGradient(sx, sy, tx, ty);
+      g.addColorStop(0, i === 1 ? 'rgba(236,42,31,.34)' : 'rgba(255,240,235,.13)');
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.beginPath();
+      const spread = H * .2;
+      ctx.moveTo(sx, sy);
+      ctx.lineTo(tx - Math.cos(ang) * spread, ty + Math.sin(ang) * spread);
+      ctx.lineTo(tx + Math.cos(ang) * spread, ty - Math.sin(ang) * spread);
+      ctx.fill();
+    });
+    // Polvo en suspensión
+    dust.forEach(p => {
+      p.y -= p.s * dt; if (p.y < 0) p.y = 1;
+      ctx.fillStyle = 'rgba(232,235,239,' + (.12 + .25 * Math.sin(t + p.x * 9) ** 2) + ')';
+      ctx.beginPath(); ctx.arc(W * (.45 + p.x * .55) + ox * .5, H * p.y, p.r, 0, 7); ctx.fill();
+    });
+    ctx.globalCompositeOperation = 'source-over';
+
+    // Estructura
+    ctx.strokeStyle = '#463b3a'; ctx.lineWidth = 1.4;
+    truss(left, top, right, top, d);
+    truss(left, top, left, floor, d);
+    truss(right - d, top, right - d, floor, d);
+    ctx.fillStyle = '#332a29';
+    [[.62], [.78], [.92]].forEach(([fx]) => { ctx.fillRect(left + (right - left) * (fx - .52) / .44 - 7, top + d, 14, 14); });
+
+    if (heroMode === 'cam') {
+      // Cámara volando en cable (cablecam): cruza la estructura despacio
+      const span = right - left - 3 * d, u = reduce ? .5 : .5 + .36 * Math.sin(t * .32);
+      const cx = left + 1.5 * d + span * u, cy = top + (floor - top) * .42 + (reduce ? 0 : 5 * Math.sin(t * .9));
+      const sc = Math.max(.75, Math.min(1.25, W / 1100)), tilt = reduce ? 0 : Math.cos(t * .32) * .06;
+      ctx.strokeStyle = '#ec2a1f'; ctx.lineWidth = 1.6; ctx.beginPath();
+      ctx.moveTo(left + d, top + d); ctx.quadraticCurveTo((left + d + cx) / 2, cy - 18 * sc + 10, cx, cy - 18 * sc);
+      ctx.moveTo(right - 2 * d, top + d); ctx.quadraticCurveTo((right - 2 * d + cx) / 2, cy - 18 * sc + 10, cx, cy - 18 * sc); ctx.stroke();
+      ctx.save(); ctx.translate(cx, cy); ctx.rotate(tilt); ctx.scale(sc, sc);
+      ctx.strokeStyle = '#8a7f7d'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, -18); ctx.lineTo(0, -10); ctx.stroke();   // cabeza estabilizada
+      ctx.fillStyle = '#2a2323'; ctx.fillRect(-16, -11, 32, 5);
+      ctx.fillStyle = '#f2eeed'; ctx.fillRect(-22, -6, 36, 22);                                                           // cuerpo
+      ctx.beginPath(); ctx.arc(-12, -14, 7, 0, 7); ctx.arc(4, -14, 7, 0, 7); ctx.fill();                                  // bobinas
+      ctx.fillStyle = '#0b0a0a'; ctx.beginPath(); ctx.arc(-12, -14, 2.4, 0, 7); ctx.arc(4, -14, 2.4, 0, 7); ctx.fill();
+      ctx.fillStyle = '#f2eeed'; ctx.beginPath(); ctx.moveTo(14, 0); ctx.lineTo(26, -6); ctx.lineTo(26, 20); ctx.lineTo(14, 12); ctx.fill();   // objetivo
+      ctx.fillStyle = (reduce || Math.sin(t * 4) > 0) ? '#ec2a1f' : '#5a1a16'; ctx.beginPath(); ctx.arc(-16, 0, 2.4, 0, 7); ctx.fill();       // REC
+      ctx.restore();
+    } else {
+      // Salto con elástico (muelle amortiguado, se relanza cada pocos segundos)
+      const anchorX = W * (mob ? .5 : .70) + ox, anchorY = top + d;
+      const restLen = (floor - anchorY) * (mob ? .52 : .55);
+      if (!reduce) {
+        if (jumper.phase === 'drop') { jumper.v += 900 * dt; if (jumper.y > restLen * .6) jumper.phase = 'spring'; }
+        else { const k = 9, c = 1.1; const a = -k * (jumper.y - restLen) - c * jumper.v; jumper.v += (a + 220) * dt; jumper.timer += dt; if (jumper.timer > 7) { jumper.phase = 'up'; jumper.timer = 0; } }
+        if (jumper.phase === 'up') { jumper.v = 0; jumper.y += (0 - jumper.y) * .04; if (jumper.y < 2) { jumper.y = 0; jumper.phase = 'drop'; } }
+        else jumper.y += jumper.v * dt;
+      } else jumper.y = restLen;
+      const jy = anchorY + Math.max(0, jumper.y);
+      // Cuerda: zigzag que se estira
+      ctx.strokeStyle = '#ec2a1f'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(anchorX, anchorY);
+      const segs = 14, slack = Math.max(0, 1 - (jumper.y / restLen)) * 5 + 2;
+      for (let i = 1; i <= segs; i++) ctx.lineTo(anchorX + (i % 2 ? slack : -slack) * (i < segs ? 1 : 0), anchorY + (jy - anchorY) * i / segs);
+      ctx.stroke();
+      // Figura cabeza abajo
+      ctx.strokeStyle = '#f2eeed'; ctx.fillStyle = '#f2eeed'; ctx.lineWidth = 3.2; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(anchorX - 6, jy - 6); ctx.lineTo(anchorX, jy + 4); ctx.lineTo(anchorX + 6, jy - 6); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(anchorX, jy + 4); ctx.lineTo(anchorX, jy + 26); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(anchorX - 11, jy + 30); ctx.lineTo(anchorX, jy + 18); ctx.lineTo(anchorX + 11, jy + 30); ctx.stroke();
+      ctx.beginPath(); ctx.arc(anchorX, jy + 34, 6, 0, 7); ctx.fill();
+    }
+
+  }
+  // Solo anima mientras la portada está a la vista; con movimiento reducido pinta un solo fotograma
+  let heroOn = true, heroRaf = 0;
+  const loop = now => { heroRaf = 0; frame(now); if (!reduce && heroOn) heroRaf = requestAnimationFrame(loop); };
+  const kick = () => { if (!heroRaf) heroRaf = requestAnimationFrame(loop); };
+  if ('IntersectionObserver' in window) new IntersectionObserver(en => { heroOn = en[0].isIntersecting; if (heroOn) kick(); }).observe(cv);
+  kick();
+
+  // ---------- Panel de disponibilidad: baja colgado de dos motores con física de muelle ----------
+  const rig = document.getElementById('askrig'), rigTitle = document.getElementById('rig-title'), rigSpec = document.getElementById('rig-spec'), rigForm = document.getElementById('rig-form'), rigSent = document.getElementById('rig-sent');
+  let rp = 0, rv = 0, rTarget = 0, rRaf = 0, rLast = 0, rTrigger = null;
+  const rigStep = now => {
+    const dt = Math.min(.034, (now - rLast) / 1000 || .016); rLast = now;
+    // muelle poco amortiguado: llega, rebota un poco (como un motor que frena) y se asienta
+    rv += ((rTarget - rp) * 110 - rv * 10.5) * dt; rp += rv * dt;
+    rig.style.setProperty('--p', rp.toFixed(4)); rig.style.setProperty('--sw', (Math.max(-2.5, Math.min(2.5, -rv * .6))).toFixed(3));
+    const settled = Math.abs(rTarget - rp) < .002 && Math.abs(rv) < .01;
+    rig.classList.toggle('moving', !settled);
+    if (settled) { rp = rTarget; rv = 0; rig.style.setProperty('--p', rp); rig.style.setProperty('--sw', 0); rRaf = 0; if (rTarget === 0) { rig.hidden = true; if (rTrigger) rTrigger.focus({ preventScroll: true }); } return; }
+    rRaf = requestAnimationFrame(rigStep);
+  };
+  const rigGo = t => { rTarget = t; if (!rRaf) { rLast = performance.now(); rRaf = requestAnimationFrame(rigStep); } };
+  const openRig = a => {
+    const card = a.closest('.gcard'); rTrigger = a;
+    rig.dataset.mode = a.dataset.need;
+    rig.querySelector('.k-hire').hidden = a.dataset.need !== 'hire'; rig.querySelector('.k-buy').hidden = a.dataset.need === 'hire';
+    rigTitle.textContent = card.querySelector('h4').textContent.trim();
+    rigSpec.textContent = [...card.querySelectorAll('.gspec dt')].map(dt => dt.textContent.trim() + ' ' + dt.nextElementSibling.textContent.trim()).join(' · ');
+    rigSent.hidden = true;
+    rig.hidden = false; document.body.classList.add('rig-open');
+    if (reduce) { rp = 1; rig.style.setProperty('--p', 1); rTarget = 1; } else rigGo(1);
+    setTimeout(() => { const f = rig.querySelector(a.dataset.need === 'hire' ? '#r-from' : '#r-qty'); if (f && innerWidth > 700) f.focus({ preventScroll: true }); }, reduce ? 0 : 650);
+  };
+  const closeRig = () => { document.body.classList.remove('rig-open'); if (reduce) { rp = 0; rTarget = 0; rig.style.setProperty('--p', 0); rig.hidden = true; if (rTrigger) rTrigger.focus({ preventScroll: true }); } else rigGo(0); };
+  rig.querySelectorAll('[data-rig-close]').forEach(el => el.addEventListener('click', closeRig));
+  addEventListener('keydown', e => { if (e.key === 'Escape' && !rig.hidden && rTarget === 1) closeRig(); });
+  rigForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const email = document.getElementById('r-email');
+    if (!email.value || !email.checkValidity()) { email.focus(); email.style.borderColor = 'var(--amber)'; return; }
+    rigSent.hidden = false;
+    // y lo deja anotado en el formulario de contacto, por si siguen navegando
+    const msg = document.getElementById('f-msg'), es = document.documentElement.lang === 'es';
+    const from = document.getElementById('r-from').value, to = document.getElementById('r-to').value, qty = document.getElementById('r-qty').value;
+    const line = (es ? 'Solicitud enviada: ' : 'Request sent: ') + rigTitle.textContent + ' × ' + qty + (rig.dataset.mode === 'hire' && from ? ' · ' + from + (to ? ' → ' + to : '') : '');
+    if (!msg.value.includes(line)) msg.value = (msg.value ? msg.value + '\n' : '') + line;
+  });
+
+  // ---------- Capa visual ----------
+  if (innerWidth > 900 && !reduce) document.querySelectorAll('video.media.lazy').forEach(v => { v.muted = true; v.autoplay = true; v.load(); const p = v.play(); if (p && p.catch) p.catch(() => {}); });
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  // Foco y paralaje en la entrada
+  gate.addEventListener('pointermove', e => {
+    gate.style.setProperty('--mx', e.clientX + 'px'); gate.style.setProperty('--my', e.clientY + 'px');
+    if (!fine) return;
+    gate.querySelectorAll('.gate-opt').forEach(o => { const r = o.getBoundingClientRect(); const dx = (e.clientX - r.left) / r.width - .5, dy = (e.clientY - r.top) / r.height - .5;
+      const inside = dx > -.5 && dx < .5 && dy > -.5 && dy < .5; const k = inside ? 1 : 0;
+      o.querySelector('.pic').style.transform = `translate(${dx * 18 * k}px, ${dy * 14 * k - (inside ? 6 : 0)}px)`;
+      o.querySelector('.gt').style.transform = `translate(${dx * 8 * k}px, ${dy * 6 * k}px)`; });
+  });
+
+  // Títulos palabra a palabra (se vuelve a trocear al cambiar de idioma)
+  const splitTitles = () => document.querySelectorAll('.sec-head h2, .base h2').forEach(h => {
+    if (h.querySelector('.w')) return;
+    let i = 0; const out = [];
+    h.childNodes.forEach(n => {
+      if (n.nodeType === 3) n.textContent.split(/(\s+)/).forEach(t => { if (!t) return; if (/^\s+$/.test(t)) out.push(' '); else out.push(`<span class="w"><span style="--i:${i++}">${t.replace(/</g, '&lt;')}</span></span>`); });
+      else if (n.nodeName === 'BR') out.push('<br>');
+      else out.push(`<span class="w"><span style="--i:${i++}">${n.outerHTML}</span></span>`);
+    });
+    h.innerHTML = out.join('');
+  });
+  splitTitles();
+  document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', splitTitles));
+
+  // Números fantasma por sección
+  document.querySelectorAll('[data-only="web"] .sec-head > div, [data-only="shop"] .sec-head > div').forEach(d => { const p = d.closest('[data-only]'); d.dataset.n = String([...document.querySelectorAll(`[data-only="${p.dataset.only}"] .sec-head`)].indexOf(d.parentElement) + 1).padStart(2, '0'); });
+
+  // Inclinación 3D de tarjetas y brillo que sigue al ratón
+  if (fine) document.querySelectorAll('.proj, .gcard').forEach(card => {
+    card.addEventListener('pointermove', e => { const r = card.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      card.style.setProperty('--mx', x * 100 + '%'); card.style.setProperty('--my', y * 100 + '%');
+      if (reduce || card.classList.contains('pre')) return;
+      card.classList.add('tilt-on'); card.style.transform = `perspective(900px) rotateX(${(.5 - y) * 7}deg) rotateY(${(x - .5) * 9}deg) translateZ(0)`; });
+    card.addEventListener('pointerleave', () => { card.classList.remove('tilt-on'); card.style.transform = ''; });
+  });
+
+  // Botones magnéticos
+  if (fine && !reduce) document.querySelectorAll('.btn, .swap, .area-link, .gate-opt .ga').forEach(b => {
+    b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .22}px, ${(e.clientY - r.top - r.height / 2) * .3}px)`; });
+    b.addEventListener('pointerleave', () => { b.style.transform = ''; });
+  });
+
+  // Contadores
+  const easeOut = t => 1 - Math.pow(1 - t, 3);
+  const countUp = node => { const end = +node.textContent, t0 = performance.now(), dur = 1400; const step = now => { const k = Math.min(1, (now - t0) / dur); node.textContent = Math.round(end * easeOut(k)); if (k < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); };
+  const facts = document.querySelector('.facts');
+  if (facts && !reduce && 'IntersectionObserver' in window) {
+    const nums = [...facts.querySelectorAll('.v')].map(v => [...v.childNodes].find(n => n.nodeType === 3 && /^\d+$/.test(n.textContent.trim()))).filter(Boolean);
+    new IntersectionObserver((en, o) => { if (en[0].isIntersecting) { nums.forEach(countUp); o.disconnect(); } }, { threshold: .4 }).observe(facts);
+  }
+
+  // Código de tiempo en la portada
+  const tc = document.getElementById('tc');
+  if (tc && !reduce) { const t0 = performance.now(); const pad = n => String(n).padStart(2, '0');
+    const tick = () => { if (heroOn) { const s = (performance.now() - t0) / 1000; tc.textContent = `${pad(Math.floor(s / 3600))}:${pad(Math.floor(s / 60) % 60)}:${pad(Math.floor(s) % 60)}:${pad(Math.floor((s % 1) * 24))}`; } setTimeout(tick, 1000 / 24); }; tick(); }
+
+  // Cursor propio: punto y aro que se agranda sobre enlaces y muestra VIEW sobre las fichas
+  if (fine && !reduce) {
+    const dot = document.querySelector('.cur'), ring = document.querySelector('.cur-ring'); let mx = -100, my = -100, rx = -100, ry = -100, on = false;
+    const classify = t => { if (!t || !t.closest) t = null;
+      document.body.classList.toggle('cur-view', !!(t && t.closest('.proj, .gcard')));
+      document.body.classList.toggle('cur-link', !!(t && t.closest('a, button, summary, label, .pick')));
+      document.body.classList.toggle('cur-hide', !!(t && t.closest('input, textarea, select, iframe, .rope .man'))); };
+    addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; if (!on) { on = true; document.body.classList.add('cur-on'); } classify(e.target); }, { passive: true });
+    addEventListener('scroll', () => { if (on) classify(document.elementFromPoint(mx, my)); }, { passive: true });
+    document.addEventListener('mouseleave', () => document.body.classList.add('cur-hide'));
+    document.addEventListener('mouseenter', () => document.body.classList.remove('cur-hide'));
+    const follow = () => { rx += (mx - rx) * .18; ry += (my - ry) * .18; dot.style.transform = `translate3d(${mx}px, ${my}px, 0)`; ring.style.transform = `translate3d(${rx}px, ${ry}px, 0)`; requestAnimationFrame(follow); }; follow();
+    ring.dataset.label = document.documentElement.lang === 'es' ? 'VER' : 'VIEW';
+    document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => { ring.dataset.label = b.dataset.lang === 'es' ? 'VER' : 'VIEW'; }));
+  }
+})();
+</script>

@@ -1,0 +1,1158 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Bungy System · Área privada</title>
+<meta name="description" content="Bungy System private area: projects, schedule, gear, hours and invoices for clients, crew and office.">
+<meta name="theme-color" content="#110d0d">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: app shell. Sidebar on desktop, bottom tab bar on phone; content as lists and tables a rigger can read at a glance. */
+:root {
+  --bg: #f4f2f1;
+  --surface: #ffffff;
+  --sunk: #ebe7e6;
+  --line: #ddd6d4;
+  --text: #191414;
+  --muted: #6b605e;
+  --red: #d8231a;
+  --red-soft: #fbe3e1;
+  --on-red: #ffffff;
+  --side: #110d0d;
+  --side-text: #efe9e8;
+  --side-muted: #9d918f;
+  --ok: #1f7a4a; --ok-soft: #dcf1e5;
+  --warn: #a35f00; --warn-soft: #fbeccf;
+  --bad: #b3261e; --bad-soft: #fadcd9;
+  --info: #2c5a8a; --info-soft: #dde8f4;
+  --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --body: "Barlow", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d0b0b; --surface: #171313; --sunk: #201a1a; --line: #2f2727; --text: #f1ecea; --muted: #a49896;
+  --red: #ef3a2e; --red-soft: #3a1513; --on-red: #ffffff; --side: #070606; --side-text: #efe9e8; --side-muted: #9d918f;
+  --ok: #5fcf8f; --ok-soft: #123222; --warn: #f0b04a; --warn-soft: #3a2a0f; --bad: #ff7b70; --bad-soft: #3d1614; --info: #7fb2e8; --info-soft: #13253a;
+  color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #0d0b0b; --surface: #171313; --sunk: #201a1a; --line: #2f2727; --text: #f1ecea; --muted: #a49896;
+  --red: #ef3a2e; --red-soft: #3a1513; --on-red: #ffffff; --side: #070606; --side-text: #efe9e8; --side-muted: #9d918f;
+  --ok: #5fcf8f; --ok-soft: #123222; --warn: #f0b04a; --warn-soft: #3a2a0f; --bad: #ff7b70; --bad-soft: #3d1614; --info: #7fb2e8; --info-soft: #13253a;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 400 15px/1.5 var(--body); }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.num, .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+/* Entrada */
+.login { position: relative; min-height: 100%; background: var(--side); color: var(--side-text); display: flex; align-items: center; padding-block: 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.login .in { max-width: 980px; margin: 0 auto; width: 100%; }
+.brand { display: flex; align-items: center; gap: 10px; font: 800 24px/1 var(--display); letter-spacing: .04em; text-transform: uppercase; color: var(--side-text); }
+.brand svg { width: 28px; height: 28px; color: var(--red); flex: none; }
+.login h1 { font: 800 clamp(40px, 6vw, 64px)/.95 var(--display); text-transform: uppercase; margin: 40px 0 12px; }
+.login .sub { color: var(--side-muted); max-width: 56ch; }
+.roles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 34px; }
+.role { text-align: left; background: #1a1414; border: 1px solid #332929; color: var(--side-text); padding: 22px; cursor: pointer; display: flex; flex-direction: column; gap: 10px; transition: border-color .2s, transform .2s; }
+.role:hover { border-color: #ef3a2e; transform: translateY(-2px); }
+.role .k { font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: #ef3a2e; }
+.role .h { display: block; font: 800 30px/1 var(--display); text-transform: uppercase; text-wrap: balance; }
+.role .p { display: block; color: var(--side-muted); font-size: 14px; }
+.role .who { margin-top: auto; padding-top: 12px; border-top: 1px dashed #332929; font: 400 12px/1.4 var(--mono); color: var(--side-muted); }
+.demo-tag { display: inline-block; margin-top: 26px; font: 400 12px/1.4 var(--mono); color: var(--side-muted); border: 1px solid #332929; padding: 6px 10px; }
+
+/* App */
+.app { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: 100%; }
+.side { background: var(--side); color: var(--side-text); padding: 22px 14px; display: flex; flex-direction: column; gap: 22px; position: sticky; top: 0; height: 100vh; }
+.side .brand { font-size: 20px; padding: 0 8px; }
+.nav { display: flex; flex-direction: column; gap: 2px; }
+.nav button { display: flex; align-items: center; gap: 12px; background: none; border: 0; text-align: left; padding: 11px 10px; color: var(--side-muted); cursor: pointer; font-weight: 500; border-left: 2px solid transparent; }
+.nav button svg { width: 18px; height: 18px; flex: none; }
+.nav button:hover { color: var(--side-text); }
+.nav button[aria-current="page"] { color: var(--side-text); border-left-color: var(--red); background: #1c1515; }
+.nav .badge { margin-left: auto; background: var(--red); color: var(--on-red); font: 500 11px/1 var(--mono); padding: 3px 6px; }
+.side .me { margin-top: auto; padding: 12px 8px 0; border-top: 1px solid #2a2222; font-size: 13px; color: var(--side-muted); display: flex; flex-direction: column; gap: 8px; }
+.side .me b { color: var(--side-text); font-weight: 600; }
+.linkbtn { background: none; border: 1px solid #3a3030; color: var(--side-text); padding: 8px 10px; cursor: pointer; font-size: 13px; }
+.linkbtn:hover { border-color: var(--red); }
+
+.main { min-width: 0; padding-block: 28px 60px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.main > .in { max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+.mtop { display: none; }
+.lsw { display: inline-flex; border: 1px solid #3a3030; }
+.lsw button { background: none; border: 0; color: var(--side-muted); font: 500 12px/1 var(--mono); letter-spacing: .08em; padding: 7px 9px; cursor: pointer; }
+.lsw button[aria-pressed="true"] { background: var(--red); color: var(--on-red); }
+.login .lsw { position: absolute; top: max(16px, env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); }
+.mtop .lsw button { padding: 6px 7px; }
+.mtop .acts { display: flex; gap: 6px; margin-top: 4px; justify-content: flex-end; }
+.head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; }
+.head .k { font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--red); margin-bottom: 8px; }
+.head h1 { font: 800 clamp(32px, 4.4vw, 46px)/1 var(--display); text-transform: uppercase; }
+.head .note { color: var(--muted); font-size: 14px; }
+.back { background: none; border: 0; color: var(--muted); cursor: pointer; padding: 0; font-size: 14px; margin-bottom: 6px; }
+.back:hover { color: var(--red); }
+
+.card { background: var(--surface); border: 1px solid var(--line); }
+.card > .ch { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+.card > .ch h2 { font: 700 20px/1.1 var(--display); text-transform: uppercase; letter-spacing: .02em; }
+.card > .ch .meta { font: 400 12px/1 var(--mono); color: var(--muted); }
+.card > .cb { padding: 16px 18px; }
+.grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+.grid3 { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 18px; }
+
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.kpi { background: var(--surface); padding: 16px 18px; display: flex; flex-direction: column; gap: 4px; }
+.kpi .l { font: 500 11px/1.3 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.kpi .v { font: 800 34px/1.05 var(--display); font-variant-numeric: tabular-nums; }
+.kpi .s { font-size: 13px; color: var(--muted); }
+
+.pill { display: inline-flex; align-items: center; gap: 6px; font: 500 11px/1 var(--mono); letter-spacing: .04em; padding: 5px 8px; white-space: nowrap; text-transform: uppercase; }
+.pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.p-ok { background: var(--ok-soft); color: var(--ok); }
+.p-warn { background: var(--warn-soft); color: var(--warn); }
+.p-bad { background: var(--bad-soft); color: var(--bad); }
+.p-info { background: var(--info-soft); color: var(--info); }
+.p-mute { background: var(--sunk); color: var(--muted); }
+
+.bar { display: block; height: 6px; background: var(--sunk); position: relative; overflow: hidden; }
+.row .bar { margin-top: 8px; max-width: 320px; }
+.bar i { position: absolute; inset: 0 auto 0 0; background: var(--red); }
+
+.list { display: flex; flex-direction: column; }
+.row { display: flex; align-items: center; gap: 14px; padding: 13px 18px; border-bottom: 1px solid var(--line); }
+.row:last-child { border-bottom: 0; }
+.row .grow { flex: 1; min-width: 0; }
+.row .grow, .row .t, .row .d { display: block; }
+.row .t { font-weight: 600; }
+.row .d { color: var(--muted); font-size: 13px; }
+button.row { width: 100%; background: none; border: 0; border-bottom: 1px solid var(--line); text-align: left; cursor: pointer; }
+button.row:hover { background: var(--sunk); }
+.chev { color: var(--muted); flex: none; }
+
+.pcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 16px; }
+.pcard { background: var(--surface); border: 1px solid var(--line); text-align: left; padding: 18px; cursor: pointer; display: flex; flex-direction: column; gap: 10px; transition: border-color .2s; }
+.pcard:hover { border-color: var(--red); }
+.pcard .code { font: 500 11px/1 var(--mono); letter-spacing: .1em; color: var(--muted); }
+.pcard .h { display: block; font: 800 26px/1 var(--display); text-transform: uppercase; text-wrap: balance; }
+.pcard .d { display: block; color: var(--muted); font-size: 14px; }
+.pcard .foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+
+.phases { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.ph { border-top: 3px solid var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 3px; }
+.ph.done { border-color: var(--text); }
+.ph.now { border-color: var(--red); }
+.ph .n { font: 500 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.ph.now .n { color: var(--red); }
+.ph b { font-weight: 600; }
+.ph .dt { font: 400 12px/1.3 var(--mono); color: var(--muted); }
+
+.tablewrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { text-align: left; font: 500 11px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 10px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; background: var(--surface); }
+td { padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tr:last-child td { border-bottom: 0; }
+td.r, th.r { text-align: right; }
+tbody tr.click { cursor: pointer; }
+tbody tr.click:hover td { background: var(--sunk); }
+
+.tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.search { flex: 1 1 220px; min-width: 0; padding: 10px 12px; border: 1px solid var(--line); background: var(--surface); color: var(--text); font: inherit; }
+.seg { display: inline-flex; border: 1px solid var(--line); background: var(--surface); flex-wrap: wrap; }
+.seg button { background: none; border: 0; padding: 9px 12px; cursor: pointer; font-size: 13px; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--red); color: var(--on-red); }
+.btn { background: var(--red); color: var(--on-red); border: 0; padding: 10px 14px; cursor: pointer; font-weight: 600; font-size: 14px; }
+.btn.sec { background: var(--surface); color: var(--text); border: 1px solid var(--line); }
+
+
+/* Lista de carga */
+.state.s-devuelto { background: var(--sunk); color: var(--text); border-color: transparent; text-decoration: line-through; }
+.ldlist { display: flex; flex-direction: column; }
+.ldlist .fam { display: flex; justify-content: space-between; padding: 8px 18px; background: var(--sunk); font: 500 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.ldrow { display: flex; align-items: center; gap: 12px; padding: 10px 18px; border-bottom: 1px solid var(--line); }
+.ldrow .t { font-weight: 600; font-size: 14px; }
+.ldrow .d { margin-top: 4px; }
+.ldrow .q, .chk .q { min-width: 48px; text-align: right; font-size: 14px; }
+.ldrow .x { background: none; border: 1px solid var(--line); color: var(--muted); width: 28px; height: 28px; cursor: pointer; font-size: 16px; line-height: 1; }
+.ldrow .x:hover { border-color: var(--bad); color: var(--bad); }
+.chk { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; padding: 14px 18px; background: none; border: 0; border-bottom: 1px solid var(--line); cursor: pointer; color: var(--text); font: inherit; }
+.chk .box { flex: none; width: 26px; height: 26px; border: 2px solid var(--muted); display: grid; place-items: center; }
+.chk.on .box { background: var(--ok); border-color: var(--ok); }
+.chk.on .box::after { content: ""; width: 7px; height: 13px; border: solid #fff; border-width: 0 3px 3px 0; transform: translateY(-2px) rotate(45deg); }
+.chk .t { display: block; font-weight: 600; font-size: 16px; }
+.chk.on .t { color: var(--muted); text-decoration: line-through; }
+.chk .d { display: block; color: var(--bad); font: 500 11px/1 var(--mono); text-transform: uppercase; letter-spacing: .06em; margin-top: 4px; }
+.chk:hover { background: var(--sunk); }
+.ldprog { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--line); }
+.ldprog .cb-row { grid-template-columns: 150px minmax(0, 1fr) 56px; }
+.ldprog .bar i.ok { background: var(--ok); }
+.cb.ok { background: var(--ok-soft); color: var(--ok); font-weight: 600; }
+.cb.bad { background: var(--bad-soft); color: var(--bad); font-weight: 600; }
+.ldtools { display: flex; flex-direction: column; gap: 10px; }
+.ldtools select, .ldtools input { padding: 9px 10px; border: 1px solid var(--line); background: var(--surface); color: var(--text); font: inherit; font-size: 14px; max-width: 100%; }
+.ldtools select { flex: 1 1 200px; min-width: 0; }
+.ldtools input { width: 72px; }
+.state { border: 1px solid var(--line); background: var(--surface); cursor: pointer; padding: 6px 10px; font: 500 11px/1 var(--mono); text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; }
+.state.s-cargado { background: var(--ok-soft); color: var(--ok); border-color: transparent; }
+.state.s-preparado { background: var(--info-soft); color: var(--info); border-color: transparent; }
+.state.s-pendiente { background: var(--sunk); color: var(--muted); }
+
+.day { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 16px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+.day:last-child { border-bottom: 0; }
+.day .dd { display: flex; flex-direction: column; }
+.day .dd .w { font: 500 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.day .dd .n { font: 800 34px/1 var(--display); }
+.day.today .dd .w, .day.today .dd .n { color: var(--red); }
+.slot { display: flex; flex-direction: column; gap: 4px; }
+.slot + .slot { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line); }
+.slot .top { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.slot .time { font: 500 14px/1 var(--mono); }
+.slot .place { color: var(--muted); font-size: 14px; }
+
+.plan { border-collapse: separate; border-spacing: 0; min-width: 760px; }
+.plan th, .plan td { border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); }
+.plan td { padding: 8px; height: 64px; vertical-align: top; width: 13%; }
+.plan td.who { width: 150px; font-weight: 600; background: var(--surface); position: sticky; left: 0; z-index: 1; }
+.plan td.who span { display: block; font-weight: 400; color: var(--muted); font-size: 12px; }
+.plan th.today { color: var(--red); }
+.chip { display: block; padding: 6px 8px; font-size: 12px; line-height: 1.3; border-left: 3px solid var(--c, var(--muted)); background: var(--sunk); }
+.chip b { display: block; font: 500 11px/1.2 var(--mono); }
+
+.alert { display: flex; gap: 12px; align-items: flex-start; padding: 12px 18px; border-bottom: 1px solid var(--line); }
+.alert:last-child { border-bottom: 0; }
+.alert .grow { flex: 1; min-width: 0; }
+.alert .d { color: var(--muted); font-size: 13px; }
+
+.catbars { display: flex; flex-direction: column; gap: 12px; }
+.cb-row { display: grid; grid-template-columns: 110px minmax(0, 1fr) 90px; gap: 10px; align-items: center; font-size: 14px; }
+.cb-row .bar { height: 10px; }
+.cb-row .num { text-align: right; }
+
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) translateY(20px); background: var(--text); color: var(--bg); padding: 12px 16px; font-size: 14px; opacity: 0; pointer-events: none; transition: .25s; z-index: 100; max-width: calc(100% - 32px); }
+.toast.show { opacity: 1; transform: translateX(-50%); }
+
+.tabbar { display: none; }
+.hbox { display: flex; flex-direction: column; gap: 8px; }
+.hbox .hhead { display: flex; align-items: center; gap: 10px; }
+.hbox .d { color: var(--muted); font-size: 13px; }
+.hform { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+.hform label { display: flex; flex-direction: column; gap: 4px; font: 500 11px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.hform input { font: 400 15px/1.2 var(--mono); padding: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--text); width: 110px; }
+.hform input[type="number"] { width: 90px; }
+.hbtns { display: flex; gap: 8px; }
+tr.editing td { background: var(--sunk); }
+.hacts { white-space: nowrap; }
+@media (max-width: 860px) { .hacts { white-space: normal; padding-left: 4px; } .htable td, .htable th { padding-left: 6px; padding-right: 6px; } .htable .pill { font-size: 10px; padding: 4px 6px; } .hacts .pdfbtn { display: block; width: 100%; margin: 3px 0; padding: 7px 5px; } }
+.pdfbtn.ok { border-color: transparent; background: var(--ok-soft); color: var(--ok); }
+.cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 1px; background: var(--line); border-top: 1px solid var(--line); }
+.cal-h { background: var(--surface); text-align: center; font: 500 11px/1 var(--mono); color: var(--muted); padding: 10px 0; }
+.cal-c { background: var(--surface); border: 0; min-height: 84px; padding: 8px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; cursor: pointer; min-width: 0; }
+.cal-c.empty { background: var(--sunk); cursor: default; }
+.cal-c:hover { background: var(--sunk); }
+.cal-c .dn { font: 700 15px/1 var(--body); font-variant-numeric: tabular-nums; }
+.cal-c.today .dn { background: var(--red); color: var(--on-red); padding: 3px 5px; margin: -3px -5px; }
+.cal-c.sel { box-shadow: inset 0 0 0 2px var(--red); }
+.cal-c .lbl { font-size: 11px; line-height: 1.2; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.cal-c .dots { display: flex; gap: 3px; margin-top: auto; }
+.cal-c .dots i, .cal-key i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.cal-key { display: flex; flex-wrap: wrap; gap: 14px; padding: 12px 18px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
+.cal-key span { display: inline-flex; align-items: center; gap: 6px; }
+.calnav { background: none; border: 1px solid var(--line); width: 36px; height: 36px; cursor: pointer; font-size: 18px; color: var(--text); }
+.calnav:hover { border-color: var(--red); color: var(--red); }
+.linkish { background: none; border: 0; padding: 4px 0 0; color: var(--red); cursor: pointer; font-weight: 600; font-size: 13px; }
+.pdfbtn { border: 1px solid var(--line); background: var(--surface); color: var(--text); font: 500 11px/1 var(--mono); padding: 7px 9px; cursor: pointer; white-space: nowrap; }
+.pdfbtn:hover { border-color: var(--red); color: var(--red); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+tfoot td { border-bottom: 0; padding-block: 8px; }
+tfoot tr:first-child td { border-top: 1px solid var(--line); padding-top: 14px; }
+tfoot .sumlbl { color: var(--muted); text-align: right; }
+tfoot .tot td { font-weight: 700; font-size: 16px; padding-bottom: 14px; }
+tfoot .tot .sumlbl { color: var(--text); }
+.nowrap { white-space: nowrap; }
+.mute { color: var(--muted); }
+.sub12 { color: var(--muted); font-size: 12px; }
+.stack { display: flex; flex-direction: column; gap: 18px; }
+.cb.col { display: flex; flex-direction: column; gap: 16px; }
+.cb.bt { border-top: 1px solid var(--line); }
+.card > .ch h2.plain { text-transform: none; }
+.kpis.k3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.kpi .v.bad { color: var(--bad); }
+.alert .t { font-weight: 600; }
+.tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.tools .d { color: var(--muted); font-size: 13px; }
+.only-m.name { font-family: var(--body); font-size: 13px; white-space: normal; }
+.only-m.mt6 { margin-top: 6px; }
+span.state { cursor: default; }
+.grp { font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: -8px; }
+
+@media (max-width: 860px) {
+  .app { grid-template-columns: minmax(0, 1fr); align-content: start; }
+  .side { display: none; }
+  .mtop { display: flex; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--side); color: var(--side-text); align-items: center; justify-content: space-between; gap: 10px; padding-block: 12px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--side); }
+  .mtop .brand { font-size: 18px; }
+  .mtop .who { font-size: 12px; color: var(--side-muted); text-align: right; }
+  .main { padding-block: 20px calc(96px + env(safe-area-inset-bottom, 0px)); }
+  .tabbar { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--side); border-top: 1px solid #2a2222; overflow-x: auto; padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
+  .tabbar button { flex: 1 0 74px; background: none; border: 0; color: var(--side-muted); display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 4px 12px; font-size: 11px; cursor: pointer; border-top: 2px solid transparent; }
+  .tabbar button svg { width: 20px; height: 20px; }
+  .tabbar button[aria-current="page"] { color: var(--side-text); border-top-color: var(--red); }
+  .grid2, .grid3 { grid-template-columns: minmax(0, 1fr); }
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .roles { grid-template-columns: minmax(0, 1fr); }
+  .phases { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .ph { border-top: 0; border-left: 3px solid var(--line); padding: 6px 0 10px 12px; }
+  .ph.done { border-color: var(--text); } .ph.now { border-color: var(--red); }
+  .day { grid-template-columns: 60px minmax(0, 1fr); gap: 12px; }
+  .hide-m { display: none; }
+}
+.only-m { display: none; }
+@media (max-width: 860px) { .cal-c { min-height: 56px; padding: 6px 4px; } .cal-c .lbl { display: none; } .only-m { display: block; } tfoot .cs { text-align: left; } td, th { padding-left: 10px; padding-right: 10px; } .pdfbtn { padding: 7px 7px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+</head><body><div id="root"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+(function () {
+// ---------- Datos de ejemplo ----------
+const TODAY = '2026-10-23';
+const CLIENTS = {
+  c1: { name: 'Hollow Oak Productions', country: 'Estados Unidos', contact: 'Rachel Moore · Line producer' },
+  c2: { name: 'Northlight Pictures', country: 'Reino Unido', contact: 'Tom Hughes · Production manager' },
+  c3: { name: 'Plató Norte TV', country: 'España', contact: 'Inés Carrasco · Producción' },
+  c4: { name: 'Atlántida Films', country: 'España', contact: 'Pablo Ferrer · Productor' }
+};
+const EMPLOYEES = {
+  e1: { name: 'Javi Ortega', role: 'Jefe de rigging', color: '#d8231a' },
+  e2: { name: 'Marta Gil', role: 'Rigger', color: '#2c5a8a' },
+  e3: { name: 'Luis Peña', role: 'Técnico de vuelos', color: '#1f7a4a' },
+  e4: { name: 'Sara Ruiz', role: 'Almacén y logística', color: '#a35f00' }
+};
+const ITEMS = {
+  // Grapas
+  g1: { name: 'Grapa fija 48–51 mm', fam: 'Grapas fijas', cat: 'Estructura', total: 400, rev: '2027-05-01' },
+  g2: { name: 'Grapa fija 35 mm', fam: 'Grapas fijas', cat: 'Estructura', total: 120, rev: '2027-05-01' },
+  g3: { name: 'Media grapa 48–51 mm', fam: 'Grapas fijas', cat: 'Estructura', total: 150, rev: '2027-05-01' },
+  g4: { name: 'Grapa giratoria 48–51 mm', fam: 'Grapas giratorias', cat: 'Estructura', total: 300, rev: '2027-05-01' },
+  g5: { name: 'Grapa giratoria 35 mm', fam: 'Grapas giratorias', cat: 'Estructura', total: 80, rev: '2027-05-01' },
+  // Tubos
+  t1: { name: 'Tubo Ø 48 mm · 1 m', fam: 'Tubos', cat: 'Estructura', total: 60, rev: '2027-05-01' },
+  t2: { name: 'Tubo Ø 48 mm · 2 m', fam: 'Tubos', cat: 'Estructura', total: 80, rev: '2027-05-01' },
+  t3: { name: 'Tubo Ø 48 mm · 3 m', fam: 'Tubos', cat: 'Estructura', total: 80, rev: '2027-05-01' },
+  t4: { name: 'Tubo Ø 48 mm · 4 m', fam: 'Tubos', cat: 'Estructura', total: 40, rev: '2027-05-01' },
+  t5: { name: 'Tubo Ø 48 mm · 6 m', fam: 'Tubos', cat: 'Estructura', total: 30, rev: '2027-05-01' },
+  // Truss
+  tr2: { name: 'Truss cuadrado 290 mm · tramo 0,5 m', fam: 'Truss', cat: 'Estructura', total: 12, rev: '2027-02-10' },
+  tr1: { name: 'Truss cuadrado 290 mm · tramo 1 m', fam: 'Truss', cat: 'Estructura', total: 16, rev: '2027-02-10' },
+  i2: { name: 'Truss cuadrado 290 mm · tramo 2 m', fam: 'Truss', cat: 'Estructura', total: 24, rev: '2027-02-10' },
+  i1: { name: 'Truss cuadrado 290 mm · tramo 3 m', fam: 'Truss', cat: 'Estructura', total: 40, rev: '2027-02-10' },
+  tr3: { name: 'Esquina de truss 290 mm · 2 vías', fam: 'Truss', cat: 'Estructura', total: 10, rev: '2027-02-10' },
+  i12: { name: 'Torre de elevación 6 m', fam: 'Truss', cat: 'Estructura', total: 4, rev: '2027-01-30' },
+  // Eslingas
+  es1: { name: 'Eslinga redonda 1 t · 1 m', fam: 'Eslingas', cat: 'Elevación', total: 40, rev: '2027-04-20' },
+  es2: { name: 'Eslinga redonda 1 t · 2 m', fam: 'Eslingas', cat: 'Elevación', total: 40, rev: '2027-04-20' },
+  i9: { name: 'Eslinga redonda 2 t · 2 m', fam: 'Eslingas', cat: 'Elevación', total: 60, rev: '2027-04-20' },
+  es3: { name: 'Eslinga redonda 2 t · 3 m', fam: 'Eslingas', cat: 'Elevación', total: 30, rev: '2027-04-20' },
+  es4: { name: 'Eslinga redonda 3 t · 2 m', fam: 'Eslingas', cat: 'Elevación', total: 20, rev: '2027-04-20' },
+  es5: { name: 'Eslinga de acero 2 t · 1 m', fam: 'Eslingas', cat: 'Elevación', total: 24, rev: '2027-04-20' },
+  // Motores
+  mo1: { name: 'Motor eléctrico 250 kg (D8+)', fam: 'Motores', cat: 'Elevación', total: 8, rev: '2026-11-02' },
+  mo2: { name: 'Motor eléctrico 500 kg (D8+)', fam: 'Motores', cat: 'Elevación', total: 10, rev: '2026-11-02' },
+  i3: { name: 'Motor eléctrico 1 t (D8+)', fam: 'Motores', cat: 'Elevación', total: 12, rev: '2026-11-02' },
+  mo3: { name: 'Motor eléctrico 2 t (D8+)', fam: 'Motores', cat: 'Elevación', total: 4, rev: '2026-11-02' },
+  i4: { name: 'Polipasto manual 500 kg', fam: 'Motores', cat: 'Elevación', total: 8, rev: '2027-01-15' },
+  mo4: { name: 'Polipasto manual 1 t', fam: 'Motores', cat: 'Elevación', total: 6, rev: '2027-01-15' },
+  mo5: { name: 'Controlador de motores · 8 canales', fam: 'Motores', cat: 'Elevación', total: 3, rev: '2027-01-15' },
+  // Cricas
+  cr1: { name: 'Crica 2 t', fam: 'Cricas (grilletes)', cat: 'Elevación', total: 150, rev: '2027-04-20' },
+  i10: { name: 'Crica 3,25 t', fam: 'Cricas (grilletes)', cat: 'Elevación', total: 120, rev: '2027-04-20' },
+  cr2: { name: 'Crica 4,75 t', fam: 'Cricas (grilletes)', cat: 'Elevación', total: 80, rev: '2027-04-20' },
+  cr3: { name: 'Crica 6,5 t', fam: 'Cricas (grilletes)', cat: 'Elevación', total: 40, rev: '2027-04-20' },
+  // Cables de acero
+  i6: { name: 'Cable de acero Ø 3 mm · 50 m', fam: 'Cables de acero', cat: 'Cables y cuerdas', total: 20, rev: '2027-03-01' },
+  ca1: { name: 'Cable de acero Ø 8 mm · 5 m', fam: 'Cables de acero', cat: 'Cables y cuerdas', total: 40, rev: '2027-03-01' },
+  ca2: { name: 'Cable de acero Ø 8 mm · 10 m', fam: 'Cables de acero', cat: 'Cables y cuerdas', total: 30, rev: '2027-03-01' },
+  ca3: { name: 'Cable de acero Ø 10 mm · 10 m', fam: 'Cables de acero', cat: 'Cables y cuerdas', total: 20, rev: '2027-03-01' },
+  ca4: { name: 'Cable de acero Ø 12 mm · 20 m', fam: 'Cables de acero', cat: 'Cables y cuerdas', total: 12, rev: '2027-03-01' },
+  // Cuerdas y cordinos
+  cu1: { name: 'Cuerda semiestática Ø 10,5 mm · 50 m', fam: 'Cuerdas', cat: 'Cables y cuerdas', total: 12, rev: '2027-03-01' },
+  cu2: { name: 'Cuerda semiestática Ø 11 mm · 100 m', fam: 'Cuerdas', cat: 'Cables y cuerdas', total: 6, rev: '2027-03-01' },
+  cu3: { name: 'Cuerda dinámica Ø 10 mm · 60 m', fam: 'Cuerdas', cat: 'Cables y cuerdas', total: 8, rev: '2027-03-01' },
+  i8: { name: 'Cuerda elástica Ø 14 mm', fam: 'Cuerdas', cat: 'Especialistas', total: 10, rev: '2026-11-05' },
+  co1: { name: 'Cordino Ø 6 mm · rollo 50 m', fam: 'Cordinos', cat: 'Cables y cuerdas', total: 10, rev: '2027-03-01' },
+  co2: { name: 'Cordino Ø 8 mm · rollo 50 m', fam: 'Cordinos', cat: 'Cables y cuerdas', total: 8, rev: '2027-03-01' },
+  // Vuelos y especialistas
+  i5: { name: 'Arnés de vuelo integral', fam: 'Vuelos y seguridad', cat: 'Vuelos', total: 14, rev: '2026-10-30' },
+  i7: { name: 'Decelerador de descenso', fam: 'Vuelos y seguridad', cat: 'Vuelos', total: 4, rev: '2026-12-12' },
+  i11: { name: 'Colchoneta de caída 3 × 4 m', fam: 'Vuelos y seguridad', cat: 'Especialistas', total: 6, rev: '2027-06-01' }
+};
+const FAMS = [...new Set(Object.values(ITEMS).map(i => i.fam))];
+// Plantillas de lista de carga por tipo de trabajo: [equipo, cantidad]
+const TEMPLATES = {
+  'Salto con elástico': [['i8', 6], ['i11', 4], ['i1', 16], ['i3', 4], ['i9', 20], ['i10', 40], ['i5', 2], ['g1', 60], ['g4', 20], ['t3', 12], ['ca3', 6], ['cu1', 4], ['co1', 2], ['es2', 10], ['cr2', 12]],
+  'Vuelo de actor': [['i5', 4], ['i6', 8], ['i7', 2], ['i3', 4], ['i1', 12], ['mo5', 1], ['es1', 8], ['i10', 24], ['g1', 40], ['g4', 16], ['t2', 10], ['cu1', 2], ['co1', 2], ['i11', 2]],
+  'Reto de TV': [['i12', 2], ['i1', 10], ['i4', 4], ['i11', 3], ['t3', 20], ['t2', 10], ['g1', 80], ['g4', 30], ['i9', 12], ['i10', 24], ['cu1', 2], ['co2', 1]],
+  'Estructura en plató': [['i1', 20], ['i2', 8], ['tr3', 4], ['i3', 6], ['mo5', 1], ['i9', 16], ['i10', 30], ['g1', 50], ['g4', 20], ['t3', 16], ['cr2', 6]],
+  'Plataforma de cámara': [['i1', 12], ['i2', 6], ['i3', 4], ['i9', 10], ['i10', 20], ['g1', 30], ['g4', 12], ['t3', 10], ['ca2', 4], ['cu1', 2], ['es5', 4]]
+};
+const TPL_OF = { p1: 'Salto con elástico', p2: 'Vuelo de actor', p3: 'Reto de TV', p4: 'Estructura en plató', p5: 'Vuelo de actor', p6: 'Plataforma de cámara' };
+const PHASES = ['Localización', 'Cálculo', 'Montaje', 'Rodaje', 'Desmontaje'];
+const PROJECTS = {
+  p1: { code: 'BS-26-031', title: 'The Long Fall', client: 'c1', type: 'Largometraje', desc: 'Salto con elástico desde la presa para la secuencia final.', place: 'Presa de Ricobayo, Zamora', team: ['e1', 'e2', 'e3'], budget: 78000, phase: 2,
+    dates: ['14–16 oct', '17–24 oct', '27 oct–2 nov', '3–14 nov', '15–16 nov'],
+    needs: [['i8', 6, 'preparado'], ['i11', 4, 'pendiente'], ['i1', 16, 'cargado'], ['i3', 4, 'preparado'], ['i9', 20, 'cargado'], ['i10', 40, 'cargado'], ['i5', 2, 'preparado'], ['g1', 60, 'cargado'], ['g4', 20, 'cargado'], ['t3', 12, 'cargado'], ['ca3', 6, 'preparado'], ['cu1', 4, 'pendiente'], ['co1', 2, 'pendiente'], ['es2', 10, 'cargado'], ['cr2', 12, 'preparado']],
+    docs: ['Presupuesto aceptado', 'Cálculo de cargas · presa', 'Plan de seguridad v2'] },
+  p2: { code: 'BS-26-034', title: 'Tides of Cádiz', client: 'c2', type: 'Serie', desc: 'Vuelos de actor para los episodios 3 y 5.', place: 'Plató 3 · Estudios Ribera, Madrid', team: ['e1', 'e3'], budget: 49500, phase: 1,
+    dates: ['20–22 oct', '23–30 oct', '9–13 nov', '16–27 nov', '28 nov'],
+    needs: [['i5', 6, 'pendiente'], ['i6', 8, 'pendiente'], ['i7', 2, 'pendiente'], ['i3', 4, 'pendiente'], ['i1', 12, 'pendiente'], ['mo5', 1, 'pendiente'], ['es1', 8, 'pendiente'], ['i10', 24, 'pendiente'], ['g1', 40, 'pendiente'], ['g4', 16, 'pendiente'], ['t2', 10, 'pendiente']],
+    docs: ['Presupuesto aceptado', 'Desglose de secuencias'] },
+  p3: { code: 'BS-26-029', title: 'Desafío Total', client: 'c3', type: 'Televisión', desc: 'Prueba de equilibrio a 6 m para el concurso.', place: 'Plató 2 · Plató Norte TV, San Sebastián de los Reyes', team: ['e2', 'e3', 'e4'], budget: 44000, phase: 3,
+    dates: ['1–3 oct', '6–10 oct', '13–17 oct', '19 oct–6 nov', '7 nov'],
+    needs: [['i12', 2, 'cargado'], ['i1', 10, 'cargado'], ['i4', 4, 'cargado'], ['i11', 3, 'cargado'], ['t3', 20, 'cargado'], ['t2', 10, 'cargado'], ['g1', 80, 'cargado'], ['g4', 30, 'cargado'], ['i9', 12, 'cargado'], ['i10', 24, 'cargado'], ['cu1', 2, 'cargado'], ['co2', 1, 'cargado']],
+    docs: ['Presupuesto aceptado', 'Plan de seguridad', 'Ficha de la prueba'] },
+  p4: { code: 'BS-26-024', title: 'Spot "Velocidad"', client: 'c4', type: 'Publicidad', desc: 'Estructura en plató para un anuncio de coches.', place: 'Nave 7 · Getafe', team: ['e1', 'e2', 'e4'], budget: 30400, phase: 5,
+    dates: ['22 sep', '23–26 sep', '1–3 oct', '6–10 oct', '13–15 oct'], needs: [['i1', 20, 'devuelto'], ['i2', 8, 'devuelto'], ['tr3', 4, 'devuelto'], ['i3', 6, 'devuelto'], ['mo5', 1, 'devuelto'], ['i9', 16, 'devuelto'], ['i10', 30, 'devuelto'], ['g1', 50, 'devuelto'], ['g4', 20, 'devuelto'], ['t3', 16, 'devuelto'], ['cr2', 6, 'cargado']], docs: ['Presupuesto aceptado', 'Informe de cierre'] },
+  p5: { code: 'BS-26-037', title: 'Night Shift', client: 'c1', type: 'Serie', desc: 'Vuelos y caídas en un aparcamiento de varias plantas.', place: 'Por confirmar · Madrid', team: ['e1'], budget: 36000, phase: 0,
+    dates: ['3–5 nov', '9–20 nov', '11–15 ene', '18 ene–5 feb', '6 feb'],
+    needs: [['i5', 4, 'pendiente'], ['i7', 1, 'pendiente'], ['i11', 2, 'pendiente'], ['mo2', 4, 'pendiente'], ['es1', 6, 'pendiente']],
+    docs: ['Presupuesto enviado'] },
+  p6: { code: 'BS-25-018', title: 'Red Mesa', client: 'c1', type: 'Largometraje', desc: 'Rigging de cámara sobre un cañón en exteriores.', place: 'Desierto de Tabernas, Almería', team: ['e1', 'e2', 'e3'], budget: 52000, phase: 5,
+    dates: ['3 jun 2025', '4–12 jun 2025', '16–20 jun 2025', '23 jun–11 jul 2025', '14–15 jul 2025'], needs: [['i1', 12, 'devuelto'], ['i2', 6, 'devuelto'], ['i3', 4, 'devuelto'], ['i9', 10, 'devuelto'], ['i10', 20, 'devuelto'], ['g1', 30, 'devuelto'], ['g4', 12, 'devuelto'], ['t3', 10, 'devuelto'], ['ca2', 4, 'devuelto'], ['cu1', 2, 'devuelto'], ['es5', 4, 'devuelto']], docs: ['Presupuesto aceptado', 'Informe de cierre'] }
+};
+const NAVE = 'Nave Bungy · C/ Belice 17, Madrid';
+// Presupuesto por partidas: [concepto, cantidad, unidad, precio unitario]
+const BUDGETS = {
+  p1: [['Ingeniería y cálculo de cargas', 1, 'ud', 6500], ['Localización y visitas técnicas', 3, 'días', 650], ['Alquiler de material de rigging y elástico', 12, 'días', 2100], ['Técnicos de rigging (3 personas)', 36, 'jornadas', 520], ['Técnico de vuelos y seguridad', 12, 'jornadas', 600], ['Pruebas de carga y ensayos', 1, 'ud', 9010], ['Transporte en camión Madrid–Zamora', 2, 'viajes', 1400], ['Dietas y alojamiento', 36, 'noches', 95], ['Seguro específico de la operación', 1, 'ud', 3200]],
+  p2: [['Ingeniería y cálculo de cargas', 1, 'ud', 4800], ['Alquiler del sistema de vuelo', 10, 'días', 1650], ['Motores y estructura en plató', 10, 'días', 900], ['Técnicos de vuelo (2 personas)', 24, 'jornadas', 560], ['Ensayos con especialistas', 3, 'días', 850], ['Transporte', 2, 'viajes', 480], ['Seguro específico de la operación', 1, 'ud', 2250]],
+  p3: [['Diseño de la prueba', 1, 'ud', 5500], ['Construcción de estructura y torres', 1, 'ud', 14000], ['Alquiler de material', 15, 'días', 700], ['Operación en grabación (2 técnicos)', 26, 'jornadas', 400], ['Transporte y montaje', 1, 'ud', 2100], ['Seguro de la prueba', 1, 'ud', 1500]],
+  p4: [['Diseño y cálculo', 1, 'ud', 3200], ['Estructura en plató', 5, 'días', 2400], ['Técnicos (3 personas)', 24, 'jornadas', 450], ['Suplemento de montaje nocturno', 1, 'ud', 2000], ['Transporte', 2, 'viajes', 650], ['Seguro', 1, 'ud', 1100]],
+  p5: [['Localización y propuesta técnica', 1, 'ud', 2400], ['Ingeniería y cálculo de cargas', 1, 'ud', 4200], ['Sistema de vuelos y caídas', 12, 'días', 1300], ['Técnicos de vuelo', 20, 'jornadas', 560], ['Transporte', 2, 'viajes', 400], ['Seguro específico de la operación', 1, 'ud', 1800]],
+  p6: [['Ingeniería y cálculo de cargas', 1, 'ud', 5000], ['Rigging de cámara y estructura', 15, 'días', 1600], ['Técnicos (3 personas)', 45, 'jornadas', 380], ['Transporte Madrid–Almería', 2, 'viajes', 1450], ['Dietas y alojamiento', 30, 'noches', 100]]
+};
+// [fecha, empleado, proyecto, lugar, hora de llamada, tarea]
+const AGENDA = [
+  ['2026-10-23', 'e1', 'p2', 'Plató 3 · Estudios Ribera, Madrid', '09:00', 'Reunión de cálculo con el coordinador de especialistas'],
+  ['2026-10-23', 'e2', 'p3', 'Plató 2 · Plató Norte TV', '08:00', 'Operación de la prueba en grabación'],
+  ['2026-10-23', 'e3', 'p3', 'Plató 2 · Plató Norte TV', '08:00', 'Seguridad en línea de vida'],
+  ['2026-10-23', 'e4', null, NAVE, '08:30', 'Preparar material de The Long Fall'],
+  ['2026-10-24', 'e2', 'p3', 'Plató 2 · Plató Norte TV', '09:00', 'Grabación sábado'],
+  ['2026-10-24', 'e3', 'p3', 'Plató 2 · Plató Norte TV', '09:00', 'Grabación sábado'],
+  ['2026-10-26', 'e1', 'p1', NAVE, '07:30', 'Carga del camión'],
+  ['2026-10-26', 'e2', 'p1', NAVE, '07:30', 'Carga del camión'],
+  ['2026-10-26', 'e3', 'p3', 'Plató 2 · Plató Norte TV', '08:00', 'Operación de la prueba'],
+  ['2026-10-26', 'e4', 'p1', NAVE, '07:00', 'Revisión y salida de material'],
+  ['2026-10-27', 'e1', 'p1', 'Presa de Ricobayo, Zamora', '06:00', 'Montaje del punto de anclaje'],
+  ['2026-10-27', 'e2', 'p1', 'Presa de Ricobayo, Zamora', '06:00', 'Montaje del punto de anclaje'],
+  ['2026-10-27', 'e3', 'p3', 'Plató 2 · Plató Norte TV', '08:00', 'Operación de la prueba'],
+  ['2026-10-27', 'e4', null, NAVE, '08:30', 'Inventario y revisión de arneses'],
+  ['2026-10-28', 'e1', 'p1', 'Presa de Ricobayo, Zamora', '07:00', 'Pruebas de carga con lastre'],
+  ['2026-10-28', 'e2', 'p1', 'Presa de Ricobayo, Zamora', '07:00', 'Pruebas de carga con lastre'],
+  ['2026-10-28', 'e3', 'p1', 'Presa de Ricobayo, Zamora', '07:00', 'Ensayo con el especialista'],
+  ['2026-10-28', 'e4', 'p3', 'Plató 2 · Plató Norte TV', '10:00', 'Reposición de colchonetas'],
+  ['2026-10-29', 'e1', 'p2', 'Plató 3 · Estudios Ribera, Madrid', '09:00', 'Visita técnica al plató'],
+  ['2026-10-29', 'e2', 'p3', 'Plató 2 · Plató Norte TV', '08:00', 'Operación de la prueba'],
+  ['2026-10-29', 'e3', 'p1', 'Presa de Ricobayo, Zamora', '07:00', 'Ensayo con el especialista'],
+  ['2026-10-29', 'e4', null, NAVE, '08:30', 'Recepción de motores revisados'],
+  ['2026-10-30', 'e1', 'p1', 'Presa de Ricobayo, Zamora', '07:00', 'Revisión final con la producción'],
+  ['2026-10-30', 'e2', 'p3', 'Plató 2 · Plató Norte TV', '08:00', 'Operación de la prueba'],
+  ['2026-10-30', 'e3', 'p1', 'Presa de Ricobayo, Zamora', '07:00', 'Ensayo general'],
+  ['2026-10-30', 'e4', null, NAVE, '08:30', 'Preparar material de Tides of Cádiz']
+];
+(function () {
+  const wd = (y, m, from, to) => { const out = []; for (let n = from; n <= to; n++) { const dt = new Date(y, m - 1, n, 12); if (dt.getDay() % 6) out.push(dt.getFullYear() + '-' + String(m).padStart(2, '0') + '-' + String(n).padStart(2, '0')); } return out; };
+  wd(2026, 11, 2, 2).forEach(dt => ['e1', 'e2', 'e3'].forEach(e => AGENDA.push([dt, e, 'p1', 'Presa de Ricobayo, Zamora', '07:00', 'Último ensayo antes del rodaje'])));
+  wd(2026, 11, 3, 14).forEach(dt => {
+    AGENDA.push([dt, 'e1', 'p1', 'Presa de Ricobayo, Zamora', '06:30', 'Rodaje: responsable del punto de anclaje']);
+    AGENDA.push([dt, 'e2', 'p1', 'Presa de Ricobayo, Zamora', '06:30', 'Rodaje: operación del salto']);
+    AGENDA.push([dt, 'e3', dt < '2026-11-09' ? 'p1' : 'p2', dt < '2026-11-09' ? 'Presa de Ricobayo, Zamora' : 'Plató 3 · Estudios Ribera, Madrid', dt < '2026-11-09' ? '06:30' : '08:00', dt < '2026-11-09' ? 'Rodaje: seguridad del especialista' : 'Montaje del sistema de vuelo']);
+    AGENDA.push([dt, 'e4', null, NAVE, '08:30', dt === '2026-11-06' ? 'Recogida del material de Desafío Total' : 'Almacén y revisiones']);
+  });
+  wd(2026, 11, 16, 16).forEach(dt => ['e1', 'e2'].forEach(e => AGENDA.push([dt, e, 'p1', 'Presa de Ricobayo, Zamora', '07:00', 'Desmontaje'])));
+})();
+// Registro de horas: clave "empleado|fecha" -> {in, out, brk (min), st, by}
+const HOURS = {};
+[['2026-10-19', [['e1', 'p1', '07:00', '17:30', 60], ['e2', 'p3', '07:30', '18:00', 60], ['e3', 'p3', '07:30', '18:00', 60], ['e4', null, '08:30', '16:30', 30]]],
+ ['2026-10-20', [['e1', 'p2', '09:00', '18:00', 60], ['e2', 'p3', '07:30', '19:00', 60], ['e3', 'p3', '07:30', '19:00', 60], ['e4', null, '08:30', '16:30', 30]]],
+ ['2026-10-21', [['e1', 'p1', '07:00', '16:00', 45], ['e2', 'p3', '07:30', '18:30', 60], ['e3', 'p3', '07:30', '18:30', 60], ['e4', null, '08:30', '17:00', 30]]],
+ ['2026-10-22', [['e1', 'p2', '09:00', '19:00', 60], ['e2', 'p3', '07:30', '18:00', 60], ['e3', 'p3', '07:30', '20:15', 60], ['e4', null, '08:30', '16:30', 30]]]
+].forEach(([dt, rows]) => rows.forEach(([e, pr, a, b, brk]) => { HOURS[e + '|' + dt] = { in: a, out: b, brk, proj: pr, st: dt < '2026-10-22' ? 'validada' : 'pendiente', by: dt < '2026-10-22' ? 'Carmen López' : '' }; }));
+const INVOICES = [
+  ['F-2025-022', 'c1', 'p6', 'Liquidación final', 31200, '2025-07-18', '2025-08-17', 'pagada'],
+  ['F-2026-041', 'c4', 'p4', 'Liquidación final', 18400, '2026-10-16', '2026-11-15', 'pendiente'],
+  ['F-2026-038', 'c3', 'p3', 'Anticipo 50 %', 22000, '2026-09-28', '2026-10-28', 'pendiente'],
+  ['F-2026-035', 'c1', 'p1', 'Anticipo 40 %', 31200, '2026-09-15', '2026-10-15', 'pagada'],
+  ['F-2026-033', 'c2', 'p2', 'Anticipo 30 %', 14850, '2026-09-10', '2026-10-10', 'vencida'],
+  ['F-2026-029', 'c4', 'p4', 'Anticipo 40 %', 12000, '2026-08-30', '2026-09-29', 'pagada']
+];
+const EXPENSES = [
+  ['2026-10-02', 'Revisión anual de arneses (proveedor)', 'Material', null, 1240],
+  ['2026-10-06', 'Alquiler de furgoneta, 2 semanas', 'Transporte', 'p3', 860],
+  ['2026-10-09', 'Gasóleo', 'Transporte', null, 312],
+  ['2026-10-14', 'Dietas del montaje', 'Dietas', 'p4', 540],
+  ['2026-10-15', 'Eslingas y grilletes nuevos', 'Material', null, 1980],
+  ['2026-10-16', 'Hotel en Zamora para la localización', 'Alojamiento', 'p1', 420],
+  ['2026-10-21', 'Seguro de responsabilidad civil (mensual)', 'Seguros', null, 690],
+  ['2026-10-22', 'Gasóleo', 'Transporte', 'p1', 188]
+];
+
+// ---------- Idioma ----------
+// La demo está escrita en español; en inglés se traduce lo pintado (textos, avisos y PDF) con este diccionario.
+let LANG = 'en';
+try { if (localStorage.getItem('bungy-lang') === 'es') LANG = 'es'; } catch (e) {}
+try { const pl = parent !== window && parent.document.documentElement.lang; if (pl === 'es' || pl === 'en') LANG = pl; } catch (e) {}
+const LOC = () => LANG === 'en' ? 'en-GB' : 'es-ES';
+const EN_WORDS = {
+  // Datos de ejemplo
+  'Estados Unidos': 'United States', 'Reino Unido': 'United Kingdom', 'España': 'Spain', 'Producción': 'Production', 'Productor': 'Producer',
+  'Jefe de rigging': 'Head rigger', 'Técnico de vuelos': 'Flying technician', 'Almacén y logística': 'Warehouse & logistics',
+  'Truss cuadrado 290 mm · tramo 3 m': 'Square truss 290 mm · 3 m section', 'Truss cuadrado 290 mm · tramo 2 m': 'Square truss 290 mm · 2 m section',
+  'Motor eléctrico 1 t (D8+)': 'Electric chain hoist 1 t (D8+)', 'Polipasto manual 500 kg': 'Manual chain hoist 500 kg', 'Arnés de vuelo integral': 'Full-body flying harness',
+  'Cable de acero Ø 3 mm · 50 m': 'Steel wire rope Ø 3 mm · 50 m', 'Decelerador de descenso': 'Descent decelerator', 'Cuerda elástica Ø 14 mm': 'Bungee cord Ø 14 mm',
+  'Eslinga redonda 2 t · 2 m': 'Round sling 2 t · 2 m', 'Crica 3,25 t': 'Shackle 3.25 t', 'Crica 4,75 t': 'Shackle 4.75 t', 'Crica 6,5 t': 'Shackle 6.5 t', 'Crica': 'Shackle',
+  'Grapa fija': 'Fixed coupler', 'Grapa giratoria': 'Swivel coupler', 'Media grapa': 'Half coupler', 'Tubo': 'Tube', 'tramo': 'section', 'Esquina de truss': 'Truss corner', 'vías': 'way',
+  'Eslinga redonda': 'Round sling', 'Eslinga de acero': 'Wire rope sling', 'Motor eléctrico': 'Electric chain hoist', 'Polipasto manual': 'Manual chain hoist', 'Controlador de motores': 'Hoist controller', 'canales': 'channels',
+  'Cable de acero': 'Steel wire rope', 'Cuerda semiestática Ø 10,5 mm': 'Semi-static rope Ø 10.5 mm', 'Cuerda semiestática': 'Semi-static rope', 'Cuerda dinámica': 'Dynamic rope', 'Cordino': 'Accessory cord', 'rollo': 'reel',
+  'Grapas fijas': 'Fixed couplers', 'Grapas giratorias': 'Swivel couplers', 'Tubos': 'Tubes', 'Eslingas': 'Slings', 'Motores': 'Hoists', 'Cricas (grilletes)': 'Shackles', 'Cables de acero': 'Steel wire ropes', 'Cuerdas': 'Ropes', 'Cordinos': 'Accessory cord', 'Vuelos y seguridad': 'Flying & safety', 'Cables y cuerdas': 'Cables & ropes',
+  'Salto con elástico': 'Bungee jump', 'Vuelo de actor': 'Actor flying', 'Reto de TV': 'TV challenge', 'Plataforma de cámara': 'Camera platform',
+  'Lista de carga': 'Loading list', 'Modo carga': 'Loading mode', 'Vuelta': 'Return', 'Proponer desde plantilla': 'Suggest from template', 'Plantilla': 'Template', 'Añadir línea': 'Add line', 'Quitar': 'Remove',
+  'devuelto': 'returned', 'Todo cargado. Puede salir el camión.': 'Everything loaded. The truck can leave.', 'Todo ha vuelto a la nave.': 'Everything is back in the warehouse.',
+  'Lo que no está marcado no sube al camión.': 'If it is not ticked, it does not go on the truck.', 'Marca lo que entra en la nave.': 'Tick what comes back into the warehouse.', 'Material sin devolver': 'Gear not returned',
+  'La lista ya tiene todo lo de la plantilla.': 'The list already has everything in the template.', 'Trabajo terminado · lo que se llevó queda guardado': 'Job wrapped · what was taken is on record', 'Guardar como plantilla': 'Save as template',
+  'Sin material todavía. Propón la lista desde una plantilla o añade líneas.': 'No gear yet. Suggest the list from a template or add lines.', 'Próxima carga': 'Next load', 'Abrir lista de carga': 'Open loading list', 'Disponible': 'Available', 'Línea quitada.': 'Line removed.',
+  'Pulsa una línea para marcarla': 'Tap a line to tick it', 'Listas de carga': 'Loading lists', 'Un trabajo, una lista: lo que no está en ella no sale de la nave': 'One job, one list: if it is not on it, it does not leave the warehouse', 'Sin material todavía': 'No gear yet', 'Añadido a la lista.': 'Added to the list.', 'Solo se pueden quitar líneas pendientes.': 'Only pending lines can be removed.', 'Colchoneta de caída 3 × 4 m': 'Fall mat 3 × 4 m', 'Torre de elevación 6 m': 'Lifting tower 6 m',
+  'Estructura': 'Structure', 'Elevación': 'Lifting', 'Vuelos': 'Flying', 'Especialistas': 'Stunts',
+  'Localización': 'Recce', 'Cálculo': 'Engineering', 'Montaje': 'Rig', 'Rodaje': 'Shoot', 'Desmontaje': 'Strike',
+  'Largometraje': 'Feature film', 'Serie': 'Series', 'Televisión': 'Television', 'Publicidad': 'Commercial',
+  'Salto con elástico desde la presa para la secuencia final.': 'Bungee jump from the dam for the final sequence.',
+  'Vuelos de actor para los episodios 3 y 5.': 'Actor flying for episodes 3 and 5.',
+  'Prueba de equilibrio a 6 m para el concurso.': 'Balance challenge at 6 m for the game show.',
+  'Estructura en plató para un anuncio de coches.': 'Studio structure for a car commercial.',
+  'Vuelos y caídas en un aparcamiento de varias plantas.': 'Flying and falls in a multi-storey car park.',
+  'Rigging de cámara sobre un cañón en exteriores.': 'Camera rigging over a canyon on location.',
+  'Presa de Ricobayo': 'Ricobayo Dam', 'Plató 2': 'Stage 2', 'Plató 3': 'Stage 3', 'Nave 7': 'Unit 7', 'Por confirmar': 'TBC', 'Desierto de Tabernas': 'Tabernas Desert',
+  'Nave Bungy': 'Bungy warehouse', 'Nave': 'Warehouse',
+  'preparado': 'ready', 'pendiente': 'pending', 'cargado': 'loaded',
+  'Presupuesto aceptado': 'Accepted quote', 'Presupuesto enviado': 'Quote sent', 'Cálculo de cargas · presa': 'Load calculations · dam', 'Plan de seguridad': 'Safety plan',
+  'Desglose de secuencias': 'Sequence breakdown', 'Ficha de la prueba': 'Challenge spec sheet', 'Informe de cierre': 'Wrap report',
+  'Ingeniería y cálculo de cargas': 'Engineering and load calculations', 'Localización y visitas técnicas': 'Recce and technical visits',
+  'Alquiler de material de rigging y elástico': 'Rigging and bungee gear hire', 'Técnicos de rigging (3 personas)': 'Rigging technicians (3 people)',
+  'Técnico de vuelos y seguridad': 'Flying and safety technician', 'Pruebas de carga y ensayos': 'Load tests and rehearsals',
+  'Transporte en camión': 'Truck transport', 'Dietas y alojamiento': 'Per diems and accommodation', 'Seguro específico de la operación': 'Operation-specific insurance',
+  'Alquiler del sistema de vuelo': 'Flying system hire', 'Motores y estructura en plató': 'Hoists and studio structure', 'Técnicos de vuelo (2 personas)': 'Flying technicians (2 people)',
+  'Ensayos con especialistas': 'Rehearsals with stunt performers', 'Transporte': 'Transport', 'Diseño de la prueba': 'Challenge design',
+  'Construcción de estructura y torres': 'Structure and tower build', 'Alquiler de material': 'Gear hire', 'Operación en grabación (2 técnicos)': 'Operation during recording (2 technicians)',
+  'Transporte y montaje': 'Transport and rigging', 'Seguro de la prueba': 'Challenge insurance', 'Diseño y cálculo': 'Design and calculations', 'Estructura en plató': 'Studio structure',
+  'Técnicos (3 personas)': 'Technicians (3 people)', 'Suplemento de montaje nocturno': 'Night rigging supplement', 'Seguro': 'Insurance',
+  'Localización y propuesta técnica': 'Recce and technical proposal', 'Sistema de vuelos y caídas': 'Flying and falls system', 'Técnicos de vuelo': 'Flying technicians',
+  'Rigging de cámara y estructura': 'Camera rigging and structure',
+  'ud': 'unit', 'días': 'days', 'jornadas': 'days', 'viajes': 'trips', 'noches': 'nights',
+  'Reunión de cálculo con el coordinador de especialistas': 'Engineering meeting with the stunt coordinator', 'Operación de la prueba en grabación': 'Running the challenge during recording',
+  'Seguridad en línea de vida': 'Lifeline safety', 'Preparar material de': 'Prep gear for', 'Grabación sábado': 'Saturday recording', 'Carga del camión': 'Loading the truck',
+  'Operación de la prueba': 'Running the challenge', 'Revisión y salida de material': 'Gear check and dispatch', 'Montaje del punto de anclaje': 'Rigging the anchor point',
+  'Inventario y revisión de arneses': 'Inventory and harness inspection', 'Pruebas de carga con lastre': 'Load tests with ballast', 'Ensayo con el especialista': 'Rehearsal with the stunt performer',
+  'Reposición de colchonetas': 'Replacing fall mats', 'Visita técnica al plató': 'Technical visit to the stage', 'Recepción de motores revisados': 'Receiving serviced hoists',
+  'Revisión final con la producción': 'Final review with production', 'Ensayo general': 'Full rehearsal', 'Último ensayo antes del rodaje': 'Last rehearsal before the shoot',
+  'Rodaje: responsable del punto de anclaje': 'Shoot: anchor point lead', 'Rodaje: operación del salto': 'Shoot: running the jump', 'Rodaje: seguridad del especialista': 'Shoot: stunt performer safety',
+  'Montaje del sistema de vuelo': 'Rigging the flying system', 'Recogida del material de': 'Collecting the gear from', 'Almacén y revisiones': 'Warehouse and inspections',
+  'Liquidación final': 'Final settlement', 'Anticipo': 'Deposit',
+  'Revisión anual de arneses (proveedor)': 'Annual harness inspection (supplier)', 'Alquiler de furgoneta, 2 semanas': 'Van hire, 2 weeks', 'Gasóleo': 'Diesel',
+  'Dietas del montaje': 'Rig per diems', 'Eslingas y grilletes nuevos': 'New slings and shackles', 'Hotel en Zamora para la localización': 'Hotel in Zamora for the recce',
+  'Seguro de responsabilidad civil (mensual)': 'Liability insurance (monthly)', 'Material': 'Gear', 'Dietas': 'Per diems', 'Alojamiento': 'Accommodation', 'Seguros': 'Insurance',
+  // Interfaz
+  'Área privada': 'Private area', 'Clientes, equipo y administración en un solo sitio. Elige un perfil para ver cómo funciona cada uno.': 'Clients, crew and office in one place. Pick a profile to see how each one works.',
+  'Para productoras': 'For productions', 'Cliente': 'Client', 'Sus proyectos, en qué fase están, las fechas clave, los documentos y sus facturas.': 'Their projects, what stage each one is at, key dates, documents and invoices.',
+  'Para el equipo': 'For the crew', 'Empleado': 'Crew', 'Dónde tiene que estar cada día, en qué trabajos está y la lista de carga de cada trabajo.': 'Where to be each day, which jobs they are on and the loading list for each job.',
+  'Para la oficina': 'For the office', 'Administración': 'Management', 'Todo lo anterior, más almacén, listas de carga, planificación del equipo, facturas y gastos.': 'All of the above, plus warehouse, loading lists, crew planning, invoices and expenses.',
+  'Demo con datos de ejemplo · nombres, clientes y cifras inventados': 'Demo with sample data · names, clients and figures are made up',
+  'Mis proyectos': 'My projects', 'Facturas': 'Invoices', 'Mi agenda': 'My schedule', 'Mis trabajos': 'My jobs', 'Mis horas': 'My hours', 'Resumen': 'Overview', 'Proyectos': 'Projects',
+  'Planificación': 'Planning', 'Horas': 'Hours', 'Almacén': 'Warehouse', 'Gastos': 'Expenses', 'Personas': 'People', 'Gerencia': 'Management',
+  'Cambiar de perfil': 'Switch profile', 'Cambiar perfil': 'Switch profile', 'Secciones': 'Sections', 'Idioma': 'Language',
+  'Hecho': 'Done', 'Ahora': 'Now', 'Pendiente': 'Pending', 'Avance': 'Progress', 'Terminado': 'Wrapped', 'En rodaje': 'Shooting',
+  'Correcto': 'OK', 'Falta stock': 'Short on stock', 'Revisión': 'Inspection', 'Cobro': 'Payment',
+  'Presupuesto desglosado': 'Budget breakdown', 'Concepto': 'Item', 'Cantidad': 'Qty', 'Precio': 'Price', 'Importe': 'Amount', 'Base imponible': 'Subtotal', 'IVA 21 %': 'VAT 21 %',
+  'Todo el material ha vuelto a la nave.': 'All the gear is back in the warehouse.', 'Equipo': 'Gear', 'Cant.': 'Qty', 'Estado': 'Status', 'Pulsa para cambiar el estado': 'Tap to change the status',
+  'Tus proyectos': 'Your projects', 'En curso': 'Active', 'Terminados': 'Wrapped', 'Cambiar de proyecto': 'Switch project', 'Detalles': 'Details', 'Qué hacemos': 'What we do',
+  'Lugar': 'Location', 'Documentos': 'Documents', 'Tu equipo en Bungy': 'Your Bungy crew',
+  'Factura': 'Invoice', 'Emitida': 'Issued', 'Vence': 'Due', 'Pagada': 'Paid', 'Vencida': 'Overdue', 'Facturación': 'Billing', 'Tus facturas': 'Your invoices', 'Separadas por proyecto': 'Grouped by project',
+  'Hoy': 'Today', 'No tienes nada asignado este día.': 'Nothing assigned to you on this day.', 'Ver el trabajo →': 'View job →', 'Mes anterior': 'Previous month', 'Mes siguiente': 'Next month',
+  'Sin registrar': 'Not logged', 'Validada': 'Approved', 'Entrada': 'Start', 'Salida': 'Finish', 'Pausa (min)': 'Break (min)', 'Guardar': 'Save', 'Cancelar': 'Cancel',
+  'Aún no': 'Not yet', 'Podrás registrar las horas ese mismo día.': 'You can log your hours on the day.', 'Semana del 19 al 23 de octubre': 'Week of 19–23 October',
+  'Persona': 'Person', 'Todos': 'All', 'Todas': 'All', 'Todo': 'All', 'Validar todas las pendientes': 'Approve all pending', 'Día': 'Day', 'Trabajo': 'Job', 'Horario': 'Hours',
+  'Editar': 'Edit', 'Acciones': 'Actions', 'Añadir': 'Add', 'Validar': 'Approve', 'Vista': 'View', 'Lista': 'List', 'Calendario': 'Calendar', 'Próximos días': 'Coming days', 'Hora de llamada · lugar': 'Call time · location',
+  'Asignados a ti': 'Assigned to you', 'Fases': 'Stages', 'Material del trabajo': 'Gear for this job', 'Pulsa el estado para cambiarlo': 'Tap a status to change it',
+  'Buscar equipo…': 'Search gear…', 'Buscar equipo': 'Search gear', 'Categoría': 'Category', 'En nave': 'In warehouse', 'Fuera': 'Out', 'Se necesita': 'Needed', 'Próx. revisión': 'Next inspection',
+  'No hay equipo que coincida con la búsqueda.': 'No gear matches your search.', '"Se necesita" es lo reservado para trabajos que aún no ha salido': '"Needed" is gear booked for jobs that has not left yet',
+  'Números': 'Figures', 'Presupuesto': 'Budget', 'Facturado': 'Invoiced', 'Gastos imputados': 'Costs allocated', 'Viernes, 23 de octubre': 'Friday, 23 October', 'Datos de ejemplo': 'Sample data',
+  'Proyectos activos': 'Active projects', 'Material fuera': 'Gear out', 'unidades en trabajos': 'units on jobs', 'Pendiente de cobro': 'Outstanding', 'Gastos de octubre': 'October expenses',
+  'Avisos': 'Alerts', 'Hoy, quién está dónde': 'Today, who is where', 'Por cliente': 'By client', 'Quién está dónde cada día': 'Who is where each day', 'Agenda detallada': 'Detailed schedule',
+  'Inventario': 'Inventory', 'Añadir equipo': 'Add gear', 'Registrar entrada o salida': 'Log gear in or out', 'Cobrado': 'Collected', 'Vencido': 'Overdue', 'Nueva factura': 'New invoice',
+  'Octubre de 2026': 'October 2026', 'Apuntes': 'Entries', 'Añadir gasto': 'Add expense', 'Fecha': 'Date', 'Proyecto': 'Project', 'Por categoría': 'By category', 'Directorio': 'Directory',
+  'Cada persona entra con su propio usuario': 'Everyone signs in with their own account', 'Clientes': 'Clients', 'Invitar': 'Invite', 'Invitar cliente': 'Invite client', 'Añadir empleado': 'Add crew member',
+  'Revisa las horas: la salida tiene que ser posterior a la entrada.': 'Check the hours: finish has to be after start.', 'Horas corregidas y validadas.': 'Hours corrected and approved.',
+  'Horas guardadas. Dirección las validará.': 'Hours saved. The office will approve them.', 'Horas validadas.': 'Hours approved.', 'Todas las horas pendientes están validadas.': 'All pending hours are approved.',
+  'No se ha podido preparar el PDF. Comprueba la conexión.': 'The PDF could not be prepared. Check your connection.', 'En la demo los documentos no se abren.': 'Documents do not open in the demo.',
+  'No se ha podido descargar la factura.': 'The invoice could not be downloaded.',
+  // Factura en PDF
+  'Rigging para cine y televisión · Madrid': 'Film & TV rigging · Madrid', 'Fecha de emisión': 'Issue date', 'Vencimiento': 'Due date', 'pendiente de pago': 'awaiting payment',
+  'pagada': 'paid', 'vencida': 'overdue', 'Documento de ejemplo generado por la demo del área privada de Bungy System. Sin validez fiscal.': 'Sample document generated by the Bungy System private area demo. Not a valid tax invoice.',
+  'EMISOR': 'FROM', 'CLIENTE': 'BILL TO', 'CONCEPTO': 'DESCRIPTION', 'FORMA DE PAGO': 'PAYMENT', 'CIF': 'Tax ID'
+};
+const EN_RULES = [
+  [/Revisión en (\d+) días/g, 'Inspection in $1 days'], [/Se necesitan (\d+) y hay (\d+) en nave\./g, '$1 needed, $2 in the warehouse.'],
+  [/Revisión obligatoria el (.+)\./g, 'Mandatory inspection on $1.'], [/Vencida desde el (.+?), (.+)\./g, 'Overdue since $1, $2.'], [/Vence el (.+?), (.+)\./g, 'Due $1, $2.'],
+  [/Entrar como (.+)/g, 'Sign in as $1'], [/Avance (\d+) %/g, 'Progress $1 %'], [/Hola, (.+)/g, 'Hi, $1'], [/(\d+) proyectos · (\d+) en curso/g, '$1 projects · $2 active'],
+  [/Proyectos de (.+):/g, 'Projects for $1:'], [/Descargar (.+) en PDF/g, 'Download $1 as PDF'], 
+  [/pausa (\d+) min/g, 'break $1 min'], [/Validadas por (.+)\. Si hay un error, avisa a dirección\./g, 'Approved by $1. If something is wrong, let the office know.'],
+  [/(\d+) registros pendientes de validar/g, '$1 entries awaiting approval'], [/Hoy: (.+?) en (.+)/g, 'Today: $1 at $2'], [/(\d+) trabajos activos/g, '$1 active jobs'],
+  [/(\d+) en rodaje/g, '$1 shooting'], [/(\d+) factura vencida/g, '$1 overdue invoice'], [/(\d+) apuntes/g, '$1 entries'], [/(\d+) equipos con aviso/g, '$1 items flagged'],
+  [/(\d+) proyectos/g, '$1 projects'], [/Cargado (\d+) de (\d+)/g, 'Loaded $1 of $2'], [/Devuelto (\d+) de (\d+)/g, 'Returned $1 of $2'], [/(\d+) sin devolver/g, '$1 not returned'], [/Hay (\d+)/g, '$1 available'], [/Faltan (\d+)/g, '$1 short'],
+  [/(\d+) líneas añadidas desde la plantilla/g, '$1 lines added from the template'], [/(\d+) líneas · (\d+) uds/g, '$1 lines · $2 units'], [/(\d+) líneas pendientes/g, '$1 pending lines'], [/(\d+) uds preparadas o cargadas/g, '$1 units ready or loaded'], [/(\d+) uds/g, '$1 units'], [/Quedan (\d+) uds por cargar/g, '$1 units still to load'], [/(\d+) proyecto\b/g, '$1 project'], [/(.+): en la demo no se guarda nada\./g, '$1: nothing is saved in the demo.'], [/(.+) descargada\./g, '$1 downloaded.'],
+  [/Transferencia bancaria antes del (.+)\. IBAN: pendiente de configurar\./g, 'Bank transfer by $1. IBAN: to be confirmed.'], [/Estado: /g, 'Status: '],
+  [/\b(\d{1,2})\s(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)\b/g, (m, n, mo) => n + ' ' + { ene: 'Jan', feb: 'Feb', mar: 'Mar', abr: 'Apr', may: 'May', jun: 'Jun', jul: 'Jul', ago: 'Aug', sep: 'Sep', oct: 'Oct', nov: 'Nov', dic: 'Dec' }[mo]]
+];
+const EN_MAP = {};
+Object.entries(EN_WORDS).forEach(([k, v]) => { const K = k.toUpperCase(); if (!(K in EN_WORDS)) EN_MAP[K] = v.toUpperCase(); });
+Object.assign(EN_MAP, EN_WORDS);
+const EN_RE = new RegExp('(?<![\\p{L}\\p{N}])(' + Object.keys(EN_MAP).sort((a, b) => b.length - a.length).map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')(?![\\p{L}])', 'gu');
+const tx = str => { if (LANG !== 'en' || !str || !/[^\s\d.,:%€·–—-]/.test(str)) return str; let o = String(str); EN_RULES.forEach(([re, to]) => { o = o.replace(re, to); }); return o.replace(EN_RE, m => EN_MAP[m]); };
+function translateDom(rootEl) {
+  if (LANG !== 'en') return;
+  rootEl.querySelectorAll('[data-en]').forEach(el => { el.textContent = el.dataset.en; });
+  const w = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT); let n;
+  while ((n = w.nextNode())) { if (!n.parentElement.closest('[data-en]')) { const v = tx(n.nodeValue); if (v !== n.nodeValue) n.nodeValue = v; } }
+  rootEl.querySelectorAll('[placeholder],[aria-label],[title]').forEach(el => ['placeholder', 'aria-label', 'title'].forEach(a => { if (el.hasAttribute(a)) el.setAttribute(a, tx(el.getAttribute(a))); }));
+}
+const langSwitch = () => '<div class="lsw" role="group" aria-label="Idioma"><button data-setlang="en" aria-pressed="' + (LANG === 'en') + '">EN</button><button data-setlang="es" aria-pressed="' + (LANG === 'es') + '">ES</button></div>';
+function setLang(l, fromParent) {
+  LANG = l === 'es' ? 'es' : 'en'; document.documentElement.lang = LANG; document.title = LANG === 'en' ? 'Bungy System · Private area' : 'Bungy System · Área privada';
+  try { localStorage.setItem('bungy-lang', LANG); } catch (e) {}
+  if (!fromParent && parent !== window) try { parent.postMessage({ bungyLang: LANG }, '*'); } catch (e) {}
+  render();
+}
+addEventListener('message', e => { if (e.data && (e.data.bungyLang === 'en' || e.data.bungyLang === 'es') && e.data.bungyLang !== LANG) setLang(e.data.bungyLang, true); });
+
+// ---------- Utilidades ----------
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const eur = n => n.toLocaleString(LOC(), { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+const d = s => new Date(s + 'T12:00:00');
+const fdate = s => d(s).toLocaleDateString(LOC(), { day: 'numeric', month: 'short' });
+const daysTo = s => Math.round((d(s) - d(TODAY)) / 864e5);
+const progress = p => p.phase >= 5 ? 100 : Math.round((p.phase + .5) / 5 * 100);
+const statusPill = p => p.phase >= 5 ? '<span class="pill p-mute">Terminado</span>' : p.phase === 3 ? '<span class="pill p-ok">En rodaje</span>' : '<span class="pill p-info">' + PHASES[p.phase] + '</span>';
+const active = () => Object.entries(PROJECTS).filter(([, p]) => p.phase < 5);
+const toast = msg => { const t = $('#toast'); t.textContent = tx(msg); t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2600); };
+
+function stock(id) {
+  let out = 0, need = 0;
+  Object.values(PROJECTS).forEach(p => p.needs.forEach(([it, q, st]) => { if (it !== id) return; if (st === 'cargado') out += q; else if (st !== 'devuelto' && p.phase < 5) need += q; }));
+  const it = ITEMS[id], inNave = it.total - out, rev = daysTo(it.rev);
+  let pill = '<span class="pill p-ok">Correcto</span>', level = 0;
+  if (need > inNave) { pill = '<span class="pill p-bad">Falta stock</span>'; level = 2; }
+  else if (rev <= 14) { pill = '<span class="pill p-warn">Revisión en ' + rev + ' días</span>'; level = 1; }
+  return { out, need, inNave, rev, pill, level };
+}
+function alerts() {
+  const a = [];
+  Object.keys(ITEMS).forEach(id => { const s = stock(id), it = ITEMS[id];
+    if (s.level === 2) a.push(['p-bad', 'Falta stock', it.name, 'Se necesitan ' + s.need + ' y hay ' + s.inNave + ' en nave.']);
+    else if (s.level === 1) a.push(['p-warn', 'Revisión', it.name, 'Revisión obligatoria el ' + fdate(it.rev) + '.']);
+  });
+  Object.entries(PROJECTS).filter(([, p]) => p.phase >= 5).forEach(([id, p]) => p.needs.filter(n => n[2] === 'cargado').forEach(n => a.push(['p-bad', 'Material sin devolver', ITEMS[n[0]].name, n[1] + ' uds en ' + p.title + '.'])));
+  INVOICES.filter(i => i[7] === 'vencida').forEach(i => a.push(['p-bad', 'Cobro', i[0] + ' · ' + CLIENTS[i[1]].name, 'Vencida desde el ' + fdate(i[6]) + ', ' + eur(i[4]) + '.']));
+  INVOICES.filter(i => i[7] === 'pendiente' && daysTo(i[6]) <= 7).forEach(i => a.push(['p-warn', 'Cobro', i[0] + ' · ' + CLIENTS[i[1]].name, 'Vence el ' + fdate(i[6]) + ', ' + eur(i[4]) + '.']));
+  return a;
+}
+
+function budgetBlock(id) {
+  const lines = BUDGETS[id] || [], base = lines.reduce((a, l) => a + l[1] * l[3], 0), iva = base * .21;
+  const eur2 = n => n.toLocaleString(LOC(), { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+  return '<div class="card"><div class="ch"><h2>Presupuesto desglosado</h2><span class="meta">' + PROJECTS[id].docs[0] + '</span></div><div class="tablewrap"><table><thead><tr><th>Concepto</th><th class="r hide-m">Cantidad</th><th class="r hide-m">Precio</th><th class="r">Importe</th></tr></thead><tbody>' +
+    lines.map(l => '<tr><td>' + esc(l[0]) + '<div class="only-m num sub12">' + l[1] + ' ' + l[2] + ' × ' + eur2(l[3]) + '</div></td><td class="r num hide-m nowrap">' + l[1] + ' ' + l[2] + '</td><td class="r num hide-m">' + eur2(l[3]) + '</td><td class="r num nowrap">' + eur2(l[1] * l[3]) + '</td></tr>').join('') +
+    '</tbody><tfoot><tr><td class="sumlbl cs">Base imponible</td><td class="hide-m"></td><td class="hide-m"></td><td class="r num">' + eur2(base) + '</td></tr><tr><td class="sumlbl cs">IVA 21 %</td><td class="hide-m"></td><td class="hide-m"></td><td class="r num">' + eur2(iva) + '</td></tr><tr class="tot"><td class="sumlbl cs">Total</td><td class="hide-m"></td><td class="hide-m"></td><td class="r num">' + eur2(base + iva) + '</td></tr></tfoot></table></div></div>';
+}
+
+// ---------- Factura en PDF ----------
+const COMPANY = ['Bungy System SL', 'CIF B84667989', 'C/ Belice 17', 'Madrid, España'];
+function invoicePdf(num) {
+  const inv = INVOICES.find(i => i[0] === num), c = CLIENTS[inv[1]], p = PROJECTS[inv[2]];
+  const { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'a4' }), rawText = doc.text.bind(doc);
+  doc.text = (t, ...r) => rawText(Array.isArray(t) ? t.map(tx) : tx(t), ...r);
+  const money = n => n.toLocaleString(LOC(), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' EUR';
+  const ddate = s => d(s).toLocaleDateString(LOC(), { day: 'numeric', month: 'long', year: 'numeric' });
+  const W = 210, M = 18;
+  doc.setFillColor(17, 13, 13); doc.rect(0, 0, W, 34, 'F');
+  doc.setFillColor(216, 35, 26); doc.rect(0, 34, W, 2, 'F');
+  doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(20); doc.text('BUNGY SYSTEM', M, 20);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(190, 180, 178); doc.text('Rigging para cine y televisión · Madrid', M, 26);
+  doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.text('FACTURA', W - M, 18, { align: 'right' });
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.text(inv[0], W - M, 25, { align: 'right' });
+  doc.setTextColor(25, 20, 20);
+  let y = 50;
+  const block = (x, title, lines) => { doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(216, 35, 26); doc.text(title, x, y);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(25, 20, 20); lines.forEach((l, k) => doc.text(l, x, y + 6 + k * 5)); };
+  block(M, 'EMISOR', COMPANY);
+  block(110, 'CLIENTE', [c.name, c.contact, c.country]);
+  y = 82;
+  [['Fecha de emisión', ddate(inv[5])], ['Vencimiento', ddate(inv[6])], ['Proyecto', p.code + ' · ' + p.title]].forEach(([k, v], i) => {
+    doc.setFontSize(8); doc.setTextColor(107, 96, 94); doc.text(k.toUpperCase(), M + i * 58, y);
+    doc.setFontSize(10); doc.setTextColor(25, 20, 20); doc.text(v, M + i * 58, y + 6); });
+  y = 102;
+  doc.setFillColor(235, 231, 230); doc.rect(M, y, W - 2 * M, 9, 'F');
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.text('CONCEPTO', M + 3, y + 6); doc.text('IMPORTE', W - M - 3, y + 6, { align: 'right' });
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+  y += 17; doc.text(inv[3] + ' · ' + p.type + ' "' + p.title + '"', M + 3, y); doc.text(money(inv[4]), W - M - 3, y, { align: 'right' });
+  doc.setFontSize(8); doc.setTextColor(107, 96, 94); doc.text(p.desc, M + 3, y + 5); doc.setTextColor(25, 20, 20);
+  y += 12; doc.setDrawColor(221, 214, 212); doc.line(M, y, W - M, y);
+  const iva = inv[4] * .21;
+  y += 10;
+  [['Base imponible', money(inv[4])], ['IVA 21 %', money(iva)]].forEach(([k, v]) => { doc.setFontSize(10); doc.setTextColor(107, 96, 94); doc.text(k, 130, y); doc.setTextColor(25, 20, 20); doc.text(v, W - M - 3, y, { align: 'right' }); y += 7; });
+  doc.setFillColor(216, 35, 26); doc.rect(124, y - 4, W - M - 124, 11, 'F');
+  doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.text('TOTAL', 130, y + 3.5); doc.text(money(inv[4] + iva), W - M - 3, y + 3.5, { align: 'right' });
+  y += 24; doc.setTextColor(25, 20, 20); doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.text('FORMA DE PAGO', M, y);
+  doc.setFont('helvetica', 'normal'); doc.text('Transferencia bancaria antes del ' + ddate(inv[6]) + '. IBAN: pendiente de configurar.', M, y + 6);
+  doc.text('Estado: ' + (inv[7] === 'pagada' ? 'pagada' : inv[7] === 'vencida' ? 'vencida' : 'pendiente de pago'), M, y + 12);
+  doc.setFontSize(8); doc.setTextColor(150, 140, 138); doc.text('Documento de ejemplo generado por la demo del área privada de Bungy System. Sin validez fiscal.', M, 285);
+  return doc.output('blob');
+}
+async function saveFile(name, blob) {
+  const api = window.claude && window.claude.use ? await window.claude.use('downloads') : null;
+  if (api) {
+    try { await api.save({ filename: name, data: blob }); toast(name + ' descargada.'); }
+    catch (e) { if (e && e.code !== 'declined') toast('No se ha podido descargar la factura.'); }
+    return;
+  }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+  toast(name + ' descargada.');
+}
+
+// ---------- Iconos ----------
+const I = {
+  home: '<path d="M3 11l9-7 9 7v9H3z"/><path d="M9 20v-6h6v6"/>',
+  proj: '<rect x="3" y="6" width="18" height="13"/><path d="M8 6V4h8v2"/>',
+  cal: '<rect x="3" y="5" width="18" height="16"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  box: '<path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/>',
+  inv: '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>',
+  exp: '<rect x="3" y="6" width="18" height="12"/><circle cx="12" cy="12" r="2.5"/>',
+  ppl: '<circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-4 3-6 7-6s7 2 7 6"/><path d="M16 4.5a3.5 3.5 0 010 7M18 14c2.5.6 4 2.6 4 6"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  tool: '<path d="M14 4l6 6-9 9H5v-6z"/><path d="M12 6l6 6"/>'
+};
+const icon = k => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">' + I[k] + '</svg>';
+const LOGO = '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M4 4h24"/><path d="M16 4v4l-5 3 10 4-10 4 10 4-5 2v3"/><circle cx="16" cy="29" r="1.6" fill="currentColor" stroke="none"/></svg>';
+
+// ---------- Estado ----------
+const S = { role: null, user: null, tab: null, detail: null, loadMode: 'lista', invFilter: 'todas', whCat: 'Todo', whQ: '', clientFilter: 'todos', hEdit: null, hEmp: 'todos', agView: 'lista', calMonth: '2026-10', calDay: TODAY };
+const ROLES = {
+  cliente: { label: 'Cliente', user: 'c1', tabs: [['proyectos', 'Mis proyectos', 'proj'], ['facturas', 'Facturas', 'inv']] },
+  empleado: { label: 'Empleado', user: 'e2', tabs: [['agenda', 'Mi agenda', 'cal'], ['trabajos', 'Mis trabajos', 'tool'], ['material', 'Material', 'box'], ['horas', 'Mis horas', 'clock']] },
+  admin: { label: 'Administración', user: 'admin', tabs: [['resumen', 'Resumen', 'home'], ['proyectos', 'Proyectos', 'proj'], ['plan', 'Planificación', 'cal'], ['horas', 'Horas', 'clock'], ['almacen', 'Almacén', 'box'], ['facturas', 'Facturas', 'inv'], ['gastos', 'Gastos', 'exp'], ['personas', 'Personas', 'ppl']] }
+};
+const userName = () => S.role === 'cliente' ? CLIENTS[S.user].name : S.role === 'empleado' ? EMPLOYEES[S.user].name : 'Carmen López';
+const userSub = () => S.role === 'cliente' ? CLIENTS[S.user].contact.split(' · ')[0] : S.role === 'empleado' ? EMPLOYEES[S.user].role : 'Gerencia';
+
+// ---------- Vistas ----------
+function viewLogin() {
+  return '<div class="login">' + langSwitch() + '<div class="in">' +
+    '<div class="brand">' + LOGO + 'Bungy System</div>' +
+    '<h1>Área privada</h1><p class="sub">Clientes, equipo y administración en un solo sitio. Elige un perfil para ver cómo funciona cada uno.</p>' +
+    '<div class="roles">' +
+    roleCard('cliente', 'Para productoras', 'Cliente', 'Sus proyectos, en qué fase están, las fechas clave, los documentos y sus facturas.', 'Hollow Oak Productions') +
+    roleCard('empleado', 'Para el equipo', 'Empleado', 'Dónde tiene que estar cada día, en qué trabajos está y la lista de carga de cada trabajo.', 'Marta Gil · Rigger') +
+    roleCard('admin', 'Para la oficina', 'Administración', 'Todo lo anterior, más almacén, listas de carga, planificación del equipo, facturas y gastos.', 'Carmen López') +
+    '</div><span class="demo-tag">Demo con datos de ejemplo · nombres, clientes y cifras inventados</span></div></div>';
+}
+function roleCard(r, k, t, p, who) {
+  return '<button class="role" data-role="' + r + '"><span class="k">' + k + '</span><span class="h">' + t + '</span><span class="p">' + p + '</span><span class="who">Entrar como ' + esc(who) + '</span></button>';
+}
+
+function shell(content) {
+  const tabs = ROLES[S.role].tabs, nAl = alerts().length;
+  const navBtn = (t, withBadge) => '<button data-tab="' + t[0] + '"' + (S.tab === t[0] ? ' aria-current="page"' : '') + '>' + icon(t[2]) + '<span>' + t[1] + '</span>' + (withBadge && t[0] === 'resumen' && nAl ? '<span class="badge">' + nAl + '</span>' : '') + '</button>';
+  return '<div class="app">' +
+    '<aside class="side"><div class="brand">' + LOGO + 'Bungy System</div><nav class="nav" aria-label="Secciones">' + tabs.map(t => navBtn(t, true)).join('') + '</nav>' +
+    '<div class="me"><span>' + ROLES[S.role].label + '</span><b>' + esc(userName()) + '</b><span>' + esc(userSub()) + '</span><button class="linkbtn" data-logout>Cambiar de perfil</button>' + langSwitch() + '</div></aside>' +
+    '<div class="mtop"><div class="brand">' + LOGO + 'Bungy</div><div class="who">' + esc(userName()) + '<div class="acts">' + langSwitch() + '<button class="linkbtn" data-logout>Cambiar perfil</button></div></div></div>' +
+    '<div class="main"><div class="in">' + content + '</div></div>' +
+    '<nav class="tabbar" aria-label="Secciones">' + tabs.map(t => navBtn(t)).join('') + '</nav></div>';
+}
+const head = (k, h, note, back) => '<div class="head"><div>' + (back ? '<button class="back" data-back>← ' + back + '</button>' : '') + '<p class="k">' + k + '</p><h1>' + esc(h) + '</h1></div>' + (note ? '<p class="note">' + note + '</p>' : '') + '</div>';
+
+function phasesBlock(p) {
+  return '<div class="phases">' + PHASES.map((n, i) => '<div class="ph ' + (i < p.phase ? 'done' : i === p.phase ? 'now' : '') + '"><span class="n">' + (i < p.phase ? 'Hecho' : i === p.phase ? 'Ahora' : 'Pendiente') + '</span><b>' + n + '</b><span class="dt">' + p.dates[i] + '</span></div>').join('') + '</div>';
+}
+function projCard(id) {
+  const p = PROJECTS[id], pr = progress(p);
+  return '<button class="pcard" data-proj="' + id + '"><span class="code">' + p.code + ' · ' + p.type.toUpperCase() + '</span><span class="h">' + esc(p.title) + '</span><span class="d">' + esc(p.desc) + '</span>' +
+    '<span class="bar" role="img" aria-label="Avance ' + pr + ' %"><i style="width:' + pr + '%"></i></span>' +
+    '<span class="foot"><span>' + statusPill(p) + '</span><span class="num">' + pr + ' %</span></span></button>';
+}
+function teamList(p) {
+  return p.team.map(e => '<div class="row"><div class="grow"><div class="t">' + EMPLOYEES[e].name + '</div><div class="d">' + EMPLOYEES[e].role + '</div></div></div>').join('');
+}
+function needsTable(id, editable) {
+  const p = PROJECTS[id];
+  if (!p.needs.length) return '<div class="cb mute">Todo el material ha vuelto a la nave.</div>';
+  return '<div class="tablewrap"><table><thead><tr><th>Equipo</th><th class="r">Cant.</th><th>Estado</th>' + (editable ? '' : '<th class="hide-m">Stock</th>') + '</tr></thead><tbody>' +
+    p.needs.map((n, k) => { const it = ITEMS[n[0]], s = stock(n[0]);
+      const st = editable ? '<button class="state s-' + n[2] + '" data-need="' + id + ':' + k + '" title="Pulsa para cambiar el estado">' + n[2] + '</button>' : '<span class="state s-' + n[2] + '">' + n[2] + '</span>';
+      return '<tr><td>' + it.name + '</td><td class="r num">' + n[1] + '</td><td>' + st + '</td>' + (editable ? '' : '<td class="hide-m">' + s.pill + '</td>') + '</tr>'; }).join('') +
+    '</tbody></table></div>';
+}
+
+
+// Lista de carga de un trabajo: lo que hay que llevar, por familias y tallas; se marca al cargar y al volver
+function avail(itemId, projId) {
+  let used = 0;
+  Object.entries(PROJECTS).forEach(([id, p]) => { if (id === projId) return; p.needs.forEach(([it, q, st]) => { if (it !== itemId) return; if (st === 'cargado' || (st !== 'devuelto' && p.phase < 5)) used += q; }); });
+  return ITEMS[itemId].total - used;
+}
+function loadCard(id) {
+  const p = PROJECTS[id], n = p.needs, mode = S.loadMode, done = p.phase >= 5;
+  const sum = f => n.filter(f).reduce((a, l) => a + l[1], 0), tot = sum(() => true);
+  const loaded = sum(l => l[2] === 'cargado' || l[2] === 'devuelto'), back = sum(l => l[2] === 'devuelto'), out = sum(l => l[2] === 'cargado');
+  const seg = '<div class="seg" role="group" aria-label="Vista">' + [['lista', 'Lista'], ['carga', 'Modo carga'], ['vuelta', 'Vuelta']].map(([k, t]) => '<button data-ldmode="' + k + '" aria-pressed="' + (mode === k) + '">' + t + '</button>').join('') + '</div>';
+  let body = '';
+  if (!n.length && mode === 'lista') body = '<div class="cb mute">Sin material todavía. Propón la lista desde una plantilla o añade líneas.</div>';
+  else {
+    const fams = FAMS.filter(f => n.some(l => ITEMS[l[0]].fam === f));
+    body = '<div class="ldlist">' + fams.map(f => {
+      const lines = n.map((l, k) => [l, k]).filter(([l]) => ITEMS[l[0]].fam === f);
+      const shown = mode === 'vuelta' ? lines.filter(([l]) => l[2] === 'cargado' || l[2] === 'devuelto') : lines;
+      if (!shown.length) return '';
+      return '<div class="fam"><span>' + f + '</span><span class="num">' + shown.reduce((a, [l]) => a + l[1], 0) + ' uds</span></div>' + shown.map(([l, k]) => {
+        const it = ITEMS[l[0]], size = it.name.includes(' · ') ? it.name : it.name, av = avail(l[0], id);
+        if (mode === 'lista') {
+          const pill = done ? '' : (l[1] > av ? '<span class="pill p-bad">Faltan ' + (l[1] - av) + '</span>' : '<span class="pill p-ok">Hay ' + av + '</span>');
+          return '<div class="ldrow"><div class="grow"><div class="t">' + size + '</div><div class="d">' + pill + '</div></div><span class="num q">× ' + l[1] + '</span>' +
+            '<button class="state s-' + l[2] + '" data-need="' + id + ':' + k + '" title="Pulsa para cambiar el estado">' + l[2] + '</button>' +
+            (l[2] === 'pendiente' ? '<button class="x" data-ldrm="' + id + ':' + k + '" aria-label="Quitar">×</button>' : '') + '</div>';
+        }
+        const on = mode === 'carga' ? (l[2] === 'cargado' || l[2] === 'devuelto') : l[2] === 'devuelto';
+        return '<button class="chk' + (on ? ' on' : '') + '" data-load="' + id + ':' + k + '" aria-pressed="' + on + '"><span class="box" aria-hidden="true"></span><span class="grow"><span class="t">' + size + '</span>' + (mode === 'vuelta' && !on ? '<span class="d">sin devolver</span>' : '') + '</span><span class="num q">× ' + l[1] + '</span></button>';
+      }).join('');
+    }).join('') + '</div>';
+  }
+  const opts = FAMS.map(f => '<optgroup label="' + f + '">' + Object.keys(ITEMS).filter(k => ITEMS[k].fam === f).map(k => '<option value="' + k + '">' + ITEMS[k].name + '</option>').join('') + '</optgroup>').join('');
+  const tplSel = '<select id="ld-tpl" aria-label="Plantilla">' + Object.keys(TEMPLATES).map(t => '<option value="' + t + '"' + (TPL_OF[id] === t ? ' selected' : '') + '>' + t + '</option>').join('') + '</select>';
+  const tools = mode !== 'lista' ? '' : done ? '<div class="cb bt tools"><button class="btn sec" data-demo="Guardar como plantilla">Guardar como plantilla</button></div>' :
+    '<div class="cb bt ldtools"><div class="tools">' + tplSel + '<button class="btn sec" data-ldtpl="' + id + '">Proponer desde plantilla</button></div>' +
+    '<div class="tools"><select id="ld-item" aria-label="Equipo">' + opts + '</select><input id="ld-qty" type="number" min="1" value="1" aria-label="Cantidad"><button class="btn" data-ldadd="' + id + '">Añadir línea</button></div></div>';
+  const prog = !n.length ? '' : '<div class="cb ldprog"><div class="cb-row"><span>Cargado ' + loaded + ' de ' + tot + '</span><span class="bar"><i style="width:' + Math.round(loaded / tot * 100) + '%"></i></span><span class="num">' + Math.round(loaded / tot * 100) + ' %</span></div>' +
+    (back || done ? '<div class="cb-row"><span>Devuelto ' + back + ' de ' + tot + '</span><span class="bar"><i class="ok" style="width:' + Math.round(back / tot * 100) + '%"></i></span><span class="num">' + Math.round(back / tot * 100) + ' %</span></div>' : '') + '</div>';
+  const banner = mode === 'carga' ? (loaded === tot && tot ? '<div class="cb bt ok">Todo cargado. Puede salir el camión.</div>' : '<div class="cb bt mute">Lo que no está marcado no sube al camión. Quedan ' + (tot - loaded) + ' uds por cargar.</div>') :
+    mode === 'vuelta' ? (out ? '<div class="cb bt bad">' + out + ' sin devolver. Marca lo que entra en la nave.</div>' : '<div class="cb bt ok">Todo ha vuelto a la nave.</div>') : '';
+  const meta = done ? 'Trabajo terminado · lo que se llevó queda guardado' : n.length + ' líneas · ' + tot + ' uds';
+  return '<div class="card ld"><div class="ch"><h2>Lista de carga</h2><span class="meta">' + meta + '</span></div><div class="cb tools">' + seg + (mode !== 'lista' ? '<span class="d">Pulsa una línea para marcarla</span>' : '') + '</div>' + prog + banner + body + tools + '</div>';
+}
+
+// Cliente
+function cProyectos() {
+  if (S.detail) return cDetalle(S.detail);
+  const mine = Object.keys(PROJECTS).filter(k => PROJECTS[k].client === S.user);
+  const now = mine.filter(k => PROJECTS[k].phase < 5), done = mine.filter(k => PROJECTS[k].phase >= 5);
+  return head('Hola, ' + CLIENTS[S.user].contact.split(' ')[0], 'Tus proyectos', mine.length + ' proyectos · ' + now.length + ' en curso') +
+    (now.length ? '<h2 class="grp">En curso</h2><div class="pcards">' + now.map(projCard).join('') + '</div>' : '') +
+    (done.length ? '<h2 class="grp">Terminados</h2><div class="pcards">' + done.map(projCard).join('') + '</div>' : '');
+}
+function siblings(id) {
+  const p = PROJECTS[id], all = Object.keys(PROJECTS).filter(k => PROJECTS[k].client === p.client);
+  if (all.length < 2) return '';
+  return '<div class="tools"><span class="d">Proyectos de ' + esc(CLIENTS[p.client].name) + ':</span><div class="seg" role="group" aria-label="Cambiar de proyecto">' +
+    all.map(k => '<button data-proj="' + k + '" aria-pressed="' + (k === id) + '">' + esc(PROJECTS[k].title) + '</button>').join('') + '</div></div>';
+}
+function cDetalle(id) {
+  const p = PROJECTS[id], pr = progress(p);
+  return head(p.code + ' · ' + p.type, p.title, statusPill(p), 'Tus proyectos') + siblings(id) +
+    '<div class="card"><div class="ch"><h2>Avance</h2><span class="meta">' + pr + ' %</span></div><div class="cb col"><div class="bar"><i style="width:' + pr + '%"></i></div>' + phasesBlock(p) + '</div></div>' +
+    '<div class="grid2"><div class="card"><div class="ch"><h2>Detalles</h2></div><div class="list">' +
+    '<div class="row"><div class="grow"><div class="d">Qué hacemos</div><div class="t">' + esc(p.desc) + '</div></div></div>' +
+    '<div class="row"><div class="grow"><div class="d">Lugar</div><div class="t">' + esc(p.place) + '</div></div></div>' +
+    '<div class="row"><div class="grow"><div class="d">Rodaje</div><div class="t">' + p.dates[3] + '</div></div></div></div></div>' +
+    '<div class="card"><div class="ch"><h2>Documentos</h2></div><div class="list">' + p.docs.map(x => '<button class="row" data-doc><span class="grow"><span class="t">' + x + '</span><span class="d">PDF</span></span><span class="chev">↓</span></button>').join('') + '</div></div></div>' +
+    budgetBlock(id) +
+    '<div class="card"><div class="ch"><h2>Tu equipo en Bungy</h2></div><div class="list">' + teamList(p) + '</div></div>';
+}
+function invoicesTable(rows, showClient) {
+  const pill = s => s === 'pagada' ? '<span class="pill p-ok">Pagada</span>' : s === 'vencida' ? '<span class="pill p-bad">Vencida</span>' : '<span class="pill p-warn">Pendiente</span>';
+  return '<div class="tablewrap"><table><thead><tr><th>Factura</th>' + (showClient ? '<th>Cliente</th>' : '') + '<th class="hide-m">Concepto</th><th class="hide-m">Emitida</th><th class="hide-m">Vence</th><th class="r">Importe</th><th>Estado</th><th><span class="sr">PDF</span></th></tr></thead><tbody>' +
+    rows.map(i => '<tr><td class="num nowrap">' + i[0] + '</td>' + (showClient ? '<td>' + CLIENTS[i[1]].name + '</td>' : '') + '<td class="hide-m">' + PROJECTS[i[2]].title + ' · ' + i[3] + '</td><td class="hide-m num">' + fdate(i[5]) + '</td><td class="num hide-m">' + fdate(i[6]) + '</td><td class="r num">' + eur(i[4]) + '</td><td>' + pill(i[7]) + '</td><td class="r"><button class="pdfbtn" data-pdf="' + i[0] + '" aria-label="Descargar ' + i[0] + ' en PDF">PDF ↓</button></td></tr>').join('') +
+    '</tbody></table></div>';
+}
+function cFacturas() {
+  const mine = INVOICES.filter(i => i[1] === S.user), pids = [...new Set(mine.map(i => i[2]))];
+  return head('Facturación', 'Tus facturas', 'Separadas por proyecto') + pids.map(pid => '<div class="card"><div class="ch"><h2>' + esc(PROJECTS[pid].title) + '</h2><span class="meta">' + PROJECTS[pid].code + '</span></div>' + invoicesTable(mine.filter(i => i[2] === pid), false) + '</div>').join('');
+}
+
+// Empleado
+const PCOLOR = { p1: 'var(--red)', p2: 'var(--info)', p3: 'var(--ok)', p5: 'var(--warn)' };   // color de cada proyecto en calendario y planificación
+function agendaFor(emp, days) {
+  const dates = [...new Set(AGENDA.map(a => a[0]))].sort().slice(0, days);
+  return dates.map(dt => { const items = AGENDA.filter(a => a[0] === dt && (!emp || a[1] === emp)); if (!items.length) return '';
+    const dd = d(dt);
+    return '<div class="day' + (dt === TODAY ? ' today' : '') + '"><div class="dd"><span class="w">' + (dt === TODAY ? 'Hoy' : dd.toLocaleDateString(LOC(), { weekday: 'short' })) + '</span><span class="n">' + dd.getDate() + '</span></div><div>' +
+      items.map(a => '<div class="slot"><div class="top"><span class="time">' + a[4] + '</span>' + (a[2] ? '<span class="pill p-info">' + PROJECTS[a[2]].title + '</span>' : '<span class="pill p-mute">Nave</span>') + (emp ? '' : '<b>' + EMPLOYEES[a[1]].name + '</b>') + '</div><div>' + esc(a[5]) + '</div><div class="place">' + esc(a[3]) + '</div></div>').join('') + '</div></div>'; }).join('');
+}
+const iso = dt => dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+function slotsFor(dt, emp) {
+  const items = AGENDA.filter(a => a[0] === dt && (!emp || a[1] === emp)).sort((a, b) => a[4] < b[4] ? -1 : 1);
+  if (!items.length) return '<div class="cb mute">No tienes nada asignado este día.</div>';
+  return '<div class="cb">' + items.map(a => '<div class="slot"><div class="top"><span class="time">' + a[4] + '</span>' + (a[2] ? '<span class="pill p-info">' + PROJECTS[a[2]].title + '</span>' : '<span class="pill p-mute">Nave</span>') + (emp ? '' : '<b>' + EMPLOYEES[a[1]].name + '</b>') + '</div><div>' + esc(a[5]) + '</div><div class="place">' + esc(a[3]) + '</div>' + (a[2] ? '<div><button class="linkish" data-proj="' + a[2] + '">Ver el trabajo →</button></div>' : '') + '</div>').join('') + '</div>';
+}
+const calLabel = (n, title, c) => LANG === 'en' ? n + ' ' + title + (c ? ', ' + c + (c === 1 ? ' task' : ' tasks') : '') : n + ' de ' + title + (c ? ', ' + c + (c === 1 ? ' tarea' : ' tareas') : '');
+function calendar(emp) {
+  const [y, m] = S.calMonth.split('-').map(Number), first = new Date(y, m - 1, 1, 12), days = new Date(y, m, 0).getDate();
+  const lead = (first.getDay() + 6) % 7, title = first.toLocaleDateString(LOC(), { month: 'long', year: 'numeric' });
+  let cells = '';
+  for (let k = 0; k < lead; k++) cells += '<div class="cal-c empty"></div>';
+  for (let n = 1; n <= days; n++) {
+    const dt = iso(new Date(y, m - 1, n, 12)), items = AGENDA.filter(a => a[0] === dt && a[1] === emp);
+    const marks = items.map(a => '<i style="background:' + (PCOLOR[a[2]] || 'var(--muted)') + '"></i>').join('');
+    const label = items[0] ? (items[0][2] ? PROJECTS[items[0][2]].title : 'Nave') : '';
+    cells += '<button class="cal-c' + (dt === TODAY ? ' today' : '') + (dt === S.calDay ? ' sel' : '') + (items.length ? ' has' : '') + '" data-day="' + dt + '" aria-label="' + calLabel(n, title, items.length) + '"><span class="dn">' + n + '</span><span class="lbl">' + esc(label) + '</span><span class="dots">' + marks + '</span></button>';
+  }
+  for (let k = (lead + days) % 7; k && k < 7; k++) cells += '<div class="cal-c empty"></div>';
+  const sel = d(S.calDay), selTitle = S.calDay === TODAY ? 'Hoy, ' + sel.toLocaleDateString(LOC(), { day: 'numeric', month: 'long' }) : sel.toLocaleDateString(LOC(), { weekday: 'long', day: 'numeric', month: 'long' });
+  return '<div class="grid3"><div class="card"><div class="ch"><button class="calnav" data-mon="-1" aria-label="Mes anterior">‹</button><h2>' + title + '</h2><button class="calnav" data-mon="1" aria-label="Mes siguiente">›</button></div>' +
+    '<div class="cal">' + (LANG === 'en' ? ['M', 'T', 'W', 'T', 'F', 'S', 'S'] : ['L', 'M', 'X', 'J', 'V', 'S', 'D']).map(x => '<div class="cal-h">' + x + '</div>').join('') + cells + '</div>' +
+    '<div class="cal-key">' + Object.entries(PCOLOR).filter(([k]) => AGENDA.some(a => a[1] === emp && a[2] === k)).map(([k, c]) => '<span><i style="background:' + c + '"></i>' + PROJECTS[k].title + '</span>').join('') + '<span><i style="background:var(--muted)"></i>Nave</span></div></div>' +
+    '<div class="card" id="day-detail"><div class="ch"><h2 class="plain">' + selTitle.charAt(0).toUpperCase() + selTitle.slice(1) + '</h2></div>' + slotsFor(S.calDay, emp) + '<div class="cb bt">' + myHoursBlock(emp, S.calDay) + '</div></div></div>';
+}
+// ---------- Horas ----------
+const HDAYS = ['2026-10-19', '2026-10-20', '2026-10-21', '2026-10-22', '2026-10-23'];
+const mins = t => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+const worked = h => h && h.in && h.out ? Math.max(0, mins(h.out) - mins(h.in) - (+h.brk || 0)) : 0;
+const fmtH = m => Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0') + ' h';
+const hPill = h => !h ? '<span class="pill p-mute">Sin registrar</span>' : h.st === 'validada' ? '<span class="pill p-ok">Validada</span>' : '<span class="pill p-warn">Pendiente</span>';
+const projOf = (emp, dt) => { const h = HOURS[emp + '|' + dt]; if (h && h.proj !== undefined) return h.proj; const a = AGENDA.find(x => x[0] === dt && x[1] === emp); return a ? a[2] : null; };
+function hoursForm(emp, dt, admin) {
+  const key = emp + '|' + dt, h = HOURS[key], id = emp + '-' + dt;
+  const v = h || { in: (AGENDA.find(x => x[0] === dt && x[1] === emp) || [])[4] || '08:00', out: '', brk: 60 };
+  return '<div class="hform"><label>Entrada<input type="time" id="h-in-' + id + '" value="' + v.in + '"></label><label>Salida<input type="time" id="h-out-' + id + '" value="' + v.out + '"></label><label>Pausa (min)<input type="number" min="0" step="15" id="h-brk-' + id + '" value="' + v.brk + '"></label>' +
+    '<div class="hbtns"><button class="btn" data-hsave="' + key + '"' + (admin ? ' data-admin="1"' : '') + '>Guardar</button>' + (admin ? '<button class="btn sec" data-hcancel>Cancelar</button>' : '') + '</div></div>';
+}
+function myHoursBlock(emp, dt) {
+  if (dt > TODAY) return '<div class="hbox"><div class="hhead"><b>Mis horas</b><span class="pill p-mute">Aún no</span></div><p class="d">Podrás registrar las horas ese mismo día.</p></div>';
+  const h = HOURS[emp + '|' + dt];
+  if (h && h.st === 'validada') return '<div class="hbox"><div class="hhead"><b>Mis horas</b>' + hPill(h) + '</div><p class="num">' + h.in + ' – ' + h.out + ' · pausa ' + h.brk + ' min · <b>' + fmtH(worked(h)) + '</b></p><p class="d">Validadas por ' + esc(h.by) + '. Si hay un error, avisa a dirección.</p></div>';
+  return '<div class="hbox"><div class="hhead"><b>Mis horas</b>' + hPill(h) + '</div>' + (h ? '<p class="num">Total: <b>' + fmtH(worked(h)) + '</b></p>' : '') + hoursForm(emp, dt, false) + '</div>';
+}
+function eHoras() {
+  const emp = S.user, tot = HDAYS.reduce((a, dt) => a + worked(HOURS[emp + '|' + dt]), 0);
+  return head('Semana del 19 al 23 de octubre', 'Mis horas', 'Total: ' + fmtH(tot)) +
+    '<div class="card">' + HDAYS.slice().reverse().map(dt => { const pid = projOf(emp, dt), dd = d(dt);
+      return '<div class="day' + (dt === TODAY ? ' today' : '') + '"><div class="dd"><span class="w">' + (dt === TODAY ? 'Hoy' : dd.toLocaleDateString(LOC(), { weekday: 'short' })) + '</span><span class="n">' + dd.getDate() + '</span></div><div>' +
+        '<div class="tags">' + (pid ? '<span class="pill p-info">' + PROJECTS[pid].title + '</span>' : '<span class="pill p-mute">Nave</span>') + '</div>' + myHoursBlock(emp, dt) + '</div></div>'; }).join('') + '</div>';
+}
+function aHoras() {
+  const emps = Object.keys(EMPLOYEES).filter(e => S.hEmp === 'todos' || e === S.hEmp);
+  const pend = Object.values(HOURS).filter(h => h.st === 'pendiente').length;
+  return head('Semana del 19 al 23 de octubre', 'Horas', pend + ' registros pendientes de validar') +
+    '<div class="kpis">' + Object.entries(EMPLOYEES).map(([e, x]) => '<div class="kpi"><span class="l">' + x.name + '</span><span class="v">' + Math.round(HDAYS.reduce((a, dt) => a + worked(HOURS[e + '|' + dt]), 0) / 6) / 10 + ' h</span><span class="s">' + x.role + '</span></div>').join('') + '</div>' +
+    '<div class="tools"><div class="seg" role="group" aria-label="Persona"><button data-hemp="todos" aria-pressed="' + (S.hEmp === 'todos') + '">Todos</button>' + Object.entries(EMPLOYEES).map(([e, x]) => '<button data-hemp="' + e + '" aria-pressed="' + (S.hEmp === e) + '">' + x.name.split(' ')[0] + '</button>').join('') + '</div>' + (pend ? '<button class="btn" data-hvalall>Validar todas las pendientes</button>' : '') + '</div>' +
+    '<div class="card"><div class="tablewrap"><table class="htable"><thead><tr><th>Día</th><th class="hide-m">Persona</th><th class="hide-m">Trabajo</th><th>Horario</th><th class="r">Total</th><th class="hide-m">Estado</th><th><span class="sr">Acciones</span></th></tr></thead><tbody>' +
+    HDAYS.slice().reverse().flatMap(dt => emps.map(e => { const key = e + '|' + dt, h = HOURS[key], pid = projOf(e, dt);
+      const day = '<td class="num nowrap">' + d(dt).toLocaleDateString(LOC(), { weekday: 'short', day: 'numeric' }) + '<div class="only-m name">' + EMPLOYEES[e].name.split(' ')[0] + '</div></td><td class="hide-m">' + EMPLOYEES[e].name + '</td><td class="hide-m">' + (pid ? PROJECTS[pid].title : 'Nave') + '</td>';
+      if (S.hEdit === key) return '<tr class="editing">' + day + '<td colspan="4">' + hoursForm(e, dt, true) + '</td></tr>';
+      return '<tr>' + day + '<td class="num nowrap">' + (h ? h.in + '–' + h.out + '<div class="sub12">pausa ' + h.brk + ' min</div>' : '<span class="mute">·</span>') + '<div class="only-m mt6">' + hPill(h) + '</div></td><td class="r num nowrap">' + (h ? fmtH(worked(h)) : '') + '</td><td class="hide-m">' + hPill(h) + '</td>' +
+        '<td class="r hacts"><button class="pdfbtn" data-hedit="' + key + '">' + (h ? 'Editar' : 'Añadir') + '</button>' + (h && h.st === 'pendiente' ? ' <button class="pdfbtn ok" data-hval="' + key + '">Validar</button>' : '') + '</td></tr>'; })).join('') +
+    '</tbody></table></div></div>';
+}
+
+function eAgenda() {
+  const today = AGENDA.find(a => a[0] === TODAY && a[1] === S.user);
+  return head('Hola, ' + EMPLOYEES[S.user].name.split(' ')[0], 'Mi agenda', today ? 'Hoy: ' + today[4] + ' en ' + esc(today[3]) : '') +
+    '<div class="tools"><div class="seg" role="group" aria-label="Vista"><button data-agv="lista" aria-pressed="' + (S.agView === 'lista') + '">Lista</button><button data-agv="cal" aria-pressed="' + (S.agView === 'cal') + '">Calendario</button></div></div>' +
+    (S.agView === 'cal' ? calendar(S.user) : '<div class="card"><div class="ch"><h2>Próximos días</h2><span class="meta">Hora de llamada · lugar</span></div>' + agendaFor(S.user, 8) + '</div>');
+}
+function eTrabajos() {
+  if (S.detail) return eDetalle(S.detail);
+  const mine = Object.keys(PROJECTS).filter(k => PROJECTS[k].team.includes(S.user) && PROJECTS[k].phase < 5);
+  return head('Asignados a ti', 'Mis trabajos', mine.length + ' trabajos activos') + '<div class="pcards">' + mine.map(projCard).join('') + '</div>';
+}
+function eDetalle(id) {
+  const p = PROJECTS[id];
+  return head(p.code + ' · ' + CLIENTS[p.client].name, p.title, statusPill(p), S.role === 'admin' ? 'Proyectos' : 'Mis trabajos') + (S.role === 'admin' ? siblings(id) : '') +
+    '<div class="card"><div class="ch"><h2>Fases</h2></div><div class="cb">' + phasesBlock(p) + '</div></div>' +
+    '<div class="grid3">' + loadCard(id) +
+    '<div class="stack"><div class="card"><div class="ch"><h2>Lugar</h2></div><div class="cb">' + esc(p.place) + '</div></div>' +
+    '<div class="card"><div class="ch"><h2 data-en="Crew">Equipo</h2></div><div class="list">' + teamList(p) + '</div></div>' +
+    (S.role === 'admin' ? adminMoney(id) : '') + '</div></div>' + (S.role === 'admin' ? budgetBlock(id) : '');
+}
+function warehouseTable(compact) {
+  const q = S.whQ.toLowerCase();
+  const rows = Object.keys(ITEMS).filter(id => (S.whCat === 'Todo' || ITEMS[id].cat === S.whCat) && ITEMS[id].name.toLowerCase().includes(q));
+  const cats = ['Todo', ...new Set(Object.values(ITEMS).map(i => i.cat))];
+  return '<div class="tools"><input class="search" id="wh-q" type="search" placeholder="Buscar equipo…" value="' + esc(S.whQ) + '" aria-label="Buscar equipo"><div class="seg" role="group" aria-label="Categoría">' + cats.map(c => '<button data-cat="' + c + '" aria-pressed="' + (S.whCat === c) + '">' + c + '</button>').join('') + '</div></div>' +
+    '<div class="card"><div class="tablewrap"><table><thead><tr><th>Equipo</th><th class="hide-m">Categoría</th><th class="r hide-m">Total</th><th class="r">En nave</th><th class="r">Fuera</th><th class="r">Se necesita</th>' + (compact ? '' : '<th class="hide-m">Próx. revisión</th>') + '<th>Estado</th></tr></thead><tbody>' +
+    (rows.length ? rows.map(id => { const it = ITEMS[id], s = stock(id);
+      return '<tr><td>' + it.name + '</td><td class="hide-m">' + it.cat + '</td><td class="r num hide-m">' + it.total + '</td><td class="r num">' + s.inNave + '</td><td class="r num">' + s.out + '</td><td class="r num">' + (s.need || '·') + '</td>' + (compact ? '' : '<td class="hide-m num">' + fdate(it.rev) + '</td>') + '<td>' + s.pill + '</td></tr>'; }).join('') : '<tr><td colspan="8" class="mute">No hay equipo que coincida con la búsqueda.</td></tr>') +
+    '</tbody></table></div></div>';
+}
+function eMaterial() {
+  const nx = AGENDA.filter(a => a[1] === S.user && a[2] && a[0] >= TODAY && /Carga del cami/.test(a[5])).sort()[0];
+  let next = '';
+  if (nx) { const p = PROJECTS[nx[2]], tot = p.needs.reduce((a, l) => a + l[1], 0), ready = p.needs.filter(l => l[2] !== 'pendiente').reduce((a, l) => a + l[1], 0);
+    next = '<div class="card"><div class="ch"><h2>Próxima carga</h2><span class="meta">' + fdate(nx[0]) + ' · ' + nx[4] + '</span></div><div class="cb tools"><div class="grow"><div class="t">' + esc(p.title) + '</div><div class="d">' + ready + ' uds preparadas o cargadas de ' + tot + '</div></div><button class="btn" data-ldopen="' + nx[2] + '">Abrir lista de carga</button></div></div>'; }
+  return head('Almacén', 'Material', '"Se necesita" es lo reservado para trabajos que aún no ha salido') + next + warehouseTable(true);
+}
+
+// Administración
+function adminMoney(id) {
+  const p = PROJECTS[id], spent = EXPENSES.filter(e => e[3] === id).reduce((a, e) => a + e[4], 0), billed = INVOICES.filter(i => i[2] === id).reduce((a, i) => a + i[4], 0);
+  return '<div class="card"><div class="ch"><h2>Números</h2></div><div class="list">' +
+    '<div class="row"><div class="grow d">Presupuesto</div><span class="num">' + eur(p.budget) + '</span></div>' +
+    '<div class="row"><div class="grow d">Facturado</div><span class="num">' + eur(billed) + '</span></div>' +
+    '<div class="row"><div class="grow d">Gastos imputados</div><span class="num">' + eur(spent) + '</span></div></div></div>';
+}
+function aResumen() {
+  const act = active(), al = alerts();
+  const outUnits = Object.keys(ITEMS).reduce((a, id) => a + stock(id).out, 0);
+  const pend = INVOICES.filter(i => i[7] !== 'pagada').reduce((a, i) => a + i[4], 0);
+  const monthExp = EXPENSES.filter(e => e[0].startsWith('2026-10')).reduce((a, e) => a + e[4], 0);
+  const todayList = AGENDA.filter(a => a[0] === TODAY);
+  return head('Viernes, 23 de octubre', 'Resumen', 'Datos de ejemplo') +
+    '<div class="kpis"><div class="kpi"><span class="l">Proyectos activos</span><span class="v">' + act.length + '</span><span class="s">' + act.filter(([, p]) => p.phase === 3).length + ' en rodaje</span></div>' +
+    '<div class="kpi"><span class="l">Material fuera</span><span class="v">' + outUnits + '</span><span class="s">unidades en trabajos</span></div>' +
+    '<div class="kpi"><span class="l">Pendiente de cobro</span><span class="v">' + eur(pend) + '</span><span class="s">' + INVOICES.filter(i => i[7] === 'vencida').length + ' factura vencida</span></div>' +
+    '<div class="kpi"><span class="l">Gastos de octubre</span><span class="v">' + eur(monthExp) + '</span><span class="s">' + EXPENSES.length + ' apuntes</span></div></div>' +
+    '<div class="grid2"><div class="card"><div class="ch"><h2>Avisos</h2><span class="meta">' + al.length + '</span></div><div>' +
+    al.map(a => '<div class="alert"><span class="pill ' + a[0] + '">' + a[1] + '</span><div class="grow"><div class="t">' + esc(a[2]) + '</div><div class="d">' + a[3] + '</div></div></div>').join('') + '</div></div>' +
+    '<div class="card"><div class="ch"><h2>Hoy, quién está dónde</h2></div><div class="list">' +
+    todayList.map(a => '<div class="row"><div class="grow"><div class="t">' + EMPLOYEES[a[1]].name + '</div><div class="d">' + esc(a[3]) + ' · ' + a[4] + '</div></div>' + (a[2] ? '<span class="pill p-info">' + PROJECTS[a[2]].title + '</span>' : '<span class="pill p-mute">Nave</span>') + '</div>').join('') + '</div></div></div>' +
+    '<div class="card"><div class="ch"><h2>Proyectos activos</h2></div><div class="list">' + act.map(([id, p]) => projRow(id, p)).join('') + '</div></div>';
+}
+function projRow(id, p) {
+  const pr = progress(p);
+  return '<button class="row" data-proj="' + id + '"><span class="grow"><span class="t">' + esc(p.title) + ' <span class="d mono">' + p.code + '</span></span><span class="d">' + CLIENTS[p.client].name + ' · ' + p.type + '</span><span class="bar"><i style="width:' + pr + '%"></i></span></span>' + statusPill(p) + '<span class="chev">›</span></button>';
+}
+function aProyectos() {
+  if (S.detail) return eDetalle(S.detail);
+  const f = S.clientFilter, cids = Object.keys(CLIENTS).filter(c => f === 'todos' || c === f);
+  return head('Por cliente', 'Proyectos', Object.keys(PROJECTS).length + ' proyectos') +
+    '<div class="tools"><div class="seg" role="group" aria-label="Cliente"><button data-cf="todos" aria-pressed="' + (f === 'todos') + '">Todos</button>' + Object.entries(CLIENTS).map(([c, x]) => '<button data-cf="' + c + '" aria-pressed="' + (f === c) + '">' + esc(x.name) + '</button>').join('') + '</div></div>' +
+    cids.map(c => { const ps = Object.entries(PROJECTS).filter(([, p]) => p.client === c);
+      return '<div class="card"><div class="ch"><h2>' + esc(CLIENTS[c].name) + '</h2><span class="meta">' + ps.length + (ps.length === 1 ? ' proyecto' : ' proyectos') + '</span></div><div class="list">' + ps.map(([id, p]) => projRow(id, p)).join('') + '</div></div>'; }).join('');
+}
+function aPlan() {
+  const dates = [...new Set(AGENDA.map(a => a[0]))].sort().slice(0, 7);
+  return head('Equipo', 'Planificación', 'Quién está dónde cada día') +
+    '<div class="card"><div class="tablewrap"><table class="plan"><thead><tr><th>Persona</th>' + dates.map(dt => '<th class="' + (dt === TODAY ? 'today' : '') + '">' + d(dt).toLocaleDateString(LOC(), { weekday: 'short', day: 'numeric' }) + '</th>').join('') + '</tr></thead><tbody>' +
+    Object.entries(EMPLOYEES).map(([eid, e]) => '<tr><td class="who">' + e.name + '<span>' + e.role + '</span></td>' + dates.map(dt => { const a = AGENDA.find(x => x[0] === dt && x[1] === eid);
+      if (!a) return '<td></td>';
+      const pc = (a[2] && PCOLOR[a[2]]) || 'var(--muted)';
+      return '<td><span class="chip" style="--c:' + pc + '"><b>' + (a[2] ? PROJECTS[a[2]].title : 'Nave') + '</b>' + a[4] + ' · ' + esc(a[3].split(',')[0].split(' · ')[0]) + '</span></td>'; }).join('') + '</tr>').join('') +
+    '</tbody></table></div></div>' +
+    '<div class="card"><div class="ch"><h2>Agenda detallada</h2></div>' + agendaFor(null, 8) + '</div>';
+}
+function aAlmacen() {
+  const al = Object.keys(ITEMS).filter(id => stock(id).level > 0).length;
+  const loads = active().map(([id, p]) => { const tot = p.needs.reduce((a, l) => a + l[1], 0), loaded = p.needs.filter(l => l[2] === 'cargado' || l[2] === 'devuelto').reduce((a, l) => a + l[1], 0), pend = p.needs.filter(l => l[2] === 'pendiente').length;
+    return '<div class="row"><div class="grow"><div class="t">' + esc(p.title) + ' <span class="mute">· ' + p.code + '</span></div><div class="d">' + esc(p.place.split(',')[0]) + ' · ' + PHASES[p.phase] + (tot ? ' · Cargado ' + loaded + ' de ' + tot : ' · Sin material todavía') + (pend ? ' · ' + pend + ' líneas pendientes' : '') + '</div></div><button class="btn sec" data-ldopen="' + id + '" data-ldmode0="lista">Lista de carga</button></div>'; }).join('');
+  return head('Inventario', 'Almacén', al + ' equipos con aviso') +
+    '<div class="card"><div class="ch"><h2>Listas de carga</h2><span class="meta">Un trabajo, una lista: lo que no está en ella no sale de la nave</span></div><div class="list">' + loads + '</div></div>' + warehouseTable(false) +
+    '<div class="tools"><button class="btn" data-demo="Añadir equipo">Añadir equipo</button><button class="btn sec" data-demo="Registrar entrada o salida">Registrar entrada o salida</button></div>';
+}
+function aFacturas() {
+  const f = S.invFilter, rows = INVOICES.filter(i => f === 'todas' || i[7] === f);
+  const sum = s => INVOICES.filter(i => i[7] === s).reduce((a, i) => a + i[4], 0);
+  return head('Facturación', 'Facturas', '') +
+    '<div class="kpis k3"><div class="kpi"><span class="l">Cobrado</span><span class="v">' + eur(sum('pagada')) + '</span></div><div class="kpi"><span class="l">Pendiente</span><span class="v">' + eur(sum('pendiente')) + '</span></div><div class="kpi"><span class="l">Vencido</span><span class="v bad">' + eur(sum('vencida')) + '</span></div></div>' +
+    '<div class="tools"><div class="seg" role="group" aria-label="Estado">' + ['todas', 'pendiente', 'vencida', 'pagada'].map(s => '<button data-inv="' + s + '" aria-pressed="' + (f === s) + '">' + s[0].toUpperCase() + s.slice(1) + '</button>').join('') + '</div><button class="btn" data-demo="Nueva factura">Nueva factura</button></div>' +
+    '<div class="card">' + invoicesTable(rows, true) + '</div>';
+}
+function aGastos() {
+  const tot = EXPENSES.reduce((a, e) => a + e[4], 0), byCat = {};
+  EXPENSES.forEach(e => byCat[e[2]] = (byCat[e[2]] || 0) + e[4]);
+  const max = Math.max(...Object.values(byCat));
+  return head('Octubre de 2026', 'Gastos', 'Total ' + eur(tot)) +
+    '<div class="grid3"><div class="card"><div class="ch"><h2>Apuntes</h2><button class="btn" data-demo="Añadir gasto">Añadir gasto</button></div><div class="tablewrap"><table><thead><tr><th>Fecha</th><th>Concepto</th><th class="hide-m">Proyecto</th><th class="r">Importe</th></tr></thead><tbody>' +
+    EXPENSES.slice().reverse().map(e => '<tr><td class="num">' + fdate(e[0]) + '</td><td>' + esc(e[1]) + '<div class="sub12">' + e[2] + '</div></td><td class="hide-m">' + (e[3] ? PROJECTS[e[3]].title : '<span class="mute">General</span>') + '</td><td class="r num">' + eur(e[4]) + '</td></tr>').join('') +
+    '</tbody></table></div></div><div class="card"><div class="ch"><h2>Por categoría</h2></div><div class="cb catbars">' +
+    Object.entries(byCat).sort((a, b) => b[1] - a[1]).map(([c, v]) => '<div class="cb-row"><span>' + c + '</span><div class="bar"><i style="width:' + (v / max * 100) + '%"></i></div><span class="num">' + eur(v) + '</span></div>').join('') + '</div></div></div>';
+}
+function aPersonas() {
+  return head('Directorio', 'Personas', 'Cada persona entra con su propio usuario') +
+    '<div class="grid2"><div class="card"><div class="ch"><h2>Clientes</h2><button class="btn sec" data-demo="Invitar cliente">Invitar</button></div><div class="list">' +
+    Object.entries(CLIENTS).map(([cid, c]) => { const n = Object.values(PROJECTS).filter(p => p.client === cid).length; return '<button class="row" data-client="' + cid + '"><span class="grow"><span class="t">' + c.name + '</span><span class="d">' + c.contact + ' · ' + c.country + '</span></span><span class="pill p-info">' + n + (n === 1 ? ' proyecto' : ' proyectos') + '</span><span class="chev">›</span></button>'; }).join('') + '</div></div>' +
+    '<div class="card"><div class="ch"><h2 data-en="Crew">Equipo</h2><button class="btn sec" data-demo="Añadir empleado">Añadir</button></div><div class="list">' +
+    Object.entries(EMPLOYEES).map(([, e]) => '<div class="row"><div class="grow"><div class="t">' + e.name + '</div><div class="d">' + e.role + '</div></div><span class="pill p-mute">Empleado</span></div>').join('') +
+    '<div class="row"><div class="grow"><div class="t">Carmen López</div><div class="d">Administración</div></div><span class="pill p-ok">Admin</span></div></div></div></div>';
+}
+
+const VIEWS = {
+  cliente: { proyectos: cProyectos, facturas: cFacturas },
+  empleado: { agenda: eAgenda, trabajos: eTrabajos, material: eMaterial, horas: eHoras },
+  admin: { resumen: aResumen, proyectos: aProyectos, plan: aPlan, horas: aHoras, almacen: aAlmacen, facturas: aFacturas, gastos: aGastos, personas: aPersonas }
+};
+
+function render(keepFocus) {
+  const root = $('#root');
+  document.documentElement.lang = LANG;
+  if (!S.role) { root.innerHTML = viewLogin(); translateDom(root); return; }
+  const focusId = document.activeElement && document.activeElement.id;
+  root.innerHTML = shell(VIEWS[S.role][S.tab]()); translateDom(root);
+  if (keepFocus && focusId) { const el = document.getElementById(focusId); if (el) { el.focus(); el.setSelectionRange && el.setSelectionRange(el.value.length, el.value.length); } }
+}
+function go(tab, detail) { S.tab = tab; S.detail = detail || null; S.loadMode = 'lista'; render(); scrollTo(0, 0); showTab(); }
+const showTab = () => { const b = document.querySelector('.tabbar button[aria-current="page"]'); if (b) b.scrollIntoView({ block: 'nearest', inline: 'center' }); };
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.setlang) { setLang(t.dataset.setlang); return; }
+  if (t.dataset.role) { S.role = t.dataset.role; S.user = ROLES[S.role].user; go(ROLES[S.role].tabs[0][0]); return; }
+  if (t.hasAttribute('data-logout')) { S.role = null; S.detail = null; S.hEdit = null; render(); scrollTo(0, 0); return; }
+  if (t.dataset.tab) { go(t.dataset.tab); return; }
+  if (t.hasAttribute('data-back')) { go(S.tab); return; }
+  if (t.dataset.proj) { const tab = S.role === 'admin' ? 'proyectos' : S.role === 'empleado' ? 'trabajos' : 'proyectos'; go(tab, t.dataset.proj); return; }
+  if (t.dataset.need) { const [pid, k] = t.dataset.need.split(':'), n = PROJECTS[pid].needs[+k], order = ['pendiente', 'preparado', 'cargado', 'devuelto'];
+    n[2] = order[(order.indexOf(n[2]) + 1) % 4]; render(); toast(ITEMS[n[0]].name + ': ' + n[2]); return; }
+  if (t.dataset.ldmode) { S.loadMode = t.dataset.ldmode; render(); return; }
+  if (t.dataset.ldopen) { go(S.role === 'admin' ? 'proyectos' : 'trabajos', t.dataset.ldopen); S.loadMode = t.dataset.ldmode0 || 'carga'; render(); return; }
+  if (t.dataset.load) { const [pid, k] = t.dataset.load.split(':'), n = PROJECTS[pid].needs[+k];
+    if (S.loadMode === 'carga') n[2] = (n[2] === 'cargado' || n[2] === 'devuelto') ? 'preparado' : 'cargado'; else n[2] = n[2] === 'devuelto' ? 'cargado' : 'devuelto';
+    render(); return; }
+  if (t.dataset.ldrm) { const [pid, k] = t.dataset.ldrm.split(':'), n = PROJECTS[pid].needs[+k]; if (n[2] !== 'pendiente') { toast('Solo se pueden quitar líneas pendientes.'); return; } PROJECTS[pid].needs.splice(+k, 1); render(); toast('Línea quitada.'); return; }
+  if (t.dataset.ldadd) { const pid = t.dataset.ldadd, it = document.getElementById('ld-item').value, q = Math.max(1, +document.getElementById('ld-qty').value || 1), n = PROJECTS[pid].needs;
+    const ex = n.find(l => l[0] === it && l[2] === 'pendiente'); if (ex) ex[1] += q; else n.push([it, q, 'pendiente']); render(); toast('Añadido a la lista.'); return; }
+  if (t.dataset.ldtpl) { const pid = t.dataset.ldtpl, name = document.getElementById('ld-tpl').value, n = PROJECTS[pid].needs; let added = 0;
+    TEMPLATES[name].forEach(([it, q]) => { if (!n.some(l => l[0] === it)) { n.push([it, q, 'pendiente']); added++; } });
+    render(); toast(added ? added + ' líneas añadidas desde la plantilla "' + name + '".' : 'La lista ya tiene todo lo de la plantilla.'); return; }
+  if (t.dataset.cat) { S.whCat = t.dataset.cat; render(); return; }
+  if (t.dataset.hsave) { const key = t.dataset.hsave, id = key.replace('|', '-'), v = k => document.getElementById('h-' + k + '-' + id).value;
+    const h = { in: v('in'), out: v('out'), brk: Math.max(0, +v('brk') || 0) };
+    if (!h.in || !h.out || mins(h.out) <= mins(h.in)) { toast('Revisa las horas: la salida tiene que ser posterior a la entrada.'); return; }
+    const prev = HOURS[key] || {}, [e, dt] = key.split('|');
+    HOURS[key] = Object.assign({ proj: projOf(e, dt) }, prev, h, t.dataset.admin ? { st: 'validada', by: 'Carmen López' } : { st: 'pendiente', by: '' });
+    S.hEdit = null; render(); toast(t.dataset.admin ? 'Horas corregidas y validadas.' : 'Horas guardadas. Dirección las validará.'); return; }
+  if (t.dataset.hedit) { S.hEdit = t.dataset.hedit; render(); return; }
+  if (t.hasAttribute('data-hcancel')) { S.hEdit = null; render(); return; }
+  if (t.dataset.hval) { Object.assign(HOURS[t.dataset.hval], { st: 'validada', by: 'Carmen López' }); render(); toast('Horas validadas.'); return; }
+  if (t.hasAttribute('data-hvalall')) { Object.values(HOURS).forEach(h => { if (h.st === 'pendiente') Object.assign(h, { st: 'validada', by: 'Carmen López' }); }); render(); toast('Todas las horas pendientes están validadas.'); return; }
+  if (t.dataset.hemp) { S.hEmp = t.dataset.hemp; S.hEdit = null; render(); return; }
+  if (t.dataset.agv) { S.agView = t.dataset.agv; render(); return; }
+  if (t.dataset.day) { S.calDay = t.dataset.day; render(); if (matchMedia('(max-width: 860px)').matches) document.getElementById('day-detail').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+  if (t.dataset.mon) { const [y, m] = S.calMonth.split('-').map(Number), nd = new Date(y, m - 1 + (+t.dataset.mon), 1, 12); S.calMonth = nd.getFullYear() + '-' + String(nd.getMonth() + 1).padStart(2, '0'); render(); return; }
+  if (t.dataset.cf) { S.clientFilter = t.dataset.cf; render(); return; }
+  if (t.dataset.client) { S.clientFilter = t.dataset.client; go('proyectos'); return; }
+  if (t.dataset.inv) { S.invFilter = t.dataset.inv; render(); return; }
+  if (t.dataset.pdf) { if (!window.jspdf) { toast('No se ha podido preparar el PDF. Comprueba la conexión.'); return; } saveFile('Bungy-System-' + t.dataset.pdf + '.pdf', invoicePdf(t.dataset.pdf)); return; }
+  if (t.hasAttribute('data-doc')) { toast('En la demo los documentos no se abren.'); return; }
+  if (t.dataset.demo) { toast(t.dataset.demo + ': en la demo no se guarda nada.'); return; }
+});
+document.addEventListener('input', e => { if (e.target.id === 'wh-q') { S.whQ = e.target.value; render(true); } });
+
+document.title = LANG === 'en' ? 'Bungy System · Private area' : 'Bungy System · Área privada';
+render(); showTab();
+})();
+</script>
+</body></html>
